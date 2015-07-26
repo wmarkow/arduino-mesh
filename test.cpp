@@ -7,18 +7,7 @@
 */
 #include "IotRadio.h"
 
-/****************** User Config ***************************/
-/***      Set this radio as radio number 0 or 1         ***/
-//bool radioNumber = 0; //uno
-bool radioNumber = 1 ;//yun
-
-/* Hardware configuration: Set up nRF24L01 radio on SPI bus plus pins 7 & 8 */
-/**********************************************************/
-
-byte transmitterAddress[5] = {0xc1, 0xc1, 0xc1, 0xc1, 0xc1};
-byte receiverAddress[5] ={0xc1, 0xc1, 0xc1, 0xc1, 0xc1};
-
-IotRadio radio(receiverAddress);
+IotRadio radio;
 
 // Used to control whether this node is sending or receiving
 bool role = 0;
@@ -30,10 +19,6 @@ void setup() {
   Serial.println(F("*** PRESS 'T' to begin transmitting to the other node"));
 
   radio.begin();
-  radio.openDirectChannel(transmitterAddress);
-
-  // Start the radio listening for data
-  radio.startListening();
 }
 
 void loop() {
@@ -64,17 +49,11 @@ void loop() {
     if ( c == 'T' && role == 0 ){
       Serial.println(F("*** CHANGING TO TRANSMIT ROLE -- PRESS 'R' TO SWITCH BACK"));
       role = 1;                  // Become the primary transmitter (ping out)
-      radio.setMyAddress(transmitterAddress);
-      radio.openDirectChannel(receiverAddress);
    }else
     if ( c == 'R' && role == 1 ){
       Serial.println(F("*** CHANGING TO RECEIVE ROLE -- PRESS 'T' TO SWITCH BACK"));
        role = 0;                // Become the primary receiver (pong back)
-       radio.setMyAddress(receiverAddress);
-       radio.openDirectChannel(transmitterAddress);
        radio.startListening();
     }
   }
-
-
 } // Loop
