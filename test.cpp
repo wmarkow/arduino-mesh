@@ -16,7 +16,7 @@ bool radioNumber = 1 ;//yun
 /**********************************************************/
 
 byte transmitterAddress[5] = {0xc1, 0xc1, 0xc1, 0xc1, 0xc1};
-byte receiverAddress[5] ={0xc2, 0xc1, 0xc1, 0xc1, 0xc1};
+byte receiverAddress[5] ={0xc1, 0xc1, 0xc1, 0xc1, 0xc1};
 
 IotRadio radio(receiverAddress);
 
