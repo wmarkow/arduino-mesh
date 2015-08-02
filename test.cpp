@@ -15,6 +15,7 @@ bool radioNumber = 1 ;//yun
 /* Hardware configuration: Set up nRF24L01 radio on SPI bus plus pins 7 & 8 */
 /**********************************************************/
 
+byte transmitterAddress[5] = {0xc1, 0xc1, 0xc1, 0xc1, 0xc1};
 byte receiverAddress[5] ={0xc1, 0xc1, 0xc1, 0xc1, 0xc1};
 
 IotRadio radio(receiverAddress);
