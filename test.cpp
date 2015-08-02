@@ -16,9 +16,8 @@ bool radioNumber = 1 ;//yun
 /**********************************************************/
 
 byte transmitterAddress[5] = {0xc1, 0xc1, 0xc1, 0xc1, 0xc1};
-byte receiverAddress[5] ={0xc1, 0xc1, 0xc1, 0xc1, 0xc1};
 
-IotRadio radio(receiverAddress);
+IotRadio radio;
 
 // Used to control whether this node is sending or receiving
 bool role = 0;

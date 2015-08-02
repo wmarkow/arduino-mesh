@@ -24,7 +24,7 @@ class IotRadio
 	RF24 radio;
 
   public:
-	IotRadio(byte address[IOT_ADDRESS_LENGTH]);
+	IotRadio();
 	bool begin();
 	void setMyAddress(byte address[IOT_ADDRESS_LENGTH]);
     void openDirectChannel(byte otherAddress[IOT_ADDRESS_LENGTH]);

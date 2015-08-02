@@ -7,8 +7,12 @@
 
 #include "IotRadio.h"
 
-IotRadio::IotRadio(byte address[IOT_ADDRESS_LENGTH]) : radio(RF24(IOT_HARDWARE_CE_PIN, IOT_HARDWARE_CS_PIN)) {
-	memcpy(myAddress, address, sizeof(byte[IOT_ADDRESS_LENGTH]));
+IotRadio::IotRadio() : radio(RF24(IOT_HARDWARE_CE_PIN, IOT_HARDWARE_CS_PIN)) {
+	myAddress[0] = 0xc1;
+	myAddress[1] = 0xc1;
+	myAddress[2] = 0xc1;
+	myAddress[3] = 0xc1;
+	myAddress[4] = 0xc1;
 }
 
 bool IotRadio::begin()
