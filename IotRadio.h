@@ -20,7 +20,7 @@
 class IotRadio
 {
   private:
-	byte myAddress[IOT_ADDRESS_LENGTH];
+	byte linkAddress[IOT_ADDRESS_LENGTH];
 	RF24 radio;
 
   public:

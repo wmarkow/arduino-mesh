@@ -8,11 +8,11 @@
 #include "IotRadio.h"
 
 IotRadio::IotRadio() : radio(RF24(IOT_HARDWARE_CE_PIN, IOT_HARDWARE_CS_PIN)) {
-	myAddress[0] = 0xc1;
-	myAddress[1] = 0xc1;
-	myAddress[2] = 0xc1;
-	myAddress[3] = 0xc1;
-	myAddress[4] = 0xc1;
+	linkAddress[0] = 0xc1;
+	linkAddress[1] = 0xc1;
+	linkAddress[2] = 0xc1;
+	linkAddress[3] = 0xc1;
+	linkAddress[4] = 0xc1;
 }
 
 bool IotRadio::begin()
@@ -20,36 +20,16 @@ bool IotRadio::begin()
 	if(radio.begin()){
 		Serial.println("Chip connected");
 	}else{
-		Serial.println("Chip disconnected");
-
-		return false;
+		Serial.println("Chip looks disconnected");
 	}
 
 	radio.setPALevel(RF24_PA_MAX);
 	radio.setAutoAck(true);
+	radio.openWritingPipe(linkAddress);
+	radio.openReadingPipe(1, linkAddress);
+	radio.startListening();
 
 	return true;
-}
-
-void IotRadio::setMyAddress(byte address[IOT_ADDRESS_LENGTH])
-{
-	memcpy(myAddress, address, sizeof(byte[IOT_ADDRESS_LENGTH]));
-}
-
-void IotRadio::openDirectChannel(byte otherAddress[IOT_ADDRESS_LENGTH])
-{
-	radio.openWritingPipe(otherAddress);
-	radio.openReadingPipe(1, myAddress);
-}
-
-void IotRadio::startListening()
-{
-	radio.startListening();
-}
-
-void IotRadio::stopListening()
-{
-	radio.stopListening();
 }
 
 bool IotRadio::ping()
