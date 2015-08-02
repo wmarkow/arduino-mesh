@@ -114,7 +114,9 @@ bool IotRadio::write(GenericPacketData* packet)
 
 	radio.startListening();
 
-	debugHexPrintToSerial(packet, PAYLOAD_SIZE);
+	#if (IOT_DEBUG_WRITE_RADIO == ON)
+		debugHexPrintToSerial(packet, PAYLOAD_SIZE);
+	#endif
 
 	return result;
 }
@@ -173,7 +175,9 @@ bool IotRadio::readIncomingPacket(GenericPacketData* incomingPacket)
 
 	radio.read(incomingPacket, PAYLOAD_SIZE);
 
-	debugHexPrintToSerial(incomingPacket, PAYLOAD_SIZE);
+	#if IOT_DEBUG_WRITE_RADIO == ON
+		debugHexPrintToSerial(incomingPacket, PAYLOAD_SIZE);
+	#endif
 
 	return true;
 }

@@ -12,6 +12,10 @@
 #include <RF24.h>
 #include "IotPacket.h"
 
+#define OFF 0
+#define ON 1
+#define IOT_DEBUG_WRITE_RADIO OFF
+
 #define IOT_HARDWARE_CE_PIN 7
 #define IOT_HARDWARE_CS_PIN 8
 #define IOT_ADDRESS_LENGTH 5
