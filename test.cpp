@@ -30,10 +30,6 @@ void setup() {
   Serial.println(F("*** PRESS 'T' to begin transmitting to the other node"));
 
   radio.begin();
-  radio.openDirectChannel(transmitterAddress);
-
-  // Start the radio listening for data
-  radio.startListening();
 }
 
 void loop() {

@@ -23,7 +23,8 @@ bool IotRadio::begin()
 
 	radio.setPALevel(RF24_PA_MAX);
 	radio.setAutoAck(true);
-
+	openDirectChannel(myAddress);
+	radio.startListening();
 	return true;
 }
 
