@@ -73,15 +73,15 @@ bool IotRadio::ping(uint8_t dstAddress)
 
 bool IotRadio::sendPacket(GenericPacketData* packet, uint8_t dstAddress)
 {
-	packet->srcAddress = ipAddress;
-	packet->dstAddress = dstAddress;
+	packet->setSrcAddress(ipAddress);
+	packet->setDstAddress(dstAddress);
 
 	return sendPacket(packet);
 }
 
 bool IotRadio::sendPacket(GenericPacketData* packet)
 {
-	if(packet->protocol == ICMP || packet->protocol == TCP)
+	if(packet->getProtocol() == ICMP || packet->getProtocol() == TCP)
 	{
 		return sendPacketWaitForAck(packet);
 	}
@@ -123,23 +123,23 @@ bool IotRadio::hasAckArrived(GenericPacketData* sentPacket)
 {
 	processIncomingPackets();
 
-	if(lastIncomingPacket.type != ACK) {
+	if(lastIncomingPacket.getType() != ACK) {
 		return false;
 	}
 
-	if(lastIncomingPacket.dstAddress != sentPacket->srcAddress) {
+	if(lastIncomingPacket.getDstAddress() != sentPacket->getSrcAddress()) {
 		return false;
 	}
 
-	if(lastIncomingPacket.srcAddress != sentPacket->dstAddress) {
+	if(lastIncomingPacket.getSrcAddress() != sentPacket->getDstAddress()) {
 		return false;
 	}
 
-	if(lastIncomingPacket.id != sentPacket->id) {
+	if(lastIncomingPacket.getId() != sentPacket->getId()) {
 		return false;
 	}
 
-	if(lastIncomingPacket.protocol != sentPacket->protocol) {
+	if(lastIncomingPacket.getProtocol() != sentPacket->getProtocol()) {
 		return false;
 	}
 
@@ -155,7 +155,7 @@ void IotRadio::processIncomingPackets()
 		return;
 	}
 
-	if((lastIncomingPacket.protocol == ICMP || lastIncomingPacket.protocol == TCP) && lastIncomingPacket.type == REGULAR) {
+	if((lastIncomingPacket.getProtocol() == ICMP || lastIncomingPacket.getProtocol() == TCP) && lastIncomingPacket.getType() == REGULAR) {
 		// send ack back
 		AckPacket ackPacket(&lastIncomingPacket);
 

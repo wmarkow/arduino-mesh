@@ -26,12 +26,20 @@ enum IotPacketType
 
 class PacketHeader
 {
+protected:
+	uint8_t header[5];
 public:
-	uint8_t id;
-	IotProtocol protocol;
-	IotPacketType type;
-	uint8_t srcAddress;
-	uint8_t dstAddress;
+	uint8_t getId();
+	IotProtocol getProtocol();
+	IotPacketType getType();
+	uint8_t getSrcAddress();
+	uint8_t getDstAddress();
+
+	void setId(uint8_t id);
+	void setProtocol(IotProtocol protocol);
+	void setType(IotPacketType type);
+	void setSrcAddress(uint8_t address);
+	void setDstAddress(uint8_t address);
 };
 
 class GenericPacketData : public PacketHeader
