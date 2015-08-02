@@ -64,14 +64,10 @@ void loop() {
     if ( c == 'T' && role == 0 ){
       Serial.println(F("*** CHANGING TO TRANSMIT ROLE -- PRESS 'R' TO SWITCH BACK"));
       role = 1;                  // Become the primary transmitter (ping out)
-      radio.setMyAddress(transmitterAddress);
-      radio.openDirectChannel(receiverAddress);
    }else
     if ( c == 'R' && role == 1 ){
       Serial.println(F("*** CHANGING TO RECEIVE ROLE -- PRESS 'T' TO SWITCH BACK"));
        role = 0;                // Become the primary receiver (pong back)
-       radio.setMyAddress(receiverAddress);
-       radio.openDirectChannel(transmitterAddress);
        radio.startListening();
     }
   }
