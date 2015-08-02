@@ -25,7 +25,6 @@ void setup() {
 
 void loop() {
 
-
 	/****************** Ping Out Role ***************************/
 	if (role == 1)
 	{

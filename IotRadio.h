@@ -25,7 +25,7 @@ enum TransmitterState
 class IotRadio
 {
   private:
-	byte linkAddress[5];
+	byte linkAddress[IOT_ADDRESS_LENGTH];
 	byte ipAddress;
 	RF24 radio;
 
