@@ -23,7 +23,6 @@ void setup() {
 
 void loop() {
 
-
 	/****************** Ping Out Role ***************************/
 	if (role == 1)
 	{
@@ -53,7 +52,6 @@ void loop() {
     if ( c == 'R' && role == 1 ){
       Serial.println(F("*** CHANGING TO RECEIVE ROLE -- PRESS 'T' TO SWITCH BACK"));
        role = 0;                // Become the primary receiver (pong back)
-       radio.startListening();
     }
   }
 } // Loop

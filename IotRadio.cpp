@@ -20,28 +20,18 @@ bool IotRadio::begin()
 	if(radio.begin()){
 		Serial.println("Chip connected");
 	}else{
-		Serial.println("Chip disconnected");
-
-		return false;
+		Serial.println("Chip looks disconnected");
 	}
 
 	radio.openWritingPipe(linkAddress);
 	radio.openReadingPipe(1, linkAddress);
 	radio.setPALevel(RF24_PA_MAX);
 	radio.setAutoAck(true);
+	radio.openWritingPipe(linkAddress);
+	radio.openReadingPipe(1, linkAddress);
 	radio.startListening();
 
 	return true;
-}
-
-void IotRadio::startListening()
-{
-	radio.startListening();
-}
-
-void IotRadio::stopListening()
-{
-	radio.stopListening();
 }
 
 bool IotRadio::ping()
