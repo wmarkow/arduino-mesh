@@ -35,6 +35,10 @@ void loop() {
 		Serial.println("tu jestem");
 	}
 
+	if(role == 0){
+		radio.processIncomingPackets();
+	}
+
 	/****************** Change Roles via Serial Commands ***************************/
 
   if ( Serial.available() )

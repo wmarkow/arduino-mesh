@@ -173,6 +173,8 @@ bool IotRadio::readIncomingPacket(GenericPacketData* incomingPacket)
 
 	radio.read(incomingPacket, PAYLOAD_SIZE);
 
+	debugHexPrintToSerial(incomingPacket, PAYLOAD_SIZE);
+
 	return true;
 }
 

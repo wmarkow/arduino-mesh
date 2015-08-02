@@ -35,7 +35,6 @@ class IotRadio
 	bool write(GenericPacketData* packet);
 	bool hasAckArrived(GenericPacketData* sentPacket);
 	bool readIncomingPacket(GenericPacketData* incomingPacket);
-	void processIncomingPackets();
 	void debugHexPrintToSerial(void* object, uint8_t length);
 
   public:
@@ -43,6 +42,7 @@ class IotRadio
 	bool begin();
 	void setIpAddress(uint8_t address);
     bool ping(uint8_t dstAddress);
+    void processIncomingPackets();
 };
 
 
