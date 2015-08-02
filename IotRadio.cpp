@@ -7,6 +7,8 @@
 
 #include "IotRadio.h"
 
+byte transmitterAddress[5] = {0xc1, 0xc1, 0xc1, 0xc1, 0xc1};
+
 IotRadio::IotRadio(byte address[IOT_ADDRESS_LENGTH]) : radio(RF24(IOT_HARDWARE_CE_PIN, IOT_HARDWARE_CS_PIN)) {
 	memcpy(myAddress, address, sizeof(byte[IOT_ADDRESS_LENGTH]));
 }
@@ -23,7 +25,7 @@ bool IotRadio::begin()
 
 	radio.setPALevel(RF24_PA_MAX);
 	radio.setAutoAck(true);
-	openDirectChannel(myAddress);
+	openDirectChannel(transmitterAddress);
 	radio.startListening();
 	return true;
 }
