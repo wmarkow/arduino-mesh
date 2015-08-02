@@ -46,7 +46,6 @@ void PacketHeader::setDstAddress(uint8_t address) {
 	header[4] = address;
 }
 
-
 PingPacket::PingPacket()
 {
 	setId(IdSequence);
