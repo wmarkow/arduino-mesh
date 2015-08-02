@@ -18,6 +18,8 @@ PingPacket::PingPacket()
 	dstAddress = 0;
 
 	IdSequence ++;
+
+	memset(payload, 0, 27);
 };
 
 AckPacket::AckPacket(GenericPacketData* packet)

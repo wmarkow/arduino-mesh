@@ -112,6 +112,8 @@ bool IotRadio::write(GenericPacketData* packet)
 
 	bool result = radio.write(packet, PAYLOAD_SIZE);
 
+	debugHexPrintToSerial(packet, PAYLOAD_SIZE);
+
 	radio.startListening();
 
 	return result;
@@ -174,3 +176,11 @@ bool IotRadio::readIncomingPacket(GenericPacketData* incomingPacket)
 	return true;
 }
 
+void IotRadio::debugHexPrintToSerial(void* object, uint8_t length) {
+	uint8_t* wsk = reinterpret_cast<uint8_t*>(object);
+	for(uint8_t q = 0 ;q < PAYLOAD_SIZE ; q ++){
+		Serial.print(*wsk++, HEX);
+		Serial.print(" ");
+	}
+	Serial.println();
+}

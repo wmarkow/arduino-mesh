@@ -9,6 +9,7 @@
 #define IOTPACKET_H_
 
 #include <stdint.h>
+#include <string.h>
 
 enum IotProtocol
 {

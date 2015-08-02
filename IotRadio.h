@@ -36,6 +36,7 @@ class IotRadio
 	bool hasAckArrived(GenericPacketData* sentPacket);
 	bool readIncomingPacket(GenericPacketData* incomingPacket);
 	void processIncomingPackets();
+	void debugHexPrintToSerial(void* object, uint8_t length);
 
   public:
 	IotRadio();
