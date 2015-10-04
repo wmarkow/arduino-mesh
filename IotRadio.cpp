@@ -71,6 +71,11 @@ bool IotRadio::ping(uint8_t dstAddress)
 	return false;
 }
 
+void IotRadio::arduinoLoop()
+{
+	processIncomingPackets();
+}
+
 bool IotRadio::sendPacket(GenericPacketData* packet, uint8_t dstAddress)
 {
 	packet->setSrcAddress(ipAddress);

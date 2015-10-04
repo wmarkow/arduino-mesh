@@ -35,8 +35,9 @@ void loop() {
 		Serial.println("tu jestem");
 	}
 
-	if(role == 0){
-		radio.processIncomingPackets();
+	if(role == 0)
+	{
+		radio.arduinoLoop();
 	}
 
 	/****************** Change Roles via Serial Commands ***************************/

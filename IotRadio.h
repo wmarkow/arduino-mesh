@@ -40,13 +40,14 @@ class IotRadio
 	bool hasAckArrived(GenericPacketData* sentPacket);
 	bool readIncomingPacket(GenericPacketData* incomingPacket);
 	void debugHexPrintToSerial(void* object, uint8_t length);
+	void processIncomingPackets();
 
   public:
 	IotRadio();
 	bool begin();
 	void setIpAddress(uint8_t address);
     bool ping(uint8_t dstAddress);
-    void processIncomingPackets();
+    void arduinoLoop();
 };
 
 
