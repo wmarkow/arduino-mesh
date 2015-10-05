@@ -9,8 +9,6 @@
 
 #define PAYLOAD_SIZE 32
 
-GenericPacketData lastIncomingPacket;
-
 IotRadio::IotRadio() : radio(RF24(IOT_HARDWARE_CE_PIN, IOT_HARDWARE_CS_PIN)) {
 	linkAddress[0] = 0xc1;
 	linkAddress[1] = 0xc1;
@@ -97,6 +95,7 @@ bool IotRadio::sendPacket(GenericPacketData* packet)
 bool IotRadio::sendPacketWaitForAck(GenericPacketData* packet)
 {
 	write(packet);
+	transmitterState = WAITING_FOR_ACK;
 
 	unsigned long startedWaitingAtMicros = micros();               // Set up a timeout period, get the current microseconds
 
@@ -104,10 +103,12 @@ bool IotRadio::sendPacketWaitForAck(GenericPacketData* packet)
 		if (micros() - startedWaitingAtMicros > 200000 ){            // If waited longer than 200ms, indicate timeout and exit while loop
 			Serial.println(F("Failed, response timed out."));
 
+			transmitterState = IDLE;
 			return false;
 		}
 	}
 
+	transmitterState = IDLE;
 	return true;
 }
 
@@ -129,56 +130,109 @@ bool IotRadio::write(GenericPacketData* packet)
 bool IotRadio::hasAckArrived(GenericPacketData* sentPacket)
 {
 	processIncomingPackets();
+	bool result = false;
 
-	if(lastIncomingPacket.getType() != ACK) {
-		return false;
+	for (SimpleList<GenericPacketData>::iterator itr = preProcessedIncomingPackets.begin(); itr != preProcessedIncomingPackets.end();)
+	{
+		if(itr->getType() != ACK) {
+			continue;
+		}
+
+		if(itr->getDstAddress() != sentPacket->getSrcAddress()) {
+			continue;
+		}
+
+		if(itr->getSrcAddress() != sentPacket->getDstAddress()) {
+			continue;
+		}
+
+		if(itr->getId() != sentPacket->getId()) {
+			continue;
+		}
+
+		if(itr->getProtocol() != sentPacket->getProtocol()) {
+			continue;
+		}
+
+		itr = preProcessedIncomingPackets.erase(itr);
+
+		result = true;
 	}
 
-	if(lastIncomingPacket.getDstAddress() != sentPacket->getSrcAddress()) {
-		return false;
-	}
-
-	if(lastIncomingPacket.getSrcAddress() != sentPacket->getDstAddress()) {
-		return false;
-	}
-
-	if(lastIncomingPacket.getId() != sentPacket->getId()) {
-		return false;
-	}
-
-	if(lastIncomingPacket.getProtocol() != sentPacket->getProtocol()) {
-		return false;
-	}
-
-	// clear the incoming ACK packet
-	memset(&lastIncomingPacket, 0, PAYLOAD_SIZE);
-
-	return true;
+	return result;
 }
 
 void IotRadio::processIncomingPackets()
 {
-	if(!readIncomingPacket(&lastIncomingPacket)) {
-		return;
-	}
+	readIncomingPacket();
 
-	if((lastIncomingPacket.getProtocol() == ICMP || lastIncomingPacket.getProtocol() == TCP) && lastIncomingPacket.getType() == REGULAR) {
-		// send ack back
-		AckPacket ackPacket(&lastIncomingPacket);
-
-		if(write(&ackPacket)){
-			// ack sent
+	for (SimpleList<GenericPacketData>::iterator itr = preProcessedIncomingPackets.begin(); itr != preProcessedIncomingPackets.end();)
+	{
+		if(itr->getDstAddress() != ipAddress)
+		{
+			// this packet is not addressed for me; purge that packet
+			// TODO: implement flooding retransmissions here
+			itr = preProcessedIncomingPackets.erase(itr);
+			continue;
 		}
+
+		if(itr->getType() == ACK && transmitterState != WAITING_FOR_ACK)
+		{
+			// the transmitter is not waiting for ACK; purge that ACK
+			itr = preProcessedIncomingPackets.erase(itr);
+			continue;
+		}
+
+		if(itr->getProtocol() == ICMP && itr->getType() == REGULAR)
+		{
+			AckPacket ackPacket(itr);
+			write(&ackPacket);
+
+			// ACK sent. Purge incoming ICMP packet
+			itr = preProcessedIncomingPackets.erase(itr);
+			continue;
+		}
+
+/*
+		if(itr->getProtocol() == TCP && itr->getType() == REGULAR)
+		{
+			// ACK sent; move incoming packet to incoming queue
+			if(incomingPackets.size() >= APPLICATION_LAYER_INCOMING_PACKETS_NUMBER)
+			{
+				//incoming buffer is full; purge that packet
+				itr = preProcessedIncomingPackets.erase(itr);
+				continue;
+			}
+
+			// send ack back
+			AckPacket ackPacket(itr);
+			write(&ackPacket);
+		}
+*/
+	    ++itr;
 	}
 }
 
-bool IotRadio::readIncomingPacket(GenericPacketData* incomingPacket)
+bool IotRadio::readIncomingPacket()
 {
 	if( !radio.available()) {
 		return false;
 	}
 
-	radio.read(incomingPacket, PAYLOAD_SIZE);
+	GenericPacketData incomingPacket;
+	radio.read(&incomingPacket, PAYLOAD_SIZE);
+
+	if(preProcessedIncomingPackets.size() >= NETWORK_LAYER_INCOMING_PACKETS_NUMBER)
+	{
+		// incoming queue is full, discard new packet
+		#if IOT_DEBUG_WRITE_RADIO == ON
+			Serial.println("Discarding packet because incoming buffer is full");
+		#endif
+
+			return false;
+	}
+
+	preProcessedIncomingPackets.push_back(incomingPacket);
 
 	#if IOT_DEBUG_WRITE_RADIO == ON
 		debugHexPrintToSerial(incomingPacket, PAYLOAD_SIZE);
