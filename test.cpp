@@ -15,7 +15,7 @@ uint8_t pingerAddress = 1;
 uint8_t ackAddress = 2;
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial.println(F("RF24/examples/GettingStarted"));
   Serial.println(F("*** PRESS 'T' to begin transmitting to the other node"));
 
@@ -42,18 +42,22 @@ void loop() {
 
 	/****************** Change Roles via Serial Commands ***************************/
 
-  if ( Serial.available() )
-  {
-    char c = toupper(Serial.read());
-    if ( c == 'T' && role == 0 ){
-      Serial.println(F("*** CHANGING TO TRANSMIT ROLE -- PRESS 'R' TO SWITCH BACK"));
-      role = 1;                  // Become the primary transmitter (ping out)
-      radio.setIpAddress(pingerAddress);
-   }else
-    if ( c == 'R' && role == 1 ){
-      Serial.println(F("*** CHANGING TO RECEIVE ROLE -- PRESS 'T' TO SWITCH BACK"));
-       role = 0;                // Become the primary receiver (pong back)
-       radio.setIpAddress(ackAddress);
-    }
+	if ( Serial.available() )
+	{
+		char c = toupper(Serial.read());
+		if ( c == 'T' && role == 0 )
+		{
+			Serial.println(F("*** CHANGING TO TRANSMIT ROLE -- PRESS 'R' TO SWITCH BACK"));
+			role = 1;                  // Become the primary transmitter (ping out)
+			radio.setIpAddress(pingerAddress);
+		} else if ( c == 'R' && role == 1 )
+		{
+			Serial.println(F("*** CHANGING TO RECEIVE ROLE -- PRESS 'T' TO SWITCH BACK"));
+			role = 0;                // Become the primary receiver (pong back)
+			radio.setIpAddress(ackAddress);
+		} else if (c == 'C')
+		{
+			radio.getCounters()->printCounters();
+		}
   }
 } // Loop

@@ -69,6 +69,11 @@ bool IotRadio::ping(uint8_t dstAddress)
 	return false;
 }
 
+Counters* IotRadio::getCounters()
+{
+	return &counters;
+}
+
 void IotRadio::arduinoLoop()
 {
 	processIncomingPackets();
@@ -119,6 +124,8 @@ bool IotRadio::write(GenericPacketData* packet)
 	bool result = radio.write(packet, PAYLOAD_SIZE);
 
 	radio.startListening();
+
+	updateSentCounters(packet);
 
 	#if (IOT_DEBUG_WRITE_RADIO == ON)
 		debugHexPrintToSerial(packet, PAYLOAD_SIZE);
@@ -224,6 +231,7 @@ bool IotRadio::readIncomingPacket()
 
 	if(preProcessedIncomingPackets.size() >= NETWORK_LAYER_INCOMING_PACKETS_NUMBER)
 	{
+		counters.totalPacketIncomingDiscarded ++;
 		// incoming queue is full, discard new packet
 		#if IOT_DEBUG_WRITE_RADIO == ON
 			Serial.println("Discarding packet because incoming buffer is full");
@@ -238,6 +246,8 @@ bool IotRadio::readIncomingPacket()
 		debugHexPrintToSerial(incomingPacket, PAYLOAD_SIZE);
 	#endif
 
+	updateReceivedCounters(&incomingPacket);
+
 	return true;
 }
 
@@ -248,4 +258,54 @@ void IotRadio::debugHexPrintToSerial(void* object, uint8_t length) {
 		Serial.print(" ");
 	}
 	Serial.println();
+}
+
+void IotRadio::updateSentCounters(GenericPacketData* packet)
+{
+	counters.totalPacketsSent ++;
+
+
+	if(packet->getSrcAddress() == this->ipAddress )
+	{
+		counters.totalPacketsLocalSent ++;
+
+		if(packet->getProtocol() != UDP )
+		{
+			counters.totalPacketsLocalTcpSent ++;
+			if(packet->getType() == REGULAR)
+			{
+				counters.totalPacketsLocalTcpRegularSent ++;
+			}
+
+			if(packet->getType() == ACK)
+			{
+				counters.totalPacketsLocalTcpAckSent ++;
+			}
+		}
+	}
+}
+
+void IotRadio::updateReceivedCounters(GenericPacketData* packet)
+{
+	counters.totalPacketsReceived ++;
+
+
+	if(packet->getDstAddress() == this->ipAddress )
+	{
+		counters.totalPacketsLocalReceived ++;
+
+		if(packet->getProtocol() == TCP)
+		{
+			counters.totalPacketsLocalTcpReceived ++;
+			if(packet->getType() == REGULAR)
+			{
+				counters.totalPacketsLocalTcpRegularReceived ++;
+			}
+
+			if(packet->getType() == ACK)
+			{
+				counters.totalPacketsLocalTcpAckReceived ++;
+			}
+		}
+	}
 }
