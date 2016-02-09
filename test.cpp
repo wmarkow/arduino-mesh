@@ -6,8 +6,10 @@
 * Updated: Dec 2014 by TMRh20
 */
 #include "IotRadio.h"
+#include "Terminal.h"
 
 IotRadio radio;
+Terminal terminal;
 
 // Used to control whether this node is sending or receiving
 bool role = 0;
@@ -19,14 +21,17 @@ void setup() {
   Serial.println(F("RF24/examples/GettingStarted"));
   Serial.println(F("*** PRESS 'T' to begin transmitting to the other node"));
 
-  radio.begin();
-  radio.setIpAddress(ackAddress);
+  //radio.begin();
+  //radio.setIpAddress(ackAddress);
 }
 
 void loop() {
+	//delay(1000);
+	//Serial.println("test");
+	terminal.loop();
 
 	/****************** Ping Out Role ***************************/
-	if (role == 1)
+/*	if (role == 1)
 	{
 		radio.ping(ackAddress);
 
@@ -39,9 +44,9 @@ void loop() {
 	{
 		radio.arduinoLoop();
 	}
-
+*/
 	/****************** Change Roles via Serial Commands ***************************/
-
+/*
 	if ( Serial.available() )
 	{
 		char c = toupper(Serial.read());
@@ -60,4 +65,5 @@ void loop() {
 			radio.getCounters()->printCounters();
 		}
   }
+  */
 } // Loop

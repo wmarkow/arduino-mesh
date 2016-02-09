@@ -309,3 +309,45 @@ void IotRadio::updateReceivedCounters(GenericPacketData* packet)
 		}
 	}
 }
+
+uint8_t IotRadio::getIpAddress()
+{
+	return ipAddress;
+}
+
+String IotRadio::getLinkAddress()
+{
+	String result;
+
+	result.concat(linkAddress[0]);
+	result.concat(':');
+	result.concat(linkAddress[1]);
+	result.concat(':');
+	result.concat(linkAddress[2]);
+	result.concat(':');
+	result.concat(linkAddress[3]);
+	result.concat(':');
+	result.concat(linkAddress[4]);
+
+	return result;
+}
+
+uint8_t IotRadio::getPALevel()
+{
+	return radio.getPALevel();
+}
+
+uint8_t IotRadio::getDataRate()
+{
+	return radio.getDataRate();
+}
+
+uint8_t IotRadio::getPayloadSize()
+{
+	return radio.getPayloadSize();
+}
+
+uint8_t IotRadio::getRFChannel()
+{
+	return radio.getChannel();
+}

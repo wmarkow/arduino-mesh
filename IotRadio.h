@@ -122,6 +122,12 @@ class IotRadio
 	void setIpAddress(uint8_t address);
     bool ping(uint8_t dstAddress);
     Counters* getCounters();
+    uint8_t getIpAddress();
+    String getLinkAddress();
+    uint8_t getPALevel();
+    uint8_t getDataRate();
+    uint8_t getPayloadSize();
+    uint8_t getRFChannel();
     void arduinoLoop();
 };
 
