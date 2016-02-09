@@ -17,14 +17,18 @@ IotRadio::IotRadio() : radio(RF24(IOT_HARDWARE_CE_PIN, IOT_HARDWARE_CS_PIN)) {
 	linkAddress[4] = 0xc1;
 
 	ipAddress = 0;
+	beginResult = false;
 }
 
-bool IotRadio::begin()
+bool IotRadio::beginLowLevel()
 {
-	if(radio.begin()){
+	radio.failureDetected = false;
+
+	if(radio.begin()) {
 		Serial.println(F("Chip connected"));
-	}else{
+	} else {
 		Serial.println("Chip looks disconnected");
+		return false;
 	}
 
 	radio.openWritingPipe(linkAddress);
@@ -36,7 +40,17 @@ bool IotRadio::begin()
 	radio.openReadingPipe(1, linkAddress);
 	radio.startListening();
 
+	if(radio.failureDetected) {
+		return false;
+	}
+
 	return true;
+}
+
+bool IotRadio::begin()
+{
+	beginResult = beginLowLevel();
+	return beginResult;
 }
 
 void IotRadio::setIpAddress(uint8_t address)
@@ -350,4 +364,15 @@ uint8_t IotRadio::getPayloadSize()
 uint8_t IotRadio::getRFChannel()
 {
 	return radio.getChannel();
+}
+
+bool IotRadio::isChipConnected()
+{
+	if(this->beginResult == false)
+	{
+		return false;
+	}
+
+	// TODO: read some register from the chip to check again
+	return true;
 }

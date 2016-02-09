@@ -17,8 +17,13 @@
 #define ON 1
 #define IOT_DEBUG_WRITE_RADIO OFF
 
-#define IOT_HARDWARE_CE_PIN 7
-#define IOT_HARDWARE_CS_PIN 8
+#if defined(ESP8266)
+	#define IOT_HARDWARE_CE_PIN D1
+	#define IOT_HARDWARE_CS_PIN D8
+#else
+	#define IOT_HARDWARE_CE_PIN 7
+	#define IOT_HARDWARE_CS_PIN 8
+#endif
 #define IOT_ADDRESS_LENGTH 5
 
 #define NETWORK_LAYER_INCOMING_PACKETS_NUMBER 5
@@ -99,6 +104,7 @@ class IotRadio
 	byte linkAddress[IOT_ADDRESS_LENGTH];
 	byte ipAddress;
 	RF24 radio;
+	bool beginResult;
 	Counters counters;
 	TransmitterState transmitterState = IDLE;
 
@@ -115,10 +121,11 @@ class IotRadio
 	void processIncomingPackets();
 	void updateSentCounters(GenericPacketData* packet);
 	void updateReceivedCounters(GenericPacketData* packet);
-
+	bool beginLowLevel();
   public:
 	IotRadio();
 	bool begin();
+	bool isChipConnected();
 	void setIpAddress(uint8_t address);
     bool ping(uint8_t dstAddress);
     Counters* getCounters();

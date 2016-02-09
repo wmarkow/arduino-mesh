@@ -139,6 +139,14 @@ void Terminal::printTerminalReady()
 void Terminal::processIfconfig()
 {
 	Serial.println("rf24l01");
+
+	if(!radio.isChipConnected())
+	{
+		Serial.println("    down, chip not connected ");
+
+		return;
+	}
+
 	Serial.print("    inet addr ");
 	Serial.println((int)radio.getIpAddress(), DEC);
 	Serial.print("    HWaddr    ");

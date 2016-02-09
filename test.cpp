@@ -21,13 +21,11 @@ void setup() {
   Serial.println(F("RF24/examples/GettingStarted"));
   Serial.println(F("*** PRESS 'T' to begin transmitting to the other node"));
 
-  //radio.begin();
+  radio.begin();
   //radio.setIpAddress(ackAddress);
 }
 
 void loop() {
-	//delay(1000);
-	//Serial.println("test");
 	terminal.loop();
 
 	/****************** Ping Out Role ***************************/
