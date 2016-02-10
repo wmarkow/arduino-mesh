@@ -40,7 +40,7 @@ void Terminal::loop() {
 
 	if(command.equals("ifconfig"))
 	{
-		processIfconfig();
+		processIfconfigCommand();
 
 		cleanReadBuffer();
 		printTerminalReady();
@@ -70,17 +70,26 @@ bool Terminal::readString()
 		{
 			// end of line
 			readBuffer[readRowIndex][readColumnIndex] = 0;
-
 			return true;
 		}
 
 		if(byte == ' ' && readColumnIndex > 0)
 		{
 			// end of word in line
+			endOfWordDetected = true;
+			readBuffer[readRowIndex][readColumnIndex] = 0;
+			continue;
+		}
+
+		if(byte != ' ' && endOfWordDetected)
+		{
+			// new word detected
+			endOfWordDetected = false;
+
 			readRowIndex++;
 			readColumnIndex = 0;
 
-			if(readRowIndex > INCOMING_BUFFER_MAX_WORDS_IN_LINE - 1)
+			if(readRowIndex >= INCOMING_BUFFER_MAX_WORDS_IN_LINE)
 			{
 				// incoming buffer overflow
 				Serial.flush();
@@ -91,8 +100,6 @@ bool Terminal::readString()
 
 				return false;
 			}
-
-			continue;
 		}
 
 		// a regular character of the word
@@ -134,6 +141,41 @@ String Terminal::getParameter(uint8_t index)
 void Terminal::printTerminalReady()
 {
 	Serial.print("arduino$");
+}
+
+void Terminal::processIfconfigCommand()
+{
+	if(this->getNumberOfParameters() == 1)
+	{
+		processIfconfig();
+
+		return;
+	}
+
+	if(this->getNumberOfParameters() == 3)
+	{
+		String interface = String(readBuffer[1]);
+		if(!interface.equals("rf24"))
+		{
+			Serial.print("Unknown interface ");
+			Serial.println(interface);
+			return;
+		}
+
+		String subcommand = String(readBuffer[2]);
+		if(!subcommand.equals("up"))
+		{
+			Serial.print("Unknown subcommand ");
+			Serial.println(subcommand);
+			return;
+		}
+
+		processIfconfigUp();
+
+		return;
+	}
+
+	Serial.println("Unknown parameters");
 }
 
 void Terminal::processIfconfig()
@@ -197,4 +239,9 @@ void Terminal::processIfconfig()
 	Serial.println(radio.getPayloadSize());
 }
 
+void Terminal::processIfconfigUp()
+{
+	radio.begin();
+	processIfconfig();
+}
 
