@@ -6,7 +6,7 @@
 * Updated: Dec 2014 by TMRh20
 */
 #include "IotRadio.h"
-#include "Terminal.h"
+#include "src/terminal/Terminal.h"
 
 IotRadio radio;
 Terminal terminal;

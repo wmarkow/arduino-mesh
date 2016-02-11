@@ -5,7 +5,7 @@
  *      Author: witek
  */
 #include "Terminal.h"
-#include "IotRadio.h"
+#include "../../IotRadio.h"
 
 extern IotRadio radio;
 
