@@ -24,10 +24,7 @@ bool IotRadio::beginLowLevel()
 {
 	radio.failureDetected = false;
 
-	if(radio.begin()) {
-		Serial.println(F("Chip connected"));
-	} else {
-		Serial.println("Chip looks disconnected");
+	if(!radio.begin()) {
 		return false;
 	}
 
@@ -364,6 +361,16 @@ uint8_t IotRadio::getPayloadSize()
 uint8_t IotRadio::getRFChannel()
 {
 	return radio.getChannel();
+}
+
+String IotRadio::getModel()
+{
+	if(radio.isPVariant())
+	{
+		return "nRF24L01+";
+	}
+
+	return "nRF24L01";
 }
 
 bool IotRadio::isChipConnected()

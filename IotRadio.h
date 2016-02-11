@@ -135,6 +135,7 @@ class IotRadio
     uint8_t getDataRate();
     uint8_t getPayloadSize();
     uint8_t getRFChannel();
+    String getModel();
     void arduinoLoop();
 };
 

@@ -180,7 +180,7 @@ void Terminal::processIfconfigCommand()
 
 void Terminal::processIfconfig()
 {
-	Serial.println("rf24l01");
+	Serial.println("rf24");
 
 	if(!radio.isChipConnected())
 	{
@@ -189,10 +189,13 @@ void Terminal::processIfconfig()
 		return;
 	}
 
+	Serial.print("    Model ");
+	Serial.println(radio.getModel());
 	Serial.print("    inet addr ");
 	Serial.println((int)radio.getIpAddress(), DEC);
 	Serial.print("    HWaddr    ");
 	Serial.println(radio.getLinkAddress());
+
 	Serial.print("    PA level  ");
 	switch(radio.getPALevel())
 	{
