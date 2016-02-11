@@ -33,6 +33,7 @@ private:
 	void processIfconfigCommand();
 	void processIfconfig();
 	void processIfconfigUp();
+	void processIfconfigSetIp(uint8_t address);
 	void cleanReadBuffer();
 public:
 	void println(String &message);

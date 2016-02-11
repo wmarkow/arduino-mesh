@@ -163,14 +163,14 @@ void Terminal::processIfconfigCommand()
 		}
 
 		String subcommand = String(readBuffer[2]);
-		if(!subcommand.equals("up"))
+		if(subcommand.equals("up"))
 		{
-			Serial.print("Unknown subcommand ");
-			Serial.println(subcommand);
+			processIfconfigUp();
 			return;
 		}
 
-		processIfconfigUp();
+		uint8_t address = atoi(readBuffer[2]);
+		processIfconfigSetIp(address);
 
 		return;
 	}
@@ -245,6 +245,12 @@ void Terminal::processIfconfig()
 void Terminal::processIfconfigUp()
 {
 	radio.begin();
+	processIfconfig();
+}
+
+void Terminal::processIfconfigSetIp(uint8_t address)
+{
+	radio.setIpAddress(address);
 	processIfconfig();
 }
 
