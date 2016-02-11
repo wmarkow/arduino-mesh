@@ -189,14 +189,14 @@ void Terminal::processIfconfig()
 		return;
 	}
 
-	Serial.print("    Model ");
+	Serial.print("  Model         ");
 	Serial.println(radio.getModel());
-	Serial.print("    inet addr ");
+	Serial.print("  inet addr     ");
 	Serial.println((int)radio.getIpAddress(), DEC);
-	Serial.print("    HWaddr    ");
+	Serial.print("  HWaddr        ");
 	Serial.println(radio.getLinkAddress());
 
-	Serial.print("    PA level  ");
+	Serial.print("  PA level      ");
 	switch(radio.getPALevel())
 	{
 		case RF24_PA_MIN:
@@ -218,7 +218,7 @@ void Terminal::processIfconfig()
 			Serial.println("unknown");
 	}
 
-	Serial.print("    Data rate  ");
+	Serial.print("  Data rate     ");
 	switch(radio.getDataRate())
 	{
 		case RF24_1MBPS:
@@ -235,10 +235,10 @@ void Terminal::processIfconfig()
 			break;
 	}
 
-	Serial.print("    RF channel  ");
+	Serial.print("  RF channel    ");
 	Serial.println(radio.getRFChannel());
 
-	Serial.print("    Payload size  ");
+	Serial.print("  Payload size  ");
 	Serial.println(radio.getPayloadSize());
 }
 
