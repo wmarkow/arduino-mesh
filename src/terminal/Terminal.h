@@ -30,11 +30,10 @@ private:
 	void printTerminalReady();
 	uint8_t getNumberOfParameters();
 	String getParameter(uint8_t index);
-	void processIfconfigCommand();
-	void processIfconfig();
-	void processIfconfigUp();
-	void processIfconfigSetIp(uint8_t address);
 	void cleanReadBuffer();
+
+	/* commands */
+	void processIfconfigCommand();
 public:
 	void println(String &message);
 	void loop();
