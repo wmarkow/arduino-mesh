@@ -43,6 +43,14 @@ void Terminal::loop() {
 		printTerminalReady();
 		return;
 	}
+	if(command.equals("ping"))
+	{
+		processPingCommand();
+
+		cleanReadBuffer();
+		printTerminalReady();
+		return;
+	}
 
 	Serial.print(command);
 	Serial.println(": unknown command");

@@ -34,6 +34,7 @@ private:
 
 	/* commands */
 	void processIfconfigCommand();
+	void processPingCommand();
 public:
 	void println(String &message);
 	void loop();
