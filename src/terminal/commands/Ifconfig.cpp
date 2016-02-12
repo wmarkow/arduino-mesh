@@ -25,7 +25,7 @@ void Terminal::processIfconfigCommand()
 
 	if(this->getNumberOfParameters() == 3)
 	{
-		String interface = String(readBuffer[1]);
+		String interface = String(this->getParameter(1));
 		if(!interface.equals("rf24"))
 		{
 			Serial.print("Unknown interface ");
@@ -33,14 +33,14 @@ void Terminal::processIfconfigCommand()
 			return;
 		}
 
-		String subcommand = String(readBuffer[2]);
+		String subcommand = String(this->getParameter(2));
 		if(subcommand.equals("up"))
 		{
 			processIfconfigUp();
 			return;
 		}
 
-		uint8_t address = atoi(readBuffer[2]);
+		uint8_t address = subcommand.toInt();
 		processIfconfigSetIp(address);
 
 		return;
