@@ -18,7 +18,7 @@
 #define IOT_DEBUG_WRITE_RADIO OFF
 
 #if defined(ESP8266)
-	#define IOT_HARDWARE_CE_PIN D1
+	#define IOT_HARDWARE_CE_PIN D4
 	#define IOT_HARDWARE_CS_PIN D8
 #else
 	#define IOT_HARDWARE_CE_PIN 7
