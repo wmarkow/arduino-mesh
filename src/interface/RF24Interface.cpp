@@ -53,29 +53,23 @@ void RF24Interface::setIpAddress(uint8_t address)
 	ipAddress = address;
 }
 
-bool RF24Interface::ping(uint8_t dstAddress)
+PingResult RF24Interface::ping(uint8_t dstAddress)
 {
+	PingResult pingResult;
+	pingResult.packetSize = PAYLOAD_SIZE;
+	pingResult.success = false;
+	pingResult.timeInUs = 0;
+
 	PingPacket pingPacket;
 
 	unsigned long sentTime = micros();
 	if (sendPacket(&pingPacket, dstAddress)) {
 		unsigned long gotTime = micros();
-
-		Serial.print(PAYLOAD_SIZE);
-		Serial.print(F(" bytes from '"));
-		Serial.print(dstAddress);
-		Serial.print(F("': time= "));
-		Serial.print(gotTime - sentTime);
-		Serial.println(F(" us"));
-
-		return true;
+		pingResult.timeInUs = gotTime - sentTime;
+		pingResult.success = true;
 	}
 
-	Serial.print(F("Destination host '"));
-	Serial.print(dstAddress);
-	Serial.println(F("' is unreachable."));
-
-	return false;
+	return pingResult;
 }
 
 void RF24Interface::loop()
@@ -271,14 +265,24 @@ void RF24Interface::processIncomingPackets()
 	}
 }
 
+bool RF24Interface::available()
+{
+	return rf24.available() && isChipConnected();
+}
+
 bool RF24Interface::readIncomingPacket()
 {
-	if( !rf24.available()) {
+	if( !available()) {
 		return false;
 	}
 
 	GenericPacketData incomingPacket;
 	rf24.read(&incomingPacket, PAYLOAD_SIZE);
+
+	if(!isChipConnected())
+	{
+		return false;
+	}
 
 	if(preProcessedIncomingPackets.size() >= NETWORK_LAYER_INCOMING_PACKETS_NUMBER)
 	{

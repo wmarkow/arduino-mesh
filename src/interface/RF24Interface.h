@@ -30,6 +30,13 @@ enum TransmitterState
 	WAITING_FOR_ACK = 1
 };
 
+struct PingResult
+{
+	bool success;
+	uint8_t packetSize;
+	unsigned long timeInUs;
+};
+
 class RF24Interface
 {
 private:
@@ -39,6 +46,7 @@ private:
 	TransmitterState transmitterState = IDLE;
 	SimpleList<GenericPacketData> preProcessedIncomingPackets;
 
+	bool available();
 	bool sendPacket(GenericPacketData* packet, uint8_t dstAddress);
 	bool sendPacket(GenericPacketData* packet);
 	bool sendPacketWaitForAck(GenericPacketData* packet);
@@ -54,7 +62,7 @@ public:
 	bool isUp();
 	bool isChipConnected();
 	void setIpAddress(uint8_t address);uint8_t getIpAddress();
-	bool ping(uint8_t dstAddress);
+	PingResult ping(uint8_t dstAddress);
 
     String getLinkAddress();
     uint8_t getPALevel();

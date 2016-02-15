@@ -17,7 +17,7 @@ void Terminal::processPingCommand()
 {
 	if(this->getNumberOfParameters() != 2)
 	{
-		Serial.print("error: Usage is ping <address> ");
+		Serial.println("error: Usage is ping <address> ");
 
 		return;
 	}
@@ -29,11 +29,19 @@ void Terminal::processPingCommand()
 
 void processPing(uint8_t address)
 {
-	if(radio.ping(address))
+	PingResult pingResult = radio.ping(address);
+	if(pingResult.success)
 	{
 		Serial.print("Host ");
 		Serial.print(address);
 		Serial.println(" is alive");
+
+		Serial.print(pingResult.packetSize);
+		Serial.print(F(" bytes from '"));
+		Serial.print(address);
+		Serial.print(F("': time= "));
+		Serial.print(pingResult.timeInUs);
+		Serial.println(F(" us"));
 
 		return;
 	}
