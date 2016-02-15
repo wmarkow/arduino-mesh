@@ -1,15 +1,15 @@
 /*
- * IotRadio.cpp
+ * RF24Interface.cpp
  *
- *  Created on: 25 lip 2015
+ *  Created on: 13 lut 2016
  *      Author: witek
  */
 
-#include "IotRadio.h"
+#include "RF24Interface.h"
 
-#define PAYLOAD_SIZE 32
 
-IotRadio::IotRadio() : radio(RF24(IOT_HARDWARE_CE_PIN, IOT_HARDWARE_CS_PIN)) {
+RF24Interface::RF24Interface() : rf24(RF24(IOT_HARDWARE_CE_PIN, IOT_HARDWARE_CS_PIN))
+{
 	linkAddress[0] = 0xc1;
 	linkAddress[1] = 0xc1;
 	linkAddress[2] = 0xc1;
@@ -17,45 +17,43 @@ IotRadio::IotRadio() : radio(RF24(IOT_HARDWARE_CE_PIN, IOT_HARDWARE_CS_PIN)) {
 	linkAddress[4] = 0xc1;
 
 	ipAddress = 0;
-	beginResult = false;
 }
 
-bool IotRadio::beginLowLevel()
+bool RF24Interface::up()
 {
-	radio.failureDetected = false;
-
-	if(!radio.begin()) {
+	if(!rf24.begin())
+	{
 		return false;
 	}
 
-	radio.openWritingPipe(linkAddress);
-	radio.openReadingPipe(1, linkAddress);
-	radio.setPALevel(RF24_PA_MAX);
-	radio.setAutoAck(false);
-	radio.setPayloadSize(PAYLOAD_SIZE);
-	radio.openWritingPipe(linkAddress);
-	radio.openReadingPipe(1, linkAddress);
-	radio.startListening();
+	rf24.openWritingPipe(linkAddress);
+	rf24.openReadingPipe(1, linkAddress);
+	rf24.setPALevel(RF24_PA_MAX);
+	rf24.setAutoAck(false);
+	rf24.setPayloadSize(PAYLOAD_SIZE);
+	rf24.openWritingPipe(linkAddress);
+	rf24.openReadingPipe(1, linkAddress);
+	rf24.startListening();
 
-	if(radio.failureDetected) {
-		return false;
-	}
-
-	return true;
+	return isChipConnected();
 }
 
-bool IotRadio::begin()
+bool RF24Interface::isUp()
 {
-	beginResult = beginLowLevel();
-	return beginResult;
+	return isChipConnected();
 }
 
-void IotRadio::setIpAddress(uint8_t address)
+bool RF24Interface::isChipConnected()
+{
+	return rf24.isChipConnected();
+}
+
+void RF24Interface::setIpAddress(uint8_t address)
 {
 	ipAddress = address;
 }
 
-bool IotRadio::ping(uint8_t dstAddress)
+bool RF24Interface::ping(uint8_t dstAddress)
 {
 	PingPacket pingPacket;
 
@@ -80,17 +78,64 @@ bool IotRadio::ping(uint8_t dstAddress)
 	return false;
 }
 
-Counters* IotRadio::getCounters()
-{
-	return &counters;
-}
-
-void IotRadio::arduinoLoop()
+void RF24Interface::loop()
 {
 	processIncomingPackets();
 }
 
-bool IotRadio::sendPacket(GenericPacketData* packet, uint8_t dstAddress)
+uint8_t RF24Interface::getIpAddress()
+{
+	return ipAddress;
+}
+
+String RF24Interface::getLinkAddress()
+{
+	String result;
+
+	result.concat(linkAddress[0]);
+	result.concat(':');
+	result.concat(linkAddress[1]);
+	result.concat(':');
+	result.concat(linkAddress[2]);
+	result.concat(':');
+	result.concat(linkAddress[3]);
+	result.concat(':');
+	result.concat(linkAddress[4]);
+
+	return result;
+}
+
+uint8_t RF24Interface::getPALevel()
+{
+	return rf24.getPALevel();
+}
+
+uint8_t RF24Interface::getDataRate()
+{
+	return rf24.getDataRate();
+}
+
+uint8_t RF24Interface::getPayloadSize()
+{
+	return rf24.getPayloadSize();
+}
+
+uint8_t RF24Interface::getRFChannel()
+{
+	return rf24.getChannel();
+}
+
+String RF24Interface::getModel()
+{
+	if(rf24.isPVariant())
+	{
+		return "nRF24L01+";
+	}
+
+	return "nRF24L01";
+}
+
+bool RF24Interface::sendPacket(GenericPacketData* packet, uint8_t dstAddress)
 {
 	packet->setSrcAddress(ipAddress);
 	packet->setDstAddress(dstAddress);
@@ -98,7 +143,7 @@ bool IotRadio::sendPacket(GenericPacketData* packet, uint8_t dstAddress)
 	return sendPacket(packet);
 }
 
-bool IotRadio::sendPacket(GenericPacketData* packet)
+bool RF24Interface::sendPacket(GenericPacketData* packet)
 {
 	if(packet->getProtocol() == ICMP || packet->getProtocol() == TCP)
 	{
@@ -108,7 +153,8 @@ bool IotRadio::sendPacket(GenericPacketData* packet)
 	return write(packet);
 }
 
-bool IotRadio::sendPacketWaitForAck(GenericPacketData* packet)
+
+bool RF24Interface::sendPacketWaitForAck(GenericPacketData* packet)
 {
 	write(packet);
 	transmitterState = WAITING_FOR_ACK;
@@ -128,24 +174,18 @@ bool IotRadio::sendPacketWaitForAck(GenericPacketData* packet)
 	return true;
 }
 
-bool IotRadio::write(GenericPacketData* packet)
+bool RF24Interface::write(GenericPacketData* packet)
 {
-	radio.stopListening();
+	rf24.stopListening();
 
-	bool result = radio.write(packet, PAYLOAD_SIZE);
+	bool result = rf24.write(packet, PAYLOAD_SIZE);
 
-	radio.startListening();
-
-	updateSentCounters(packet);
-
-	#if (IOT_DEBUG_WRITE_RADIO == ON)
-		debugHexPrintToSerial(packet, PAYLOAD_SIZE);
-	#endif
+	rf24.startListening();
 
 	return result;
 }
 
-bool IotRadio::hasAckArrived(GenericPacketData* sentPacket)
+bool RF24Interface::hasAckArrived(GenericPacketData* sentPacket)
 {
 	processIncomingPackets();
 	bool result = false;
@@ -180,7 +220,7 @@ bool IotRadio::hasAckArrived(GenericPacketData* sentPacket)
 	return result;
 }
 
-void IotRadio::processIncomingPackets()
+void RF24Interface::processIncomingPackets()
 {
 	readIncomingPacket();
 
@@ -231,18 +271,17 @@ void IotRadio::processIncomingPackets()
 	}
 }
 
-bool IotRadio::readIncomingPacket()
+bool RF24Interface::readIncomingPacket()
 {
-	if( !radio.available()) {
+	if( !rf24.available()) {
 		return false;
 	}
 
 	GenericPacketData incomingPacket;
-	radio.read(&incomingPacket, PAYLOAD_SIZE);
+	rf24.read(&incomingPacket, PAYLOAD_SIZE);
 
 	if(preProcessedIncomingPackets.size() >= NETWORK_LAYER_INCOMING_PACKETS_NUMBER)
 	{
-		counters.totalPacketIncomingDiscarded ++;
 		// incoming queue is full, discard new packet
 		#if IOT_DEBUG_WRITE_RADIO == ON
 			Serial.println("Discarding packet because incoming buffer is full");
@@ -253,133 +292,13 @@ bool IotRadio::readIncomingPacket()
 
 	preProcessedIncomingPackets.push_back(incomingPacket);
 
-	#if IOT_DEBUG_WRITE_RADIO == ON
-		debugHexPrintToSerial(incomingPacket, PAYLOAD_SIZE);
-	#endif
-
-	updateReceivedCounters(&incomingPacket);
-
 	return true;
 }
-
-void IotRadio::debugHexPrintToSerial(void* object, uint8_t length) {
+void RF24Interface::debugHexPrintToSerial(void* object, uint8_t length) {
 	uint8_t* wsk = reinterpret_cast<uint8_t*>(object);
 	for(uint8_t q = 0 ;q < PAYLOAD_SIZE ; q ++){
 		Serial.print(*wsk++, HEX);
 		Serial.print(" ");
 	}
 	Serial.println();
-}
-
-void IotRadio::updateSentCounters(GenericPacketData* packet)
-{
-	counters.totalPacketsSent ++;
-
-
-	if(packet->getSrcAddress() == this->ipAddress )
-	{
-		counters.totalPacketsLocalSent ++;
-
-		if(packet->getProtocol() != UDP )
-		{
-			counters.totalPacketsLocalTcpSent ++;
-			if(packet->getType() == REGULAR)
-			{
-				counters.totalPacketsLocalTcpRegularSent ++;
-			}
-
-			if(packet->getType() == ACK)
-			{
-				counters.totalPacketsLocalTcpAckSent ++;
-			}
-		}
-	}
-}
-
-void IotRadio::updateReceivedCounters(GenericPacketData* packet)
-{
-	counters.totalPacketsReceived ++;
-
-
-	if(packet->getDstAddress() == this->ipAddress )
-	{
-		counters.totalPacketsLocalReceived ++;
-
-		if(packet->getProtocol() == TCP)
-		{
-			counters.totalPacketsLocalTcpReceived ++;
-			if(packet->getType() == REGULAR)
-			{
-				counters.totalPacketsLocalTcpRegularReceived ++;
-			}
-
-			if(packet->getType() == ACK)
-			{
-				counters.totalPacketsLocalTcpAckReceived ++;
-			}
-		}
-	}
-}
-
-uint8_t IotRadio::getIpAddress()
-{
-	return ipAddress;
-}
-
-String IotRadio::getLinkAddress()
-{
-	String result;
-
-	result.concat(linkAddress[0]);
-	result.concat(':');
-	result.concat(linkAddress[1]);
-	result.concat(':');
-	result.concat(linkAddress[2]);
-	result.concat(':');
-	result.concat(linkAddress[3]);
-	result.concat(':');
-	result.concat(linkAddress[4]);
-
-	return result;
-}
-
-uint8_t IotRadio::getPALevel()
-{
-	return radio.getPALevel();
-}
-
-uint8_t IotRadio::getDataRate()
-{
-	return radio.getDataRate();
-}
-
-uint8_t IotRadio::getPayloadSize()
-{
-	return radio.getPayloadSize();
-}
-
-uint8_t IotRadio::getRFChannel()
-{
-	return radio.getChannel();
-}
-
-String IotRadio::getModel()
-{
-	if(radio.isPVariant())
-	{
-		return "nRF24L01+";
-	}
-
-	return "nRF24L01";
-}
-
-bool IotRadio::isChipConnected()
-{
-	if(this->beginResult == false)
-	{
-		return false;
-	}
-
-	// TODO: read some register from the chip to check again
-	return true;
 }

@@ -6,9 +6,9 @@
  */
 
 #include "../Terminal.h"
-#include "../../../IotRadio.h"
+#include "../../interface/RF24Interface.h"
 
-extern IotRadio radio;
+extern RF24Interface radio;
 
 void processPing(uint8_t address);
 
