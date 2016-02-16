@@ -5,27 +5,23 @@
  *      Author: witek
  */
 
-#include "../Terminal.h"
+#include "Ifconfig.h"
 #include "../../interface/RF24Interface.h"
 
 extern RF24Interface radio;
 
-void processIfconfig();
-void processIfconfigUp();
-void processIfconfigSetIp(uint8_t address);
-
-void Terminal::processIfconfigCommand()
+void Ifconfig::process(CommandParams *params)
 {
-	if(this->getNumberOfParameters() == 1)
+	if(params->getNumberOfParameters() == 1)
 	{
 		processIfconfig();
 
 		return;
 	}
 
-	if(this->getNumberOfParameters() == 3)
+	if(params->getNumberOfParameters() == 3)
 	{
-		String interface = String(this->getParameter(1));
+		String interface = params->getParam(1);
 		if(!interface.equals("rf24"))
 		{
 			Serial.print("Unknown interface ");
@@ -33,7 +29,7 @@ void Terminal::processIfconfigCommand()
 			return;
 		}
 
-		String subcommand = String(this->getParameter(2));
+		String subcommand = params->getParam(2);
 		if(subcommand.equals("up"))
 		{
 			processIfconfigUp();
@@ -49,7 +45,7 @@ void Terminal::processIfconfigCommand()
 	Serial.println("Unknown parameters");
 }
 
-void processIfconfig()
+void Ifconfig::processIfconfig()
 {
 	Serial.println("rf24");
 
@@ -113,13 +109,13 @@ void processIfconfig()
 	Serial.println(radio.getPayloadSize());
 }
 
-void processIfconfigUp()
+void Ifconfig::processIfconfigUp()
 {
 	radio.up();
 	processIfconfig();
 }
 
-void processIfconfigSetIp(uint8_t address)
+void Ifconfig::processIfconfigSetIp(uint8_t address)
 {
 	radio.setIpAddress(address);
 	processIfconfig();

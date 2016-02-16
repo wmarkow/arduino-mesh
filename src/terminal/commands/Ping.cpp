@@ -5,29 +5,26 @@
  *      Author: witek
  */
 
-#include "../Terminal.h"
+#include "Ping.h"
 #include "../../interface/RF24Interface.h"
 
 extern RF24Interface radio;
 
-void processPing(uint8_t address);
-
-
-void Terminal::processPingCommand()
+void Ping::process(CommandParams *params)
 {
-	if(this->getNumberOfParameters() != 2)
+	if(params->getNumberOfParameters() != 2)
 	{
 		Serial.println("error: Usage is ping <address> ");
 
 		return;
 	}
 
-	uint8_t address = this->getParameter(1).toInt();
+	uint8_t address = params->getParam(1).toInt();
 
 	processPing(address);
 }
 
-void processPing(uint8_t address)
+void Ping::processPing(uint8_t address)
 {
 	PingResult pingResult = radio.ping(address);
 	if(pingResult.success)

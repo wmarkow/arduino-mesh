@@ -10,8 +10,9 @@
 
 #include <Arduino.h>
 
-#define INCOMING_BUFFER_MAX_WORDS_IN_LINE 6
-#define INCOMING_BUFFER_MAX_CHARACTERS_IN_WORD 12
+#include "CommandParams.h"
+#include "commands/Ifconfig.h"
+#include "commands/Ping.h"
 
 typedef enum TerminalState
 {
@@ -23,18 +24,13 @@ class Terminal {
 
 private:
 	TerminalState state = Ready;
-	char readBuffer[INCOMING_BUFFER_MAX_WORDS_IN_LINE][INCOMING_BUFFER_MAX_CHARACTERS_IN_WORD + 1];
-	uint8_t readRowIndex = 0;
-	uint8_t readColumnIndex = 0;
-	bool endOfWordDetected = false;
-	void printTerminalReady();
-	uint8_t getNumberOfParameters();
-	String getParameter(uint8_t index);
-	void cleanReadBuffer();
+	CommandParams commandParams;
 
 	/* commands */
-	void processIfconfigCommand();
-	void processPingCommand();
+	Ifconfig ifconfig;
+	Ping ping;
+
+	void printTerminalReady();
 public:
 	void println(String &message);
 	void loop();

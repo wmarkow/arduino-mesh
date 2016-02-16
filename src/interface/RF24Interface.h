@@ -20,6 +20,10 @@
 	#define IOT_HARDWARE_CS_PIN 8
 #endif
 
+#define ON 1
+#define OFF 0
+#define IOT_DEBUG_WRITE_RADIO ON
+
 #define IOT_ADDRESS_LENGTH 5
 #define PAYLOAD_SIZE 32
 #define NETWORK_LAYER_INCOMING_PACKETS_NUMBER 5
