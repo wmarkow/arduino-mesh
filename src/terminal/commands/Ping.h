@@ -13,9 +13,12 @@
 class Ping : public AbstractCommand
 {
 private:
+	uint8_t pingAddress = 0;
+	unsigned long lastCommandExecutionMillis = 0;
 	void processPing(uint8_t address);
 public:
 	void process(CommandParams *params);
+	void loopBackgroundIfNeeded();
 };
 
 

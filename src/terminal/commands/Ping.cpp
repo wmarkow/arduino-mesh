@@ -27,6 +27,9 @@ void Ping::process(CommandParams *params)
 
 void Ping::processPing(uint8_t address)
 {
+	lastCommandExecutionMillis = millis();
+	pingAddress = address;
+
 	PingResult pingResult = radio.ping(address);
 	if(pingResult.success)
 	{
@@ -47,4 +50,21 @@ void Ping::processPing(uint8_t address)
 	Serial.print(F("Destination host '"));
 	Serial.print(address);
 	Serial.println(F("' is unreachable."));
+}
+
+void Ping::loopBackgroundIfNeeded()
+{
+	if(!this->isBackground())
+	{
+		return;
+	}
+
+	unsigned int now = millis();
+
+	if(now < lastCommandExecutionMillis + 1000)
+	{
+		return;
+	}
+
+	processPing(this->pingAddress);
 }
