@@ -22,6 +22,7 @@ void Ping::process(CommandParams *params)
 	uint8_t address = params->getParam(1).toInt();
 
 	processPing(address);
+	this->setBackground(true);
 }
 
 void Ping::processPing(uint8_t address)

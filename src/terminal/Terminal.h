@@ -14,16 +14,9 @@
 #include "commands/Ifconfig.h"
 #include "commands/Ping.h"
 
-typedef enum TerminalState
-{
-	Ready,
-	Busy
-};
-
 class Terminal {
 
 private:
-	TerminalState state = Ready;
 	CommandParams commandParams;
 
 	/* commands */
@@ -31,6 +24,10 @@ private:
 	Ping ping;
 
 	void printTerminalReady();
+	void printTerminalReadyIfNeeded();
+	bool areBackgroundCommands();
+	void performBackgroundCommands();
+	void cancelBackgroundCommands();
 public:
 	void println(String &message);
 	void loop();

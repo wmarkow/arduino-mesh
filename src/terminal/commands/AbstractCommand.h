@@ -13,8 +13,15 @@
 
 class AbstractCommand
 {
+private:
+	bool background = false;
+protected:
+	void setBackground(bool background);
 public:
 	virtual void process(CommandParams *params);
+	virtual void loopBackgroundIfNeeded();
+	virtual void cancelBackground();
+	bool isBackground();
 };
 
 
