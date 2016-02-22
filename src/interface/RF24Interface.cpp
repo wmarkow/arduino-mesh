@@ -16,7 +16,7 @@ RF24Interface::RF24Interface() : rf24(RF24(IOT_HARDWARE_CE_PIN, IOT_HARDWARE_CS_
 	linkAddress[3] = 0xc1;
 	linkAddress[4] = 0xc1;
 
-	ipAddress = 0;
+	ipAddress = 123;
 }
 
 bool RF24Interface::up()
@@ -291,7 +291,7 @@ bool RF24Interface::readIncomingPacket()
 			Serial.println("Discarding packet because incoming buffer is full");
 		#endif
 
-			return false;
+		return false;
 	}
 
 	preProcessedIncomingPackets.push_back(incomingPacket);
