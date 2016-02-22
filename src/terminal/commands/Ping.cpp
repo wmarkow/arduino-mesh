@@ -59,7 +59,7 @@ void Ping::loopBackgroundIfNeeded()
 		return;
 	}
 
-	unsigned int now = millis();
+	unsigned long now = millis();
 
 	if(now < lastCommandExecutionMillis + 1000)
 	{
