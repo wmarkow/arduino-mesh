@@ -11,6 +11,7 @@
 #include <RF24.h>
 #include <SimpleList.h>
 #include "IotPacket.h"
+#include "PacketCounters.h"
 
 #if defined(ESP8266)
 	#define IOT_HARDWARE_CE_PIN D4
@@ -50,10 +51,13 @@ private:
 	TransmitterState transmitterState = IDLE;
 	SimpleList<GenericPacketData> preProcessedIncomingPackets;
 
+	PacketCounters packetCounters;
+
 	bool available();
 	bool sendPacket(GenericPacketData* packet, uint8_t dstAddress);
 	bool sendPacket(GenericPacketData* packet);
-	bool sendPacketWaitForAck(GenericPacketData* packet);
+	bool sendTcpPacket(GenericPacketData* packet);
+	bool sendUdpPacket(GenericPacketData* packet);
 	bool write(GenericPacketData* packet);
 	bool hasAckArrived(GenericPacketData* sentPacket);
 	void processIncomingPackets();
@@ -67,6 +71,7 @@ public:
 	bool isChipConnected();
 	void setIpAddress(uint8_t address);uint8_t getIpAddress();
 	PingResult ping(uint8_t dstAddress);
+	PacketCounters* getCounters();
 
     String getLinkAddress();
     uint8_t getPALevel();

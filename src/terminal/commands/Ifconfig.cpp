@@ -107,6 +107,12 @@ void Ifconfig::processIfconfig()
 
 	Serial.print("  Payload size  ");
 	Serial.println(radio.getPayloadSize());
+
+	Serial.println("  TX");
+	Serial.print("   + TCP success "); Serial.println(radio.getCounters()->getTransmittedTcpSuccess());
+	Serial.print("   + TCP fail "); Serial.println(radio.getCounters()->getTransmittedTcpFailed());
+	Serial.print("   + UDP ACK "); Serial.println(radio.getCounters()->getTransmittedUdpAck());
+	Serial.print("   \\ UDP other "); Serial.println(radio.getCounters()->getTransmittedUdpOther());
 }
 
 void Ifconfig::processIfconfigUp()

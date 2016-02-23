@@ -77,6 +77,11 @@ void RF24Interface::loop()
 	processIncomingPackets();
 }
 
+PacketCounters* RF24Interface::getCounters()
+{
+	return &packetCounters;
+}
+
 uint8_t RF24Interface::getIpAddress()
 {
 	return ipAddress;
@@ -141,14 +146,14 @@ bool RF24Interface::sendPacket(GenericPacketData* packet)
 {
 	if(packet->getProtocol() == ICMP || packet->getProtocol() == TCP)
 	{
-		return sendPacketWaitForAck(packet);
+		return sendTcpPacket(packet);
 	}
 
-	return write(packet);
+	return sendUdpPacket(packet);
 }
 
 
-bool RF24Interface::sendPacketWaitForAck(GenericPacketData* packet)
+bool RF24Interface::sendTcpPacket(GenericPacketData* packet)
 {
 	write(packet);
 	transmitterState = WAITING_FOR_ACK;
@@ -160,12 +165,28 @@ bool RF24Interface::sendPacketWaitForAck(GenericPacketData* packet)
 			Serial.println(F("Failed, response timed out."));
 
 			transmitterState = IDLE;
+			packetCounters.incTransmittedTcpFailed();
+
 			return false;
 		}
 	}
 
 	transmitterState = IDLE;
+	packetCounters.incTransmittedTcpSuccess();
+
 	return true;
+}
+
+bool RF24Interface::sendUdpPacket(GenericPacketData* packet)
+{
+	if(packet->getType() == ACK)
+	{
+		packetCounters.incTransmittedUdpAck();
+	} else
+	{
+		packetCounters.incTransmittedUdpOther();
+	}
+	return write(packet);
 }
 
 bool RF24Interface::write(GenericPacketData* packet)
