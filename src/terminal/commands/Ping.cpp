@@ -33,10 +33,6 @@ void Ping::processPing(uint8_t address)
 	PingResult pingResult = radio.ping(address);
 	if(pingResult.success)
 	{
-		Serial.print("Host ");
-		Serial.print(address);
-		Serial.println(" is alive");
-
 		Serial.print(pingResult.packetSize);
 		Serial.print(F(" bytes from '"));
 		Serial.print(address);
