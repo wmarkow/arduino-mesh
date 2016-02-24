@@ -265,6 +265,7 @@ void RF24Interface::processIncomingPackets()
 		{
 			AckPacket ackPacket(itr);
 			write(&ackPacket);
+			this->packetCounters.incTransmittedUdpAck();
 
 			// ACK sent. Purge incoming ICMP packet
 			itr = preProcessedIncomingPackets.erase(itr);
