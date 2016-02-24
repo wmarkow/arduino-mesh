@@ -62,6 +62,14 @@ void Terminal::loop() {
 
 		return;
 	}
+	if(command.equals("flooder"))
+	{
+		flooderCmd.process(&commandParams);
+
+		commandParams.reset();
+		printTerminalReadyIfNeeded();
+		return;
+	}
 
 	Serial.print(command);
 	Serial.println(": unknown command");

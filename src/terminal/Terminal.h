@@ -13,6 +13,7 @@
 #include "CommandParams.h"
 #include "commands/Ifconfig.h"
 #include "commands/Ping.h"
+#include "commands/FlooderCmd.h"
 
 class Terminal {
 
@@ -22,6 +23,7 @@ private:
 	/* commands */
 	Ifconfig ifconfig;
 	Ping ping;
+	FlooderCmd flooderCmd;
 
 	void printTerminalReady();
 	void printTerminalReadyIfNeeded();

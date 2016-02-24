@@ -15,6 +15,12 @@ void Flooder::setRF24Interface(RF24Interface *rf24Interface)
 void Flooder::flood(GenericPacketData* packet)
 {
 	// do nothing
+	counters.incDroppedCount();
+}
+
+FlooderCounters* Flooder::getCounters()
+{
+	return &counters;
 }
 
 
