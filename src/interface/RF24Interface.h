@@ -12,6 +12,7 @@
 #include <SimpleList.h>
 #include "IotPacket.h"
 #include "PacketCounters.h"
+#include "../flooder/Flooder.h"
 
 #if defined(ESP8266)
 	#define IOT_HARDWARE_CE_PIN D4
@@ -42,9 +43,14 @@ struct PingResult
 	unsigned long timeInUs;
 };
 
+class Flooder;
+
 class RF24Interface
 {
+	friend class Flooder;
+
 private:
+	Flooder *flooder;
 	RF24 rf24;
 	byte linkAddress[IOT_ADDRESS_LENGTH];
 	byte ipAddress;
@@ -66,6 +72,7 @@ private:
 
 public:
 	RF24Interface();
+	void setFlooder(Flooder *flooder);
 	bool up();
 	bool isUp();
 	bool isChipConnected();

@@ -4,10 +4,15 @@
 #include "src/terminal/Terminal.h"
 
 RF24Interface radio;
+Flooder flooder;
+
 Terminal terminal;
 
 void setup() {
   Serial.begin(115200);
+
+  radio.setFlooder(&flooder);
+  flooder.setRF24Interface(&radio);
 
   radio.up();
 }

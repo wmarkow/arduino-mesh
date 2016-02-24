@@ -19,6 +19,11 @@ RF24Interface::RF24Interface() : rf24(RF24(IOT_HARDWARE_CE_PIN, IOT_HARDWARE_CS_
 	ipAddress = 123;
 }
 
+void RF24Interface::setFlooder(Flooder *flooder)
+{
+	this->flooder = flooder;
+}
+
 bool RF24Interface::up()
 {
 	if(!rf24.begin())
@@ -243,8 +248,8 @@ void RF24Interface::processIncomingPackets()
 	{
 		if(itr->getDstAddress() != ipAddress)
 		{
-			// this packet is not addressed for me; purge that packet
-			// TODO: implement flooding retransmissions here
+			// this packet is not addressed for me; flood that packet
+			flooder->flood(itr);
 			itr = preProcessedIncomingPackets.erase(itr);
 			continue;
 		}
@@ -266,7 +271,7 @@ void RF24Interface::processIncomingPackets()
 			continue;
 		}
 
-/*
+/*      // Some other packet addressed to me
 		if(itr->getProtocol() == TCP && itr->getType() == REGULAR)
 		{
 			// ACK sent; move incoming packet to incoming queue
