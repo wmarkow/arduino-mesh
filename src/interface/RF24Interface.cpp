@@ -33,7 +33,7 @@ bool RF24Interface::up()
 
 	rf24.openWritingPipe(linkAddress);
 	rf24.openReadingPipe(1, linkAddress);
-	rf24.setPALevel(RF24_PA_MAX);
+	rf24.setPALevel(RF24_PA_MIN);
 	rf24.setAutoAck(false);
 	rf24.setPayloadSize(PAYLOAD_SIZE);
 	rf24.openWritingPipe(linkAddress);
