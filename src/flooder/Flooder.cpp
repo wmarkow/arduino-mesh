@@ -14,8 +14,25 @@ void Flooder::setRF24Interface(RF24Interface *rf24Interface)
 
 void Flooder::flood(GenericPacketData* packet)
 {
-	// do nothing
-	counters.incDroppedCount();
+	if(packet->getSrcAddress() == rf24Interface->getIpAddress())
+	{
+		// I'm originator of this packet; drop it
+		counters.incDroppedCount();
+
+		return;
+	}
+
+	if(packet->decrementTTL() == 0)
+	{
+		// TTL reached 0; drop packet
+		counters.incDroppedCount();
+
+		return;
+	}
+
+	// flood packet
+	rf24Interface->write(packet);
+	counters.incFloodedCount();
 }
 
 FlooderCounters* Flooder::getCounters()

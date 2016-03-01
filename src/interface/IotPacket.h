@@ -44,7 +44,8 @@ public:
 	void setId(uint8_t id);
 	void setProtocol(IotProtocol protocol);
 	void setType(IotPacketType type);
-	void setTTL(uint8_t);
+	void setTTL(uint8_t ttl);
+	uint8_t decrementTTL();
 	void setSrcAddress(uint8_t address);
 	void setDstAddress(uint8_t address);
 };

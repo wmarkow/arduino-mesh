@@ -30,6 +30,18 @@ uint8_t PacketHeader::getDstAddress() {
 uint8_t PacketHeader::getTTL() {
 	return header[5];
 }
+uint8_t PacketHeader::decrementTTL() {
+	uint8_t newTTL = getTTL() - 1;
+
+	if(newTTL > DEFAULT_TTL)
+	{
+		newTTL = 0;
+	}
+
+	setTTL(newTTL);
+
+	return newTTL;
+}
 
 void PacketHeader::setId(uint8_t id) {
 	header[0] = id;
@@ -59,7 +71,7 @@ PingPacket::PingPacket()
 	setId(IdSequence);
 	setProtocol(ICMP);
 	setType(REGULAR);
-	setTTL(DEFAULT_TTL);
+	setTTL((uint8_t)DEFAULT_TTL);
 	setSrcAddress(0);
 	setDstAddress(0);
 
