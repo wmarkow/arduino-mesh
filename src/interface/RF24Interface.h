@@ -31,7 +31,7 @@
 #define IOT_ADDRESS_LENGTH 5
 #define NETWORK_LAYER_INCOMING_PACKETS_NUMBER 5
 
-enum TransmitterState
+enum TcpTransmitionState
 {
 	IDLE = 0,
 	WAITING_FOR_ACK = 1
@@ -57,7 +57,7 @@ private:
 	RF24Transmitter transmitter;
 	byte linkAddress[IOT_ADDRESS_LENGTH];
 	byte ipAddress;
-	TransmitterState transmitterState = IDLE;
+	TcpTransmitionState tcpTransmitionState = IDLE;
 	PacketCounters packetCounters;
 
 	bool sendPacket(GenericPacketData* packet, uint8_t dstAddress);

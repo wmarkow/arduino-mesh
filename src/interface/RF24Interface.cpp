@@ -164,7 +164,7 @@ bool RF24Interface::sendPacket(GenericPacketData* packet)
 bool RF24Interface::sendTcpPacket(GenericPacketData* packet)
 {
 	transmitter.addPacketToTransmissionQueue(packet);
-	transmitterState = WAITING_FOR_ACK;
+	tcpTransmitionState = WAITING_FOR_ACK;
 
 	unsigned long startedWaitingAtMicros = micros();               // Set up a timeout period, get the current microseconds
 
@@ -172,14 +172,14 @@ bool RF24Interface::sendTcpPacket(GenericPacketData* packet)
 		if (micros() - startedWaitingAtMicros > 200000 ){            // If waited longer than 200ms, indicate timeout and exit while loop
 			Serial.println(F("Failed, response timed out."));
 
-			transmitterState = IDLE;
+			tcpTransmitionState = IDLE;
 			packetCounters.incTransmittedTcpFailed();
 
 			return false;
 		}
 	}
 
-	transmitterState = IDLE;
+	tcpTransmitionState = IDLE;
 	packetCounters.incTransmittedTcpSuccess();
 
 	return true;
@@ -247,7 +247,7 @@ void RF24Interface::processIncomingPackets()
 			continue;
 		}
 
-		if(itr->getType() == ACK && transmitterState != WAITING_FOR_ACK)
+		if(itr->getType() == ACK && tcpTransmitionState != WAITING_FOR_ACK)
 		{
 			// the transmitter is not waiting for ACK; purge that ACK
 			itr = receiver.getIncomingPackets()->erase(itr);
