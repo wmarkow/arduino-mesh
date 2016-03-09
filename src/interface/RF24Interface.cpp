@@ -8,7 +8,9 @@
 #include "RF24Interface.h"
 
 
-RF24Interface::RF24Interface() : rf24(RF24(IOT_HARDWARE_CE_PIN, IOT_HARDWARE_CS_PIN))
+RF24Interface::RF24Interface() : rf24(RF24(IOT_HARDWARE_CE_PIN, IOT_HARDWARE_CS_PIN)),
+receiver(RF24Receiver(&rf24)),
+transmitter(RF24Transmitter(&rf24))
 {
 	linkAddress[0] = 0xc1;
 	linkAddress[1] = 0xc1;
@@ -16,7 +18,7 @@ RF24Interface::RF24Interface() : rf24(RF24(IOT_HARDWARE_CE_PIN, IOT_HARDWARE_CS_
 	linkAddress[3] = 0xc1;
 	linkAddress[4] = 0xc1;
 
-	ipAddress = 123;
+	ipAddress = 1;
 }
 
 void RF24Interface::setFlooder(Flooder *flooder)
@@ -35,7 +37,7 @@ bool RF24Interface::up()
 	rf24.openReadingPipe(1, linkAddress);
 	rf24.setPALevel(RF24_PA_MIN);
 	rf24.setAutoAck(false);
-	rf24.setPayloadSize(PAYLOAD_SIZE);
+	rf24.setPayloadSize(DEFAULT_PACKET_SIZE);
 	rf24.openWritingPipe(linkAddress);
 	rf24.openReadingPipe(1, linkAddress);
 	rf24.startListening();
@@ -61,7 +63,7 @@ void RF24Interface::setIpAddress(uint8_t address)
 PingResult RF24Interface::ping(uint8_t dstAddress)
 {
 	PingResult pingResult;
-	pingResult.packetSize = PAYLOAD_SIZE;
+	pingResult.packetSize = DEFAULT_PACKET_SIZE;
 	pingResult.success = false;
 	pingResult.timeInUs = 0;
 
@@ -147,6 +149,7 @@ bool RF24Interface::sendPacket(GenericPacketData* packet, uint8_t dstAddress)
 	return sendPacket(packet);
 }
 
+
 bool RF24Interface::sendPacket(GenericPacketData* packet)
 {
 	if(packet->getProtocol() == ICMP || packet->getProtocol() == TCP)
@@ -160,7 +163,7 @@ bool RF24Interface::sendPacket(GenericPacketData* packet)
 
 bool RF24Interface::sendTcpPacket(GenericPacketData* packet)
 {
-	write(packet);
+	transmitter.addPacketToTransmissionQueue(packet);
 	transmitterState = WAITING_FOR_ACK;
 
 	unsigned long startedWaitingAtMicros = micros();               // Set up a timeout period, get the current microseconds
@@ -191,18 +194,8 @@ bool RF24Interface::sendUdpPacket(GenericPacketData* packet)
 	{
 		packetCounters.incTransmittedUdpOther();
 	}
-	return write(packet);
-}
 
-bool RF24Interface::write(GenericPacketData* packet)
-{
-	rf24.stopListening();
-
-	bool result = rf24.write(packet, PAYLOAD_SIZE);
-
-	rf24.startListening();
-
-	return result;
+	return transmitter.addPacketToTransmissionQueue(packet);
 }
 
 bool RF24Interface::hasAckArrived(GenericPacketData* sentPacket)
@@ -210,7 +203,7 @@ bool RF24Interface::hasAckArrived(GenericPacketData* sentPacket)
 	processIncomingPackets();
 	bool result = false;
 
-	for (SimpleList<GenericPacketData>::iterator itr = preProcessedIncomingPackets.begin(); itr != preProcessedIncomingPackets.end();)
+	for (SimpleList<GenericPacketData>::iterator itr = receiver.getIncomingPackets()->begin(); itr != receiver.getIncomingPackets()->end();)
 	{
 		if(itr->getType() != ACK) {
 			continue;
@@ -232,7 +225,7 @@ bool RF24Interface::hasAckArrived(GenericPacketData* sentPacket)
 			continue;
 		}
 
-		itr = preProcessedIncomingPackets.erase(itr);
+		itr = receiver.getIncomingPackets()->erase(itr);
 
 		result = true;
 	}
@@ -242,33 +235,33 @@ bool RF24Interface::hasAckArrived(GenericPacketData* sentPacket)
 
 void RF24Interface::processIncomingPackets()
 {
-	readIncomingPacket();
+	receiver.loop();
 
-	for (SimpleList<GenericPacketData>::iterator itr = preProcessedIncomingPackets.begin(); itr != preProcessedIncomingPackets.end();)
+	for (SimpleList<GenericPacketData>::iterator itr = receiver.getIncomingPackets()->begin(); itr != receiver.getIncomingPackets()->end();)
 	{
 		if(itr->getDstAddress() != ipAddress)
 		{
 			// this packet is not addressed for me; flood that packet
 			flooder->flood(itr);
-			itr = preProcessedIncomingPackets.erase(itr);
+			itr = receiver.getIncomingPackets()->erase(itr);
 			continue;
 		}
 
 		if(itr->getType() == ACK && transmitterState != WAITING_FOR_ACK)
 		{
 			// the transmitter is not waiting for ACK; purge that ACK
-			itr = preProcessedIncomingPackets.erase(itr);
+			itr = receiver.getIncomingPackets()->erase(itr);
 			continue;
 		}
 
 		if(itr->getProtocol() == ICMP && itr->getType() == REGULAR)
 		{
 			AckPacket ackPacket(itr);
-			write(&ackPacket);
+			transmitter.addPacketToTransmissionQueue(&ackPacket);
 			this->packetCounters.incTransmittedUdpAck();
 
 			// ACK sent. Purge incoming ICMP packet
-			itr = preProcessedIncomingPackets.erase(itr);
+			itr = receiver.getIncomingPackets()->erase(itr);
 			continue;
 		}
 
@@ -292,44 +285,7 @@ void RF24Interface::processIncomingPackets()
 	}
 }
 
-bool RF24Interface::available()
+bool RF24Interface::floodToTransmitter(GenericPacketData* packet)
 {
-	return rf24.available() && isChipConnected();
-}
-
-bool RF24Interface::readIncomingPacket()
-{
-	if( !available()) {
-		return false;
-	}
-
-	GenericPacketData incomingPacket;
-	rf24.read(&incomingPacket, PAYLOAD_SIZE);
-
-	if(!isChipConnected())
-	{
-		return false;
-	}
-
-	if(preProcessedIncomingPackets.size() >= NETWORK_LAYER_INCOMING_PACKETS_NUMBER)
-	{
-		// incoming queue is full, discard new packet
-		#if IOT_DEBUG_WRITE_RADIO == ON
-			Serial.println("Discarding packet because incoming buffer is full");
-		#endif
-
-		return false;
-	}
-
-	preProcessedIncomingPackets.push_back(incomingPacket);
-
-	return true;
-}
-void RF24Interface::debugHexPrintToSerial(void* object, uint8_t length) {
-	uint8_t* wsk = reinterpret_cast<uint8_t*>(object);
-	for(uint8_t q = 0 ;q < PAYLOAD_SIZE ; q ++){
-		Serial.print(*wsk++, HEX);
-		Serial.print(" ");
-	}
-	Serial.println();
+	return transmitter.addPacketToTransmissionQueue(packet);
 }

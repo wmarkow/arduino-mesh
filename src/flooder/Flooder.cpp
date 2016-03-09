@@ -31,7 +31,7 @@ void Flooder::flood(GenericPacketData* packet)
 	}
 
 	// flood packet
-	rf24Interface->write(packet);
+	rf24Interface->floodToTransmitter(packet);
 	counters.incFloodedCount();
 }
 
@@ -39,5 +39,3 @@ FlooderCounters* Flooder::getCounters()
 {
 	return &counters;
 }
-
-

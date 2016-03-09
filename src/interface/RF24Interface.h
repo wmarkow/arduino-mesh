@@ -12,6 +12,8 @@
 #include <SimpleList.h>
 #include "IotPacket.h"
 #include "PacketCounters.h"
+#include "RF24Receiver.h"
+#include "RF24Transmitter.h"
 #include "../flooder/Flooder.h"
 
 #if defined(ESP8266)
@@ -27,7 +29,6 @@
 #define IOT_DEBUG_WRITE_RADIO ON
 
 #define IOT_ADDRESS_LENGTH 5
-#define PAYLOAD_SIZE 32
 #define NETWORK_LAYER_INCOMING_PACKETS_NUMBER 5
 
 enum TransmitterState
@@ -52,31 +53,30 @@ class RF24Interface
 private:
 	Flooder *flooder;
 	RF24 rf24;
+	RF24Receiver receiver;
+	RF24Transmitter transmitter;
 	byte linkAddress[IOT_ADDRESS_LENGTH];
 	byte ipAddress;
 	TransmitterState transmitterState = IDLE;
-	SimpleList<GenericPacketData> preProcessedIncomingPackets;
-
 	PacketCounters packetCounters;
 
-	bool available();
 	bool sendPacket(GenericPacketData* packet, uint8_t dstAddress);
 	bool sendPacket(GenericPacketData* packet);
 	bool sendTcpPacket(GenericPacketData* packet);
 	bool sendUdpPacket(GenericPacketData* packet);
-	bool write(GenericPacketData* packet);
+
 	bool hasAckArrived(GenericPacketData* sentPacket);
 	void processIncomingPackets();
-	bool readIncomingPacket();
-	void debugHexPrintToSerial(void* object, uint8_t length);
 
+	bool floodToTransmitter(GenericPacketData* sentPacket);
 public:
 	RF24Interface();
 	void setFlooder(Flooder *flooder);
 	bool up();
 	bool isUp();
 	bool isChipConnected();
-	void setIpAddress(uint8_t address);uint8_t getIpAddress();
+	void setIpAddress(uint8_t address);
+	uint8_t getIpAddress();
 	PingResult ping(uint8_t dstAddress);
 	PacketCounters* getCounters();
 

@@ -71,7 +71,7 @@ PingPacket::PingPacket()
 	setId(IdSequence);
 	setProtocol(ICMP);
 	setType(REGULAR);
-	setTTL((uint8_t)DEFAULT_TTL);
+	setTTL(DEFAULT_TTL);
 	setSrcAddress(0);
 	setDstAddress(0);
 
