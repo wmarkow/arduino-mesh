@@ -19,6 +19,7 @@ transmitter(RF24Transmitter(&rf24))
 	linkAddress[4] = 0xc1;
 
 	ipAddress = 1;
+	flooder= NULL;
 }
 
 void RF24Interface::setFlooder(Flooder *flooder)
