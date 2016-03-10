@@ -82,7 +82,9 @@ PingResult RF24Interface::ping(uint8_t dstAddress)
 
 void RF24Interface::loop()
 {
+	transmitter.loop();
 	processIncomingPackets();
+	receiver.loop();
 }
 
 PacketCounters* RF24Interface::getCounters()
@@ -201,8 +203,7 @@ bool RF24Interface::sendUdpPacket(GenericPacketData* packet)
 
 bool RF24Interface::hasAckArrived(GenericPacketData* sentPacket)
 {
-	processIncomingPackets();
-	bool result = false;
+	loop();
 
 	for (SimpleList<GenericPacketData>::iterator itr = receiver.getIncomingPackets()->begin(); itr != receiver.getIncomingPackets()->end();)
 	{
@@ -228,21 +229,20 @@ bool RF24Interface::hasAckArrived(GenericPacketData* sentPacket)
 
 		itr = receiver.getIncomingPackets()->erase(itr);
 
-		result = true;
+		return true;
 	}
 
-	return result;
+	return false;
 }
 
 void RF24Interface::processIncomingPackets()
 {
-	receiver.loop();
-
 	for (SimpleList<GenericPacketData>::iterator itr = receiver.getIncomingPackets()->begin(); itr != receiver.getIncomingPackets()->end();)
 	{
 		if(itr->getDstAddress() != ipAddress)
 		{
 			// this packet is not addressed for me; flood that packet
+			// FIXME: make a copy of that packet and then send to flooder
 			flooder->flood(itr);
 			itr = receiver.getIncomingPackets()->erase(itr);
 			continue;
@@ -265,7 +265,7 @@ void RF24Interface::processIncomingPackets()
 			itr = receiver.getIncomingPackets()->erase(itr);
 			continue;
 		}
-
+		// FIXME: remove that packet from incoming packets queue
 /*      // Some other packet addressed to me
 		if(itr->getProtocol() == TCP && itr->getType() == REGULAR)
 		{
