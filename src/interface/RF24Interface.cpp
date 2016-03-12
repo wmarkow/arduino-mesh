@@ -205,7 +205,7 @@ bool RF24Interface::hasAckArrived(GenericPacketData* sentPacket)
 {
 	loop();
 
-	for (SimpleList<GenericPacketData>::iterator itr = receiver.getIncomingPackets()->begin(); itr != receiver.getIncomingPackets()->end();)
+	for (SimpleList<GenericPacketData>::iterator itr = receiver.getIncomingPackets()->begin(); itr != receiver.getIncomingPackets()->end(); itr ++)
 	{
 		if(itr->getType() != ACK) {
 			continue;
