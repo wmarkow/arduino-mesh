@@ -242,7 +242,6 @@ void RF24Interface::processIncomingPackets()
 		if(itr->getDstAddress() != ipAddress)
 		{
 			// this packet is not addressed for me; flood that packet
-			// FIXME: make a copy of that packet and then send to flooder
 			flooder->flood(itr);
 			itr = receiver.getIncomingPackets()->erase(itr);
 			itr --;

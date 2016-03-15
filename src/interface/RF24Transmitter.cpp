@@ -20,7 +20,10 @@ void RF24Transmitter::loop()
 
 bool RF24Transmitter::addPacketToTransmissionQueue(GenericPacketData* packet)
 {
-	return write(packet);
+	GenericPacketData packetToSend;
+	memcpy(&packetToSend, packet, sizeof(GenericPacketData));
+
+	return write(&packetToSend);
 }
 
 bool RF24Transmitter::write(GenericPacketData* packet)
