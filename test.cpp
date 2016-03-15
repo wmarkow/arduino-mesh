@@ -11,6 +11,8 @@ Terminal terminal;
 void setup() {
   Serial.begin(115200);
 
+  randomSeed(analogRead(0));
+
   radio.setFlooder(&flooder);
   flooder.setRF24Interface(&radio);
 

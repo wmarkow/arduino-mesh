@@ -28,6 +28,9 @@ bool RF24Transmitter::addPacketToTransmissionQueue(GenericPacketData* packet)
 
 bool RF24Transmitter::write(GenericPacketData* packet)
 {
+	unsigned long randomMillis = random(0, 20);
+	delay(randomMillis);
+
 	rf24->stopListening();
 
 	bool result = rf24->write(packet, DEFAULT_PACKET_SIZE);
