@@ -227,7 +227,7 @@ bool RF24Interface::hasAckArrived(GenericPacketData* sentPacket)
 			continue;
 		}
 
-		itr = receiver.getIncomingPackets()->erase(itr);
+		receiver.getIncomingPackets()->erase(itr);
 
 		return true;
 	}
@@ -237,7 +237,7 @@ bool RF24Interface::hasAckArrived(GenericPacketData* sentPacket)
 
 void RF24Interface::processIncomingPackets()
 {
-	for (SimpleList<GenericPacketData>::iterator itr = receiver.getIncomingPackets()->begin(); itr != receiver.getIncomingPackets()->end();)
+	for (SimpleList<GenericPacketData>::iterator itr = receiver.getIncomingPackets()->begin(); itr != receiver.getIncomingPackets()->end(); itr ++)
 	{
 		if(itr->getDstAddress() != ipAddress)
 		{
@@ -245,6 +245,7 @@ void RF24Interface::processIncomingPackets()
 			// FIXME: make a copy of that packet and then send to flooder
 			flooder->flood(itr);
 			itr = receiver.getIncomingPackets()->erase(itr);
+			itr --;
 			continue;
 		}
 
@@ -252,6 +253,7 @@ void RF24Interface::processIncomingPackets()
 		{
 			// the transmitter is not waiting for ACK; purge that ACK
 			itr = receiver.getIncomingPackets()->erase(itr);
+			itr --;
 			continue;
 		}
 
@@ -263,9 +265,12 @@ void RF24Interface::processIncomingPackets()
 
 			// ACK sent. Purge incoming ICMP packet
 			itr = receiver.getIncomingPackets()->erase(itr);
+			itr --;
 			continue;
 		}
-		// FIXME: remove that packet from incoming packets queue
+		receiver.getIncomingPackets()->erase(itr);
+		itr --;
+
 /*      // Some other packet addressed to me
 		if(itr->getProtocol() == TCP && itr->getType() == REGULAR)
 		{
@@ -282,7 +287,6 @@ void RF24Interface::processIncomingPackets()
 			write(&ackPacket);
 		}
 */
-	    ++itr;
 	}
 }
 
