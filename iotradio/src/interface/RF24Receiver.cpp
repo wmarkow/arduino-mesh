@@ -7,8 +7,9 @@
 
 #include "RF24Receiver.h"
 
+GenericPacketData incomingPacketsTable[INCOMMING_PACKETS_BUFFER_SIZE];
 
-RF24Receiver::RF24Receiver(RF24* rf24)
+RF24Receiver::RF24Receiver(RF24* rf24) : incomingPackets(StaticList<GenericPacketData>(incomingPacketsTable, INCOMMING_PACKETS_BUFFER_SIZE))
 {
 	this->rf24 = rf24;
 }
@@ -21,7 +22,7 @@ void RF24Receiver::loop()
 	}
 }
 
-SimpleList<GenericPacketData>* RF24Receiver::getIncomingPackets()
+StaticList<GenericPacketData>* RF24Receiver::getIncomingPackets()
 {
 	return &incomingPackets;
 }
@@ -45,7 +46,7 @@ bool RF24Receiver::readIncomingPacket()
 		return false;
 	}
 
-	if(incomingPackets.size() >= INCOMMING_PACKETS_BUFFER_SIZE)
+	if(incomingPackets.getSize() >= INCOMMING_PACKETS_BUFFER_SIZE)
 	{
 		// incoming queue is full, discard new packet
 		#if IOT_DEBUG_WRITE_RADIO == ON
@@ -55,7 +56,7 @@ bool RF24Receiver::readIncomingPacket()
 		return false;
 	}
 
-	incomingPackets.push_back(incomingPacket);
+	incomingPackets.add(&incomingPacket);
 
 	return true;
 }

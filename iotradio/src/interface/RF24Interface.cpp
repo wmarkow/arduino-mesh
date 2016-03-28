@@ -205,8 +205,10 @@ bool RF24Interface::hasAckArrived(GenericPacketData* sentPacket)
 {
 	loop();
 
-	for (SimpleList<GenericPacketData>::iterator itr = receiver.getIncomingPackets()->begin(); itr != receiver.getIncomingPackets()->end(); itr ++)
+	for (uint8_t index = 0 ; index < receiver.getIncomingPackets()->getSize(); index ++)
 	{
+		GenericPacketData* itr = receiver.getIncomingPackets()->get(index);
+
 		if(itr->getType() != ACK) {
 			continue;
 		}
@@ -227,7 +229,7 @@ bool RF24Interface::hasAckArrived(GenericPacketData* sentPacket)
 			continue;
 		}
 
-		receiver.getIncomingPackets()->erase(itr);
+		receiver.getIncomingPackets()->remove(index);
 
 		return true;
 	}
@@ -237,22 +239,24 @@ bool RF24Interface::hasAckArrived(GenericPacketData* sentPacket)
 
 void RF24Interface::processIncomingPackets()
 {
-	for (SimpleList<GenericPacketData>::iterator itr = receiver.getIncomingPackets()->begin(); itr != receiver.getIncomingPackets()->end(); itr ++)
+	for (uint8_t index = 0 ; index < receiver.getIncomingPackets()->getSize() ; index ++)
 	{
+		GenericPacketData* itr = receiver.getIncomingPackets()->get(index);
+
 		if(itr->getDstAddress() != ipAddress)
 		{
 			// this packet is not addressed for me; flood that packet
 			flooder->flood(itr);
-			itr = receiver.getIncomingPackets()->erase(itr);
-			itr --;
+			receiver.getIncomingPackets()->remove(index);
+			index --;
 			continue;
 		}
 
 		if(itr->getType() == ACK && tcpTransmitionState != WAITING_FOR_ACK)
 		{
 			// the transmitter is not waiting for ACK; purge that ACK
-			itr = receiver.getIncomingPackets()->erase(itr);
-			itr --;
+			receiver.getIncomingPackets()->remove(index);
+			index --;
 			continue;
 		}
 
@@ -263,12 +267,12 @@ void RF24Interface::processIncomingPackets()
 			this->packetCounters.incTransmittedUdpAck();
 
 			// ACK sent. Purge incoming ICMP packet
-			itr = receiver.getIncomingPackets()->erase(itr);
-			itr --;
+			receiver.getIncomingPackets()->remove(index);
+			index --;
 			continue;
 		}
-		receiver.getIncomingPackets()->erase(itr);
-		itr --;
+		receiver.getIncomingPackets()->remove(index);
+		index --;
 
 /*      // Some other packet addressed to me
 		if(itr->getProtocol() == TCP && itr->getType() == REGULAR)
