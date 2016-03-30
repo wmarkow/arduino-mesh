@@ -37,24 +37,9 @@
 			<location>/home/witek/dev/tools/eclipse-cpp-mars/arduinoPlugin/packages/arduino/hardware/avr/1.6.9/variants/standard</location>
 		</link>
 		<link>
-			<name>libraries/EEPROM</name>
-			<type>2</type>
-			<location>/home/witek/dev/tools/eclipse-cpp-mars/arduinoPlugin/packages/arduino/hardware/avr/1.6.9/libraries/EEPROM</location>
-		</link>
-		<link>
-			<name>libraries/Ethernet</name>
-			<type>2</type>
-			<location>/home/witek/dev/tools/eclipse-cpp-mars/arduinoPlugin/libraries/Ethernet/1.1.1</location>
-		</link>
-		<link>
 			<name>libraries/RF24</name>
 			<type>2</type>
 			<location>/home/witek/Arduino/libraries/RF24</location>
-		</link>
-		<link>
-			<name>libraries/SD</name>
-			<type>2</type>
-			<location>/home/witek/dev/tools/eclipse-cpp-mars/arduinoPlugin/libraries/SD/1.0.6</location>
 		</link>
 		<link>
 			<name>libraries/SPI</name>
