@@ -1,5 +1,7 @@
 arduino/**
 .settings/**
 Release/**
+core/**
+libraries/**
 .ino.cpp
 spec.d
