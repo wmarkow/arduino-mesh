@@ -20,8 +20,6 @@ void setup() {
 }
 
 void loop() {
-	//delay(1000);
-	//Serial.println("tu jestem 1");
 	terminal.loop();
 	radio.loop();
 }

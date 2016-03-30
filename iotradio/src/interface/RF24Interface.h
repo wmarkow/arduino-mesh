@@ -9,7 +9,6 @@
 #define INTERFACE_RF24INTERFACE_H_
 
 #include <RF24.h>
-#include <SimpleList.h>
 #include "IotPacket.h"
 #include "PacketCounters.h"
 #include "RF24Receiver.h"

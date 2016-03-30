@@ -46,10 +46,5 @@
 			<type>2</type>
 			<location>/home/witek/dev/tools/eclipse-cpp-mars/arduinoPlugin/packages/arduino/hardware/avr/1.6.9/libraries/SPI</location>
 		</link>
-		<link>
-			<name>libraries/SimpleList</name>
-			<type>2</type>
-			<location>/home/witek/Arduino/libraries/SimpleList</location>
-		</link>
 	</linkedResources>
 </projectDescription>
