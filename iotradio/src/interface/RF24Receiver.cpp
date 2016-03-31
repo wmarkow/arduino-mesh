@@ -50,7 +50,7 @@ bool RF24Receiver::readIncomingPacket()
 	{
 		// incoming queue is full, discard new packet
 		#if IOT_DEBUG_WRITE_RADIO == ON
-			Serial.println("Discarding packet because incoming buffer is full");
+			Serial.println(F("Discarding packet because incoming buffer is full"));
 		#endif
 
 		return false;

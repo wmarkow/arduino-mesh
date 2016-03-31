@@ -59,7 +59,7 @@ bool CommandParams::appendChar(char byte)
 			// incoming buffer overflow
 			Serial.flush();
 			Serial.println();
-			Serial.println("error: to many words per line");
+			Serial.println(F("error: to many words per line"));
 			Serial.flush();
 			reset();
 
@@ -76,7 +76,7 @@ bool CommandParams::appendChar(char byte)
 		// incoming buffer overflow
 		Serial.flush();
 		Serial.println();
-		Serial.println("error: to many characters per word");
+		Serial.println(F("error: to many characters per word"));
 		Serial.flush();
 		reset();
 

@@ -22,9 +22,9 @@ void FlooderCmd::process(CommandParams *params)
 
 void FlooderCmd::processFlooder()
 {
-	Serial.print("Packets: dropped ");
+	Serial.print(F("Packets: dropped "));
 	Serial.println(flooder.getCounters()->getDroppedCount());
 
-	Serial.print("Packets: flooded ");
+	Serial.print(F("Packets: flooded "));
 	Serial.println(flooder.getCounters()->getFloodedCount());
 }

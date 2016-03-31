@@ -21,7 +21,7 @@ void Terminal::loop() {
 
 	String command = commandParams.getParam(0);
 
-	if(command.equals("break"))
+	if(command.equals(F("break")))
 	{
 		cancelBackgroundCommands();
 
@@ -34,7 +34,7 @@ void Terminal::loop() {
 	if(areBackgroundCommands())
 	{
 		commandParams.reset();
-		Serial.println("terminal busy");
+		Serial.println(F("terminal busy"));
 
 		return;
 	}
@@ -46,7 +46,7 @@ void Terminal::loop() {
 		return;
 	}
 
-	if(command.equals("ifconfig"))
+	if(command.equals(F("ifconfig")))
 	{
 		ifconfig.process(&commandParams);
 
@@ -54,7 +54,7 @@ void Terminal::loop() {
 		printTerminalReadyIfNeeded();
 		return;
 	}
-	if(command.equals("ping"))
+	if(command.equals(F("ping")))
 	{
 		ping.process(&commandParams);
 		commandParams.reset();
@@ -62,7 +62,7 @@ void Terminal::loop() {
 
 		return;
 	}
-	if(command.equals("flooder"))
+	if(command.equals(F("flooder")))
 	{
 		flooderCmd.process(&commandParams);
 
@@ -72,7 +72,7 @@ void Terminal::loop() {
 	}
 
 	Serial.print(command);
-	Serial.println(": unknown command");
+	Serial.println(F(": unknown command"));
 
 	commandParams.reset();
 	printTerminalReady();
@@ -95,7 +95,7 @@ bool Terminal::readString()
 
 void Terminal::printTerminalReady()
 {
-	Serial.print("arduino$");
+	Serial.print(F("arduino$"));
 }
 
 void Terminal::printTerminalReadyIfNeeded()

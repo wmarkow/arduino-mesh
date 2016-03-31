@@ -14,7 +14,7 @@ void Ping::process(CommandParams *params)
 {
 	if(params->getNumberOfParameters() != 2)
 	{
-		Serial.println("error: Usage is ping <address> ");
+		Serial.println(F("error: Usage is ping <address> "));
 
 		return;
 	}

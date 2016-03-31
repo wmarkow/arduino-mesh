@@ -138,10 +138,10 @@ String RF24Interface::getModel()
 {
 	if(rf24.isPVariant())
 	{
-		return "nRF24L01+";
+		return F("nRF24L01+");
 	}
 
-	return "nRF24L01";
+	return F("nRF24L01");
 }
 
 bool RF24Interface::sendPacket(GenericPacketData* packet, uint8_t dstAddress)
