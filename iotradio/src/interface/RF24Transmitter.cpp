@@ -8,29 +8,54 @@
 
 #include "RF24Transmitter.h"
 
-RF24Transmitter::RF24Transmitter(RF24* rf24)
+GenericPacketData outgoingPacketsTable[OUTGOING_PACKETS_BUFFER_SIZE];
+
+RF24Transmitter::RF24Transmitter(RF24* rf24) : outgoingPackets(StaticList<GenericPacketData>(outgoingPacketsTable, OUTGOING_PACKETS_BUFFER_SIZE))
 {
 	this->rf24 = rf24;
 }
 
 void RF24Transmitter::loop()
 {
-	// do nothing for now
+	if(this->state == TRANSMITTER_STATE_IDLE) {
+		if(outgoingPackets.getSize() > 0){
+
+			unsigned long randomMillis = random(0, 20);
+			unsigned long currentMillis = millis();
+
+			this->waitFinishTimeInMillis = currentMillis + randomMillis;
+			this->state = TRANSMITTER_STATE_WAITING;
+		}
+		return;
+	}
+
+	if(this->state == TRANSMITTER_STATE_WAITING) {
+		if(millis() > this->waitFinishTimeInMillis) {
+			this->state = TRANSMITTER_STATE_SENDING;
+		}
+
+		return;
+	}
+
+	if(this->state == TRANSMITTER_STATE_SENDING) {
+		if(outgoingPackets.getSize() > 0) {
+			write(outgoingPackets.get(0));
+			outgoingPackets.remove(0);
+		}
+
+		this->state = TRANSMITTER_STATE_IDLE;
+
+		return;
+	}
 }
 
 bool RF24Transmitter::addPacketToTransmissionQueue(GenericPacketData* packet)
 {
-	GenericPacketData packetToSend;
-	memcpy(&packetToSend, packet, sizeof(GenericPacketData));
-
-	return write(&packetToSend);
+	return outgoingPackets.add(packet);
 }
 
 bool RF24Transmitter::write(GenericPacketData* packet)
 {
-	unsigned long randomMillis = random(0, 20);
-	delay(randomMillis);
-
 	rf24->stopListening();
 
 	bool result = rf24->write(packet, DEFAULT_PACKET_SIZE);

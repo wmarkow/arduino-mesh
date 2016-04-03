@@ -10,11 +10,21 @@
 
 #include <RF24.h>
 #include "IotPacket.h"
+#include "../list/StaticList.h"
+
+#define OUTGOING_PACKETS_BUFFER_SIZE 3
+
+#define TRANSMITTER_STATE_IDLE 0
+#define TRANSMITTER_STATE_WAITING 1
+#define TRANSMITTER_STATE_SENDING 2
 
 class RF24Transmitter
 {
 private:
 	RF24 *rf24;
+	StaticList<GenericPacketData> outgoingPackets;
+	uint8_t state = TRANSMITTER_STATE_IDLE;
+	unsigned long waitFinishTimeInMillis = 0;
 
 	bool write(GenericPacketData* packet);
 public:
