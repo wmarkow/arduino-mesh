@@ -9,7 +9,7 @@ Flooder flooder;
 Terminal terminal;
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
 
   randomSeed(analogRead(0));
 
