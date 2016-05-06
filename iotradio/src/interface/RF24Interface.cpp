@@ -156,7 +156,7 @@ String RF24Interface::getModel()
 	return F("nRF24L01");
 }
 
-bool RF24Interface::sendPacket(GenericPacketData* packet, uint8_t dstAddress)
+bool RF24Interface::sendPacket(IotPacket* packet, uint8_t dstAddress)
 {
 	packet->setSrcAddress(ipAddress);
 	packet->setDstAddress(dstAddress);
@@ -165,7 +165,7 @@ bool RF24Interface::sendPacket(GenericPacketData* packet, uint8_t dstAddress)
 }
 
 
-bool RF24Interface::sendPacket(GenericPacketData* packet)
+bool RF24Interface::sendPacket(IotPacket* packet)
 {
 	if(packet->getProtocol() == ICMP || packet->getProtocol() == TCP)
 	{
@@ -176,7 +176,7 @@ bool RF24Interface::sendPacket(GenericPacketData* packet)
 }
 
 
-bool RF24Interface::sendTcpPacket(GenericPacketData* packet)
+bool RF24Interface::sendTcpPacket(IotPacket* packet)
 {
 	transmitter.addPacketToTransmissionQueue(packet);
 	tcpTransmitionState = WAITING_FOR_ACK;
@@ -200,7 +200,7 @@ bool RF24Interface::sendTcpPacket(GenericPacketData* packet)
 	return true;
 }
 
-bool RF24Interface::sendUdpPacket(GenericPacketData* packet)
+bool RF24Interface::sendUdpPacket(IotPacket* packet)
 {
 	if(packet->getType() == ACK)
 	{
@@ -213,13 +213,13 @@ bool RF24Interface::sendUdpPacket(GenericPacketData* packet)
 	return transmitter.addPacketToTransmissionQueue(packet);
 }
 
-bool RF24Interface::hasAckArrived(GenericPacketData* sentPacket)
+bool RF24Interface::hasAckArrived(IotPacket* sentPacket)
 {
 	loop();
 
 	for (uint8_t index = 0 ; index < receiver.getIncomingPackets()->getSize(); index ++)
 	{
-		GenericPacketData* itr = receiver.getIncomingPackets()->get(index);
+		IotPacket* itr = receiver.getIncomingPackets()->get(index);
 
 		if(itr->getType() != ACK) {
 			continue;
@@ -253,7 +253,7 @@ void RF24Interface::processIncomingPackets()
 {
 	for (uint8_t index = 0 ; index < receiver.getIncomingPackets()->getSize() ; index ++)
 	{
-		GenericPacketData* itr = receiver.getIncomingPackets()->get(index);
+		IotPacket* itr = receiver.getIncomingPackets()->get(index);
 
 		if(itr->getDstAddress() != ipAddress)
 		{
@@ -305,7 +305,7 @@ void RF24Interface::processIncomingPackets()
 	}
 }
 
-bool RF24Interface::floodToTransmitter(GenericPacketData* packet)
+bool RF24Interface::floodToTransmitter(IotPacket* packet)
 {
 	return transmitter.addPacketToTransmissionQueue(packet);
 }

@@ -18,7 +18,7 @@ class RF24Receiver
 {
 private:
 	RF24 *rf24;
-	StaticList<GenericPacketData> incomingPackets;
+	StaticList<IotPacket> incomingPackets;
 
 	bool available();
 	bool readIncomingPacket();
@@ -27,7 +27,7 @@ public:
 	RF24Receiver(RF24* rf24);
 
 	void loop();
-	StaticList<GenericPacketData>* getIncomingPackets();
+	StaticList<IotPacket>* getIncomingPackets();
 };
 
 #endif /* INTERFACE_RF24RECEIVER_H_ */

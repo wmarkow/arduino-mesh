@@ -8,9 +8,9 @@
 
 #include "RF24Transmitter.h"
 
-GenericPacketData outgoingPacketsTable[OUTGOING_PACKETS_BUFFER_SIZE];
+IotPacket outgoingPacketsTable[OUTGOING_PACKETS_BUFFER_SIZE];
 
-RF24Transmitter::RF24Transmitter(RF24* rf24) : outgoingPackets(StaticList<GenericPacketData>(outgoingPacketsTable, OUTGOING_PACKETS_BUFFER_SIZE))
+RF24Transmitter::RF24Transmitter(RF24* rf24) : outgoingPackets(StaticList<IotPacket>(outgoingPacketsTable, OUTGOING_PACKETS_BUFFER_SIZE))
 {
 	this->rf24 = rf24;
 }
@@ -49,12 +49,12 @@ void RF24Transmitter::loop()
 	}
 }
 
-bool RF24Transmitter::addPacketToTransmissionQueue(GenericPacketData* packet)
+bool RF24Transmitter::addPacketToTransmissionQueue(IotPacket* packet)
 {
 	return outgoingPackets.add(packet);
 }
 
-bool RF24Transmitter::write(GenericPacketData* packet)
+bool RF24Transmitter::write(IotPacket* packet)
 {
 	rf24->stopListening();
 

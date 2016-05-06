@@ -12,7 +12,7 @@ void Flooder::setRF24Interface(RF24Interface *rf24Interface)
 	this->rf24Interface = rf24Interface;
 }
 
-void Flooder::flood(GenericPacketData* packet)
+void Flooder::flood(IotPacket* packet)
 {
 	if(packet->getSrcAddress() == rf24Interface->getIpAddress())
 	{

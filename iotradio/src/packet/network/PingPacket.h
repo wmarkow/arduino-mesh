@@ -10,7 +10,7 @@
 
 #include "core/IotPacket.h"
 
-class PingPacket : public GenericPacketData
+class PingPacket : public IotPacket
 {
 public:
 	PingPacket();

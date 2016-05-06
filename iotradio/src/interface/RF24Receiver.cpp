@@ -7,9 +7,9 @@
 
 #include "RF24Receiver.h"
 
-GenericPacketData incomingPacketsTable[INCOMMING_PACKETS_BUFFER_SIZE];
+IotPacket incomingPacketsTable[INCOMMING_PACKETS_BUFFER_SIZE];
 
-RF24Receiver::RF24Receiver(RF24* rf24) : incomingPackets(StaticList<GenericPacketData>(incomingPacketsTable, INCOMMING_PACKETS_BUFFER_SIZE))
+RF24Receiver::RF24Receiver(RF24* rf24) : incomingPackets(StaticList<IotPacket>(incomingPacketsTable, INCOMMING_PACKETS_BUFFER_SIZE))
 {
 	this->rf24 = rf24;
 }
@@ -22,7 +22,7 @@ void RF24Receiver::loop()
 	}
 }
 
-StaticList<GenericPacketData>* RF24Receiver::getIncomingPackets()
+StaticList<IotPacket>* RF24Receiver::getIncomingPackets()
 {
 	return &incomingPackets;
 }
@@ -38,7 +38,7 @@ bool RF24Receiver::readIncomingPacket()
 		return false;
 	}
 
-	GenericPacketData incomingPacket;
+	IotPacket incomingPacket;
 	rf24->read(&incomingPacket, DEFAULT_PACKET_SIZE);
 
 	if(!rf24->isChipConnected())

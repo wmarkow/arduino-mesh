@@ -21,7 +21,7 @@ private:
 
 public:
 	void setRF24Interface(RF24Interface *rf24Interface);
-	void flood(GenericPacketData* packet);
+	void flood(IotPacket* packet);
 	FlooderCounters* getCounters();
 };
 

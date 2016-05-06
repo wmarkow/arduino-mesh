@@ -10,10 +10,10 @@
 
 #include "core/IotPacket.h"
 
-class AckPacket : public GenericPacketData
+class AckPacket : public IotPacket
 {
 public:
-	AckPacket(GenericPacketData* packet);
+	AckPacket(IotPacket* packet);
 };
 
 #endif /* PACKET_ACKPACKET_H_ */

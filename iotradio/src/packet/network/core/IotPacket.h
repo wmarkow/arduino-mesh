@@ -12,10 +12,10 @@
 #include "IotPacketType.h"
 #include "IotPacketHeader.h"
 
-class GenericPacketData : public IotPacketHeader
+class IotPacket : public IotPacketHeader
 {
 public:
-	GenericPacketData();
+	IotPacket();
 	uint8_t payload[DEFAULT_PACKET_PAYLOAD_SIZE];
 };
 

@@ -8,7 +8,7 @@
 #include <string.h>
 #include "PingPacket.h"
 
-PingPacket::PingPacket() : GenericPacketData()
+PingPacket::PingPacket() : IotPacket()
 {
 	setProtocol(ICMP);
 	setType(REGULAR);

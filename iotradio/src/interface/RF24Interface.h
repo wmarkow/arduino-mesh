@@ -59,15 +59,15 @@ private:
 	TcpTransmitionState tcpTransmitionState = IDLE;
 	PacketCounters packetCounters;
 
-	bool sendPacket(GenericPacketData* packet, uint8_t dstAddress);
-	bool sendPacket(GenericPacketData* packet);
-	bool sendTcpPacket(GenericPacketData* packet);
-	bool sendUdpPacket(GenericPacketData* packet);
+	bool sendPacket(IotPacket* packet, uint8_t dstAddress);
+	bool sendPacket(IotPacket* packet);
+	bool sendTcpPacket(IotPacket* packet);
+	bool sendUdpPacket(IotPacket* packet);
 
-	bool hasAckArrived(GenericPacketData* sentPacket);
+	bool hasAckArrived(IotPacket* sentPacket);
 	void processIncomingPackets();
 
-	bool floodToTransmitter(GenericPacketData* sentPacket);
+	bool floodToTransmitter(IotPacket* sentPacket);
 public:
 	RF24Interface();
 	void setFlooder(Flooder *flooder);

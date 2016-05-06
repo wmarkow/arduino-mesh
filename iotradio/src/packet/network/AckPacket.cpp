@@ -7,7 +7,7 @@
 
 #include "AckPacket.h"
 
-AckPacket::AckPacket(GenericPacketData* packet)
+AckPacket::AckPacket(IotPacket* packet)
 {
 	setId(packet->getId());
 	setProtocol(packet->getProtocol());

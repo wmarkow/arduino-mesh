@@ -22,16 +22,16 @@ class RF24Transmitter
 {
 private:
 	RF24 *rf24;
-	StaticList<GenericPacketData> outgoingPackets;
+	StaticList<IotPacket> outgoingPackets;
 	uint8_t state = TRANSMITTER_STATE_IDLE;
 	unsigned long waitFinishTimeInMillis = 0;
 
-	bool write(GenericPacketData* packet);
+	bool write(IotPacket* packet);
 public:
 	RF24Transmitter(RF24* rf24);
 
 	void loop();
-	bool addPacketToTransmissionQueue(GenericPacketData* packet);
+	bool addPacketToTransmissionQueue(IotPacket* packet);
 };
 
 
