@@ -9,63 +9,6 @@
 
 uint8_t IdSequence = 0;
 
-uint8_t PacketHeader::getId() {
-	return header[0];
-}
-IotProtocol PacketHeader::getProtocol() {
-	return (IotProtocol)header[1];
-}
-
-IotPacketType PacketHeader::getType() {
-	return (IotPacketType)header[2];
-}
-
-uint8_t PacketHeader::getSrcAddress() {
-	return header[3];
-}
-uint8_t PacketHeader::getDstAddress() {
-	return header[4];
-}
-
-uint8_t PacketHeader::getTTL() {
-	return header[5];
-}
-uint8_t PacketHeader::decrementTTL() {
-	uint8_t newTTL = getTTL() - 1;
-
-	if(newTTL > DEFAULT_TTL)
-	{
-		newTTL = 0;
-	}
-
-	setTTL(newTTL);
-
-	return newTTL;
-}
-
-void PacketHeader::setId(uint8_t id) {
-	header[0] = id;
-}
-void PacketHeader::setProtocol(IotProtocol protocol) {
-	header[1] = (uint8_t)protocol;
-}
-
-void PacketHeader::setType(IotPacketType type) {
-	header[2] = (uint8_t)type;
-}
-
-void PacketHeader::setSrcAddress(uint8_t address) {
-	header[3] = address;
-}
-
-void PacketHeader::setDstAddress(uint8_t address) {
-	header[4] = address;
-}
-
-void PacketHeader::setTTL(uint8_t ttl) {
-	header[5] = ttl;
-}
-
 PingPacket::PingPacket()
 {
 	setId(IdSequence);
