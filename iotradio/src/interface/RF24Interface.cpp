@@ -81,6 +81,16 @@ PingResult RF24Interface::ping(uint8_t dstAddress)
 	return pingResult;
 }
 
+bool RF24Interface::sendTcp(uint8_t dstAddress, uint8_t* data, uint8_t length)
+{
+	if(length > DEFAULT_PACKET_PAYLOAD_SIZE)
+	{
+		return false;
+	}
+
+
+}
+
 void RF24Interface::loop()
 {
 	transmitter.loop();

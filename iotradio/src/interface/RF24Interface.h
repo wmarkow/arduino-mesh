@@ -9,7 +9,7 @@
 #define INTERFACE_RF24INTERFACE_H_
 
 #include <RF24.h>
-#include "IotPacket.h"
+#include "../packet/IotPacket.h"
 #include "PacketCounters.h"
 #include "RF24Receiver.h"
 #include "RF24Transmitter.h"
@@ -77,6 +77,7 @@ public:
 	void setIpAddress(uint8_t address);
 	uint8_t getIpAddress();
 	PingResult ping(uint8_t dstAddress);
+	bool sendTcp(uint8_t dstAddress, uint8_t* data, uint8_t length);
 	PacketCounters* getCounters();
 
     String getLinkAddress();
