@@ -8,7 +8,7 @@
 #ifndef PACKET_PINGPACKET_H_
 #define PACKET_PINGPACKET_H_
 
-#include "IotPacket.h"
+#include "core/IotPacket.h"
 
 class PingPacket : public GenericPacketData
 {

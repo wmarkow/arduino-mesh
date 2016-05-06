@@ -9,7 +9,7 @@
 #define INTERFACE_RF24RECEIVER_H_
 
 #include <RF24.h>
-#include "../packet/IotPacket.h"
+#include "../packet/network/core/IotPacket.h"
 #include "../list/StaticList.h"
 
 #define INCOMMING_PACKETS_BUFFER_SIZE 3
