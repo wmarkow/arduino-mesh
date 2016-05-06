@@ -6,3 +6,8 @@
  */
 
 #include "IotPacket.h"
+
+GenericPacketData::GenericPacketData() : IotPacketHeader()
+{
+
+}

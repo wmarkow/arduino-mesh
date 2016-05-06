@@ -7,6 +7,20 @@
 
 #include "IotPacketHeader.h"
 
+uint8_t IdSequence = 0;
+
+IotPacketHeader::IotPacketHeader()
+{
+	setId(IdSequence);
+	setProtocol(TCP);
+	setType(REGULAR);
+	setTTL(DEFAULT_TTL);
+	setSrcAddress(0);
+	setDstAddress(0);
+
+	IdSequence ++;
+}
+
 uint8_t IotPacketHeader::getId() {
 	return header[0];
 }

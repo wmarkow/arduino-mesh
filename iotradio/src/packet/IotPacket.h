@@ -15,6 +15,7 @@
 class GenericPacketData : public IotPacketHeader
 {
 public:
+	GenericPacketData();
 	uint8_t payload[DEFAULT_PACKET_PAYLOAD_SIZE];
 };
 

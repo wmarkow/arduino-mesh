@@ -22,6 +22,7 @@ class IotPacketHeader
 protected:
 	uint8_t header[DEFAULT_PACKET_HEADER_SIZE];
 public:
+	IotPacketHeader();
 	uint8_t getId();
 	IotProtocol getProtocol();
 	IotPacketType getType();
