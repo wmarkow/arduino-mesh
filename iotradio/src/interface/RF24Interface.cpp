@@ -6,7 +6,8 @@
  */
 
 #include "RF24Interface.h"
-
+#include "../packet/AckPacket.h"
+#include "../packet/PingPacket.h"
 
 RF24Interface::RF24Interface() : rf24(RF24(IOT_HARDWARE_CE_PIN, IOT_HARDWARE_CS_PIN)),
 receiver(RF24Receiver(&rf24)),
