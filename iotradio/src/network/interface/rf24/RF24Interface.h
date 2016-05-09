@@ -9,11 +9,11 @@
 #define INTERFACE_RF24INTERFACE_H_
 
 #include <RF24.h>
-#include "../packet/network/core/IotPacket.h"
-#include "PacketCounters.h"
+#include "../../packet/core/IotPacket.h"
+#include "../PacketCounters.h"
+#include "../../flooder/Flooder.h"
 #include "RF24Receiver.h"
 #include "RF24Transmitter.h"
-#include "../flooder/Flooder.h"
 
 #if defined(ESP8266)
 	#define IOT_HARDWARE_CE_PIN D4

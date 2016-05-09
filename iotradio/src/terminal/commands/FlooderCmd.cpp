@@ -6,7 +6,7 @@
  */
 
 #include "FlooderCmd.h"
-#include "../../flooder/Flooder.h"
+#include "../../network/flooder/Flooder.h"
 
 extern Flooder flooder;
 

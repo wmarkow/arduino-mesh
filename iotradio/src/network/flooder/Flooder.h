@@ -9,7 +9,7 @@
 #define FLOODER_FLOODER_H_
 
 #include "FlooderCounters.h"
-#include "../interface/RF24Interface.h"
+#include "../interface/rf24/RF24Interface.h"
 
 class RF24Interface;
 
