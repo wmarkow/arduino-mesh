@@ -8,6 +8,7 @@
 #include "RF24Interface.h"
 #include "../../packet/AckPacket.h"
 #include "../../packet/PingPacket.h"
+#include "../../packet/TcpPacket.h"
 
 RF24Interface::RF24Interface() : rf24(RF24(IOT_HARDWARE_CE_PIN, IOT_HARDWARE_CS_PIN)),
 receiver(RF24Receiver(&rf24)),
@@ -89,7 +90,9 @@ bool RF24Interface::sendTcp(uint8_t dstAddress, uint8_t* data, uint8_t length)
 		return false;
 	}
 
+	TcpPacket packet = TcpPacket(data, length);
 
+	return sendPacket(&packet, dstAddress);
 }
 
 void RF24Interface::loop()
