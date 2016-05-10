@@ -5,7 +5,7 @@
  *      Author: witek
  */
 
-#include "RF24Receiver.h"
+#include "Receiver.h"
 
 IotPacket incomingPacketsTable[INCOMMING_PACKETS_BUFFER_SIZE];
 
