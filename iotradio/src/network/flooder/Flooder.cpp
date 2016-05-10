@@ -7,14 +7,14 @@
 
 #include "Flooder.h"
 
-void Flooder::setRF24Interface(RF24Interface *rf24Interface)
+void Flooder::setRF24Interface(Interface *interface)
 {
-	this->rf24Interface = rf24Interface;
+	this->interface = interface;
 }
 
 void Flooder::flood(IotPacket* packet)
 {
-	if(packet->getSrcAddress() == rf24Interface->getIpAddress())
+	if(packet->getSrcAddress() == interface->getIpAddress())
 	{
 		// I'm originator of this packet; drop it
 		counters.incDroppedCount();
@@ -31,7 +31,7 @@ void Flooder::flood(IotPacket* packet)
 	}
 
 	// flood packet
-	rf24Interface->floodToTransmitter(packet);
+	interface->floodToTransmitter(packet);
 	counters.incFloodedCount();
 }
 

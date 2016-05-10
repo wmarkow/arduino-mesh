@@ -6,48 +6,49 @@
  */
 
 #include "RF24Interface.h"
+
 #include "../../packet/AckPacket.h"
 #include "../../packet/PingPacket.h"
 #include "../../packet/TcpPacket.h"
 
-RF24Interface::RF24Interface(Device *device) : transmitter(Transmitter(device)), receiver(Receiver(device))
+Interface::Interface(Device *device) : transmitter(Transmitter(device)), receiver(Receiver(device))
 {
 	this->device = device;
 	ipAddress = 1;
 	flooder= NULL;
 }
 
-Device* RF24Interface::getDevice()
+Device* Interface::getDevice()
 {
 	return device;
 }
 
-void RF24Interface::setFlooder(Flooder *flooder)
+void Interface::setFlooder(Flooder *flooder)
 {
 	this->flooder = flooder;
 }
 
-bool RF24Interface::up()
+bool Interface::up()
 {
 	return device->up();
 }
 
-bool RF24Interface::isUp()
+bool Interface::isUp()
 {
 	return isChipConnected();
 }
 
-bool RF24Interface::isChipConnected()
+bool Interface::isChipConnected()
 {
 	return device->isChipConnected();
 }
 
-void RF24Interface::setIpAddress(uint8_t address)
+void Interface::setIpAddress(uint8_t address)
 {
 	ipAddress = address;
 }
 
-PingResult RF24Interface::ping(uint8_t dstAddress)
+PingResult Interface::ping(uint8_t dstAddress)
 {
 	PingResult pingResult;
 	pingResult.packetSize = DEFAULT_PACKET_SIZE;
@@ -66,7 +67,7 @@ PingResult RF24Interface::ping(uint8_t dstAddress)
 	return pingResult;
 }
 
-bool RF24Interface::sendTcp(uint8_t dstAddress, uint8_t* data, uint8_t length)
+bool Interface::sendTcp(uint8_t dstAddress, uint8_t* data, uint8_t length)
 {
 	if(length > DEFAULT_PACKET_PAYLOAD_SIZE)
 	{
@@ -78,24 +79,24 @@ bool RF24Interface::sendTcp(uint8_t dstAddress, uint8_t* data, uint8_t length)
 	return sendPacket(&packet, dstAddress);
 }
 
-void RF24Interface::loop()
+void Interface::loop()
 {
 	transmitter.loop();
 	processIncomingPackets();
 	receiver.loop();
 }
 
-PacketCounters* RF24Interface::getCounters()
+PacketCounters* Interface::getCounters()
 {
 	return &packetCounters;
 }
 
-uint8_t RF24Interface::getIpAddress()
+uint8_t Interface::getIpAddress()
 {
 	return ipAddress;
 }
 
-bool RF24Interface::sendPacket(IotPacket* packet, uint8_t dstAddress)
+bool Interface::sendPacket(IotPacket* packet, uint8_t dstAddress)
 {
 	packet->setSrcAddress(ipAddress);
 	packet->setDstAddress(dstAddress);
@@ -104,7 +105,7 @@ bool RF24Interface::sendPacket(IotPacket* packet, uint8_t dstAddress)
 }
 
 
-bool RF24Interface::sendPacket(IotPacket* packet)
+bool Interface::sendPacket(IotPacket* packet)
 {
 	if(packet->getProtocol() == ICMP || packet->getProtocol() == TCP)
 	{
@@ -115,7 +116,7 @@ bool RF24Interface::sendPacket(IotPacket* packet)
 }
 
 
-bool RF24Interface::sendTcpPacket(IotPacket* packet)
+bool Interface::sendTcpPacket(IotPacket* packet)
 {
 	transmitter.addPacketToTransmissionQueue(packet);
 	tcpTransmitionState = WAITING_FOR_ACK;
@@ -137,7 +138,7 @@ bool RF24Interface::sendTcpPacket(IotPacket* packet)
 	return true;
 }
 
-bool RF24Interface::sendUdpPacket(IotPacket* packet)
+bool Interface::sendUdpPacket(IotPacket* packet)
 {
 	if(packet->getType() == ACK)
 	{
@@ -150,7 +151,7 @@ bool RF24Interface::sendUdpPacket(IotPacket* packet)
 	return transmitter.addPacketToTransmissionQueue(packet);
 }
 
-bool RF24Interface::hasAckArrived(IotPacket* sentPacket)
+bool Interface::hasAckArrived(IotPacket* sentPacket)
 {
 	loop();
 
@@ -186,7 +187,7 @@ bool RF24Interface::hasAckArrived(IotPacket* sentPacket)
 	return false;
 }
 
-void RF24Interface::processIncomingPackets()
+void Interface::processIncomingPackets()
 {
 	for (uint8_t index = 0 ; index < receiver.getIncomingPackets()->getSize() ; index ++)
 	{
@@ -242,7 +243,7 @@ void RF24Interface::processIncomingPackets()
 	}
 }
 
-bool RF24Interface::floodToTransmitter(IotPacket* packet)
+bool Interface::floodToTransmitter(IotPacket* packet)
 {
 	return transmitter.addPacketToTransmissionQueue(packet);
 }

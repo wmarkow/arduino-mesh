@@ -8,19 +8,19 @@
 #ifndef FLOODER_FLOODER_H_
 #define FLOODER_FLOODER_H_
 
-#include "FlooderCounters.h"
 #include "../interface/rf24/RF24Interface.h"
+#include "FlooderCounters.h"
 
-class RF24Interface;
+class Interface;
 
 class Flooder
 {
 private:
 	FlooderCounters counters;
-	RF24Interface *rf24Interface;
+	Interface *interface;
 
 public:
-	void setRF24Interface(RF24Interface *rf24Interface);
+	void setRF24Interface(Interface *interface);
 	void flood(IotPacket* packet);
 	FlooderCounters* getCounters();
 };

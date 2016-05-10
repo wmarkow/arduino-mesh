@@ -5,8 +5,8 @@
  *      Author: witek
  */
 
-#ifndef INTERFACE_RF24INTERFACE_H_
-#define INTERFACE_RF24INTERFACE_H_
+#ifndef INTERFACE_INTERFACE_H_
+#define INTERFACE_INTERFACE_H_
 
 #include "../../../link/Device.h"
 #include "../../packet/core/IotPacket.h"
@@ -30,7 +30,7 @@ struct PingResult
 
 class Flooder;
 
-class RF24Interface
+class Interface
 {
 	friend class Flooder;
 
@@ -53,7 +53,7 @@ private:
 
 	bool floodToTransmitter(IotPacket* sentPacket);
 public:
-	RF24Interface(Device *device);
+	Interface(Device *device);
 	Device* getDevice();
 	void setFlooder(Flooder *flooder);
 	bool up();
@@ -68,4 +68,4 @@ public:
     void loop();
 };
 
-#endif /* INTERFACE_RF24INTERFACE_H_ */
+#endif /* INTERFACE_INTERFACE_H_ */

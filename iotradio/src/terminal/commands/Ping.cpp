@@ -6,9 +6,10 @@
  */
 
 #include "Ping.h"
+
 #include "../../network/interface/rf24/RF24Interface.h"
 
-extern RF24Interface radio;
+extern Interface radio;
 
 void Ping::process(CommandParams *params)
 {
