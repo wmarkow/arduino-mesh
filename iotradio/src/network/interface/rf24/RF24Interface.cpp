@@ -10,16 +10,16 @@
 #include "../../packet/PingPacket.h"
 #include "../../packet/TcpPacket.h"
 
-RF24Interface::RF24Interface(RF24Device *rf24Device) : transmitter(Transmitter(rf24Device)), receiver(Receiver(rf24Device))
+RF24Interface::RF24Interface(Device *device) : transmitter(Transmitter(device)), receiver(Receiver(device))
 {
-	rf24 = rf24Device;
+	this->device = device;
 	ipAddress = 1;
 	flooder= NULL;
 }
 
-RF24Device* RF24Interface::getRF24Device()
+Device* RF24Interface::getDevice()
 {
-	return rf24;
+	return device;
 }
 
 void RF24Interface::setFlooder(Flooder *flooder)
@@ -29,7 +29,7 @@ void RF24Interface::setFlooder(Flooder *flooder)
 
 bool RF24Interface::up()
 {
-	return rf24->up();
+	return device->up();
 }
 
 bool RF24Interface::isUp()
@@ -39,7 +39,7 @@ bool RF24Interface::isUp()
 
 bool RF24Interface::isChipConnected()
 {
-	return rf24->isChipConnected();
+	return device->isChipConnected();
 }
 
 void RF24Interface::setIpAddress(uint8_t address)

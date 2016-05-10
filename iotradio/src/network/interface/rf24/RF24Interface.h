@@ -8,7 +8,7 @@
 #ifndef INTERFACE_RF24INTERFACE_H_
 #define INTERFACE_RF24INTERFACE_H_
 
-#include "../../../link/rf24/RF24Device.h"
+#include "../../../link/Device.h"
 #include "../../packet/core/IotPacket.h"
 #include "../PacketCounters.h"
 #include "../../flooder/Flooder.h"
@@ -36,7 +36,7 @@ class RF24Interface
 
 private:
 	Flooder *flooder;
-	RF24Device* rf24;
+	Device* device;
 	Receiver receiver;
 	Transmitter transmitter;
 	byte ipAddress;
@@ -53,8 +53,8 @@ private:
 
 	bool floodToTransmitter(IotPacket* sentPacket);
 public:
-	RF24Interface(RF24Device *rf24Device);
-	RF24Device* getRF24Device();
+	RF24Interface(Device *device);
+	Device* getDevice();
 	void setFlooder(Flooder *flooder);
 	bool up();
 	bool isUp();
