@@ -5,7 +5,7 @@
  *      Author: witek
  */
 
-#include "RF24Interface.h"
+#include "Interface.h"
 
 #include "../../packet/AckPacket.h"
 #include "../../packet/PingPacket.h"
