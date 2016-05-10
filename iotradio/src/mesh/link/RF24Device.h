@@ -9,7 +9,8 @@
 #define LINK_RF24_RF24DEVICE_H_
 
 #include <RF24.h>
-#include "Device.h"
+
+#include "../../mesh/link/Device.h"
 
 #if defined(ESP8266)
 	#define IOT_HARDWARE_CE_PIN D4

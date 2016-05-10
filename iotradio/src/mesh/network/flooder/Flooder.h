@@ -8,8 +8,8 @@
 #ifndef FLOODER_FLOODER_H_
 #define FLOODER_FLOODER_H_
 
-#include "../interface/Interface.h"
-#include "FlooderCounters.h"
+#include "../../../mesh/network/flooder/FlooderCounters.h"
+#include "../../../mesh/network/interface/Interface.h"
 
 class Interface;
 

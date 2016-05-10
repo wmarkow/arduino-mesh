@@ -5,7 +5,7 @@
  *      Author: witek
  */
 
-#include "Receiver.h"
+#include "../../../mesh/network/interface/Receiver.h"
 
 IotPacket incomingPacketsTable[INCOMMING_PACKETS_BUFFER_SIZE];
 

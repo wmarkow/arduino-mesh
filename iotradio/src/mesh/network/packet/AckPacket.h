@@ -8,7 +8,7 @@
 #ifndef PACKET_ACKPACKET_H_
 #define PACKET_ACKPACKET_H_
 
-#include "core/IotPacket.h"
+#include "../../../mesh/network/packet/core/IotPacket.h"
 
 class AckPacket : public IotPacket
 {

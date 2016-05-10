@@ -8,8 +8,8 @@
 #ifndef PACKET_IOTPACKETHEADER_H_
 #define PACKET_IOTPACKETHEADER_H_
 
-#include "IotProtocol.h"
-#include "IotPacketType.h"
+#include "../../../../mesh/network/packet/core/IotPacketType.h"
+#include "../../../../mesh/network/packet/core/IotProtocol.h"
 
 #define DEFAULT_TTL 3
 #define DEFAULT_PACKET_SIZE 32

@@ -5,7 +5,7 @@
  *      Author: witek
  */
 
-#include "PacketCounters.h"
+#include "../../../mesh/network/interface/PacketCounters.h"
 
 void PacketCounters::incTransmittedTcpSuccess()
 {

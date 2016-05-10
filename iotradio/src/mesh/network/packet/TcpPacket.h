@@ -8,7 +8,7 @@
 #ifndef NETWORK_PACKET_TCPPACKET_H_
 #define NETWORK_PACKET_TCPPACKET_H_
 
-#include "core/IotPacket.h"
+#include "../../../mesh/network/packet/core/IotPacket.h"
 
 class TcpPacket : public IotPacket
 {

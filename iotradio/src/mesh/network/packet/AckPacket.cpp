@@ -5,7 +5,7 @@
  *      Author: witek
  */
 
-#include "AckPacket.h"
+#include "../../../mesh/network/packet/AckPacket.h"
 
 AckPacket::AckPacket(IotPacket* packet)
 {

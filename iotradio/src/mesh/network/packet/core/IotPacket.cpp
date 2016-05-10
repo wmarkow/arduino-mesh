@@ -5,7 +5,7 @@
  *      Author: witek
  */
 
-#include "IotPacket.h"
+#include "../../../../mesh/network/packet/core/IotPacket.h"
 
 IotPacket::IotPacket() : IotPacketHeader()
 {

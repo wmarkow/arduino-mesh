@@ -8,9 +8,9 @@
 #ifndef IOTPACKET_H_
 #define IOTPACKET_H_
 
-#include "IotProtocol.h"
-#include "IotPacketType.h"
-#include "IotPacketHeader.h"
+#include "../../../../mesh/network/packet/core/IotPacketHeader.h"
+#include "../../../../mesh/network/packet/core/IotPacketType.h"
+#include "../../../../mesh/network/packet/core/IotProtocol.h"
 
 class IotPacket : public IotPacketHeader
 {

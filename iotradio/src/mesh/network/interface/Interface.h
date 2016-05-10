@@ -8,12 +8,12 @@
 #ifndef INTERFACE_INTERFACE_H_
 #define INTERFACE_INTERFACE_H_
 
-#include "../../link/Device.h"
-#include "../packet/core/IotPacket.h"
-#include "PacketCounters.h"
+#include "../../../mesh/link/Device.h"
+#include "../../../mesh/network/interface/PacketCounters.h"
+#include "../../../mesh/network/interface/Receiver.h"
+#include "../../../mesh/network/interface/Transmitter.h"
+#include "../../../mesh/network/packet/core/IotPacket.h"
 #include "../flooder/Flooder.h"
-#include "Receiver.h"
-#include "Transmitter.h"
 
 enum TcpTransmitionState
 {

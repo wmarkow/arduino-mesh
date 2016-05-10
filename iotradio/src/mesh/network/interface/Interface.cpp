@@ -5,11 +5,11 @@
  *      Author: witek
  */
 
-#include "Interface.h"
+#include "../../../mesh/network/interface/Interface.h"
 
-#include "../packet/AckPacket.h"
-#include "../packet/PingPacket.h"
-#include "../packet/TcpPacket.h"
+#include "../../../mesh/network/packet/AckPacket.h"
+#include "../../../mesh/network/packet/PingPacket.h"
+#include "../../../mesh/network/packet/TcpPacket.h"
 
 Interface::Interface(Device *device) : transmitter(Transmitter(device)), receiver(Receiver(device))
 {

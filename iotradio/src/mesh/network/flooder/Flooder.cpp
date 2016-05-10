@@ -5,7 +5,7 @@
  *      Author: witek
  */
 
-#include "Flooder.h"
+#include "../../../mesh/network/flooder/Flooder.h"
 
 void Flooder::setRF24Interface(Interface *interface)
 {

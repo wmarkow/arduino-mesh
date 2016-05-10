@@ -5,7 +5,7 @@
  *      Author: witek
  */
 
-#include "IotPacketHeader.h"
+#include "../../../../mesh/network/packet/core/IotPacketHeader.h"
 
 uint8_t IdSequence = 0;
 

@@ -5,8 +5,9 @@
  *      Author: witek
  */
 
+#include "../../../mesh/network/packet/TcpPacket.h"
+
 #include <string.h>
-#include "TcpPacket.h"
 
 TcpPacket::TcpPacket(uint8_t* data, uint8_t length) : IotPacket()
 {

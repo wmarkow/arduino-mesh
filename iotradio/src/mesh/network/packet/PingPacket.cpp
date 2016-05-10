@@ -5,8 +5,9 @@
  *      Author: witek
  */
 
+#include "../../../mesh/network/packet/PingPacket.h"
+
 #include <string.h>
-#include "PingPacket.h"
 
 PingPacket::PingPacket() : IotPacket()
 {

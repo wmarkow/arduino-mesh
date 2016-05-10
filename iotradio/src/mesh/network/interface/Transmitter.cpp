@@ -5,7 +5,7 @@
  *      Author: witek
  */
 
-#include "Transmitter.h"
+#include "../../../mesh/network/interface/Transmitter.h"
 
 IotPacket outgoingPacketsTable[OUTGOING_PACKETS_BUFFER_SIZE];
 

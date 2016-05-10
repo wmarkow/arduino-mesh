@@ -8,7 +8,7 @@
 #ifndef PACKET_PINGPACKET_H_
 #define PACKET_PINGPACKET_H_
 
-#include "core/IotPacket.h"
+#include "../../../mesh/network/packet/core/IotPacket.h"
 
 class PingPacket : public IotPacket
 {
