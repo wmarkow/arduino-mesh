@@ -10,9 +10,9 @@
 
 IotPacket outgoingPacketsTable[OUTGOING_PACKETS_BUFFER_SIZE];
 
-RF24Transmitter::RF24Transmitter(RF24* rf24) : outgoingPackets(StaticList<IotPacket>(outgoingPacketsTable, OUTGOING_PACKETS_BUFFER_SIZE))
+RF24Transmitter::RF24Transmitter(RF24Device* rf24Device) : outgoingPackets(StaticList<IotPacket>(outgoingPacketsTable, OUTGOING_PACKETS_BUFFER_SIZE))
 {
-	this->rf24 = rf24;
+	this->rf24Device = rf24Device;
 }
 
 void RF24Transmitter::loop()
@@ -56,12 +56,6 @@ bool RF24Transmitter::addPacketToTransmissionQueue(IotPacket* packet)
 
 bool RF24Transmitter::write(IotPacket* packet)
 {
-	rf24->stopListening();
-
-	bool result = rf24->write(packet, DEFAULT_PACKET_SIZE);
-
-	rf24->startListening();
-
-	return result;
+	return rf24Device->write(packet, DEFAULT_PACKET_SIZE);
 }
 

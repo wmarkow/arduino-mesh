@@ -57,14 +57,14 @@ void Ifconfig::processIfconfig()
 	}
 
 	Serial.print(F("  Model         "));
-	Serial.println(radio.getModel());
+	Serial.println(radio.getRF24Device()->getModel());
 	Serial.print(F("  inet addr     "));
 	Serial.println((int)radio.getIpAddress(), DEC);
 	Serial.print(F("  HWaddr        "));
-	Serial.println(radio.getLinkAddress());
+	Serial.println(radio.getRF24Device()->getLinkAddress());
 
 	Serial.print(F("  PA level      "));
-	switch(radio.getPALevel())
+	switch(radio.getRF24Device()->getPALevel())
 	{
 		case RF24_PA_MIN:
 			Serial.println(F("RF24_PA_MIN (-18dBm)"));
@@ -86,7 +86,7 @@ void Ifconfig::processIfconfig()
 	}
 
 	Serial.print(F("  Data rate     "));
-	switch(radio.getDataRate())
+	switch(radio.getRF24Device()->getDataRate())
 	{
 		case RF24_1MBPS:
 			Serial.println(F("RF24_1MBPS"));
@@ -103,10 +103,10 @@ void Ifconfig::processIfconfig()
 	}
 
 	Serial.print(F("  RF channel    "));
-	Serial.println(radio.getRFChannel());
+	Serial.println(radio.getRF24Device()->getRFChannel());
 
 	Serial.print(F("  Payload size  "));
-	Serial.println(radio.getPayloadSize());
+	Serial.println(radio.getRF24Device()->getPayloadSize());
 
 	Serial.println(F("  TX"));
 	Serial.print(F("   + TCP success ")); Serial.println(radio.getCounters()->getTransmittedTcpSuccess());

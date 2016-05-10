@@ -10,10 +10,9 @@
 #include "../../packet/PingPacket.h"
 #include "../../packet/TcpPacket.h"
 
-RF24Interface::RF24Interface() : rf24(RF24(IOT_HARDWARE_CE_PIN, IOT_HARDWARE_CS_PIN)),
-receiver(RF24Receiver(&rf24)),
-transmitter(RF24Transmitter(&rf24))
+RF24Interface::RF24Interface(RF24Device *rf24Device) : transmitter(RF24Transmitter(rf24Device)), receiver(RF24Receiver(rf24Device))
 {
+	rf24 = rf24Device;
 	linkAddress[0] = 0xc1;
 	linkAddress[1] = 0xc1;
 	linkAddress[2] = 0xc1;
@@ -24,6 +23,11 @@ transmitter(RF24Transmitter(&rf24))
 	flooder= NULL;
 }
 
+RF24Device* RF24Interface::getRF24Device()
+{
+	return rf24;
+}
+
 void RF24Interface::setFlooder(Flooder *flooder)
 {
 	this->flooder = flooder;
@@ -31,22 +35,7 @@ void RF24Interface::setFlooder(Flooder *flooder)
 
 bool RF24Interface::up()
 {
-	if(!rf24.begin())
-	{
-		return false;
-	}
-
-	rf24.openWritingPipe(linkAddress);
-	rf24.openReadingPipe(1, linkAddress);
-	rf24.setPALevel(RF24_PA_MIN);
-	rf24.setDataRate(RF24_1MBPS);
-	rf24.setAutoAck(false);
-	rf24.setPayloadSize(DEFAULT_PACKET_SIZE);
-	rf24.openWritingPipe(linkAddress);
-	rf24.openReadingPipe(1, linkAddress);
-	rf24.startListening();
-
-	return isChipConnected();
+	return rf24->up();
 }
 
 bool RF24Interface::isUp()
@@ -56,7 +45,7 @@ bool RF24Interface::isUp()
 
 bool RF24Interface::isChipConnected()
 {
-	return rf24.isChipConnected();
+	return rf24->isChipConnected();
 }
 
 void RF24Interface::setIpAddress(uint8_t address)
@@ -110,53 +99,6 @@ PacketCounters* RF24Interface::getCounters()
 uint8_t RF24Interface::getIpAddress()
 {
 	return ipAddress;
-}
-
-String RF24Interface::getLinkAddress()
-{
-	String result;
-
-	result.concat(linkAddress[0]);
-	result.concat(':');
-	result.concat(linkAddress[1]);
-	result.concat(':');
-	result.concat(linkAddress[2]);
-	result.concat(':');
-	result.concat(linkAddress[3]);
-	result.concat(':');
-	result.concat(linkAddress[4]);
-
-	return result;
-}
-
-uint8_t RF24Interface::getPALevel()
-{
-	return rf24.getPALevel();
-}
-
-uint8_t RF24Interface::getDataRate()
-{
-	return rf24.getDataRate();
-}
-
-uint8_t RF24Interface::getPayloadSize()
-{
-	return rf24.getPayloadSize();
-}
-
-uint8_t RF24Interface::getRFChannel()
-{
-	return rf24.getChannel();
-}
-
-String RF24Interface::getModel()
-{
-	if(rf24.isPVariant())
-	{
-		return F("nRF24L01+");
-	}
-
-	return F("nRF24L01");
 }
 
 bool RF24Interface::sendPacket(IotPacket* packet, uint8_t dstAddress)
