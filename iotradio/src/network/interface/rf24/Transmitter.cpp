@@ -9,12 +9,12 @@
 
 IotPacket outgoingPacketsTable[OUTGOING_PACKETS_BUFFER_SIZE];
 
-RF24Transmitter::RF24Transmitter(Device* device) : outgoingPackets(StaticList<IotPacket>(outgoingPacketsTable, OUTGOING_PACKETS_BUFFER_SIZE))
+Transmitter::Transmitter(Device* device) : outgoingPackets(StaticList<IotPacket>(outgoingPacketsTable, OUTGOING_PACKETS_BUFFER_SIZE))
 {
 	this->device = device;
 }
 
-void RF24Transmitter::loop()
+void Transmitter::loop()
 {
 	if(this->state == TRANSMITTER_STATE_IDLE) {
 		if(outgoingPackets.getSize() > 0){
@@ -48,12 +48,12 @@ void RF24Transmitter::loop()
 	}
 }
 
-bool RF24Transmitter::addPacketToTransmissionQueue(IotPacket* packet)
+bool Transmitter::addPacketToTransmissionQueue(IotPacket* packet)
 {
 	return outgoingPackets.add(packet);
 }
 
-bool RF24Transmitter::write(IotPacket* packet)
+bool Transmitter::write(IotPacket* packet)
 {
 	return device->write(packet, DEFAULT_PACKET_SIZE);
 }

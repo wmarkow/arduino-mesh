@@ -14,7 +14,7 @@
 
 #define INCOMMING_PACKETS_BUFFER_SIZE 3
 
-class RF24Receiver
+class Receiver
 {
 private:
 	Device *device;
@@ -24,7 +24,7 @@ private:
 	bool readIncomingPacket();
 	/*void debugHexPrintToSerial(void* object, uint8_t length);*/
 public:
-	RF24Receiver(Device* rf24Device);
+	Receiver(Device* rf24Device);
 
 	void loop();
 	StaticList<IotPacket>* getIncomingPackets();

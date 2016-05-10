@@ -37,8 +37,8 @@ class RF24Interface
 private:
 	Flooder *flooder;
 	RF24Device* rf24;
-	RF24Receiver receiver;
-	RF24Transmitter transmitter;
+	Receiver receiver;
+	Transmitter transmitter;
 	byte ipAddress;
 	TcpTransmitionState tcpTransmitionState = IDLE;
 	PacketCounters packetCounters;

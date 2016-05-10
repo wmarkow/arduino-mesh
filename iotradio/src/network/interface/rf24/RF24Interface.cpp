@@ -10,7 +10,7 @@
 #include "../../packet/PingPacket.h"
 #include "../../packet/TcpPacket.h"
 
-RF24Interface::RF24Interface(RF24Device *rf24Device) : transmitter(RF24Transmitter(rf24Device)), receiver(RF24Receiver(rf24Device))
+RF24Interface::RF24Interface(RF24Device *rf24Device) : transmitter(Transmitter(rf24Device)), receiver(Receiver(rf24Device))
 {
 	rf24 = rf24Device;
 	ipAddress = 1;

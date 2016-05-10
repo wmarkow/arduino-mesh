@@ -18,7 +18,7 @@
 #define TRANSMITTER_STATE_WAITING 1
 #define TRANSMITTER_STATE_SENDING 2
 
-class RF24Transmitter
+class Transmitter
 {
 private:
 	Device *device;
@@ -28,7 +28,7 @@ private:
 
 	bool write(IotPacket* packet);
 public:
-	RF24Transmitter(Device* device);
+	Transmitter(Device* device);
 
 	void loop();
 	bool addPacketToTransmissionQueue(IotPacket* packet);
