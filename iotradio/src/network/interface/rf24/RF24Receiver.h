@@ -8,7 +8,7 @@
 #ifndef INTERFACE_RF24RECEIVER_H_
 #define INTERFACE_RF24RECEIVER_H_
 
-#include "../../../link/rf24/RF24Device.h"
+#include "../../../link/Device.h"
 #include "../../packet/core/IotPacket.h"
 #include "../../../list/StaticList.h"
 
@@ -17,14 +17,14 @@
 class RF24Receiver
 {
 private:
-	RF24Device *rf24Device;
+	Device *device;
 	StaticList<IotPacket> incomingPackets;
 
 	bool available();
 	bool readIncomingPacket();
 	/*void debugHexPrintToSerial(void* object, uint8_t length);*/
 public:
-	RF24Receiver(RF24Device* rf24Device);
+	RF24Receiver(Device* rf24Device);
 
 	void loop();
 	StaticList<IotPacket>* getIncomingPackets();

@@ -9,9 +9,9 @@
 
 IotPacket incomingPacketsTable[INCOMMING_PACKETS_BUFFER_SIZE];
 
-RF24Receiver::RF24Receiver(RF24Device* rf24Device) : incomingPackets(StaticList<IotPacket>(incomingPacketsTable, INCOMMING_PACKETS_BUFFER_SIZE))
+RF24Receiver::RF24Receiver(Device* device) : incomingPackets(StaticList<IotPacket>(incomingPacketsTable, INCOMMING_PACKETS_BUFFER_SIZE))
 {
-	this->rf24Device = rf24Device;
+	this->device = device;
 }
 
 void RF24Receiver::loop()
@@ -29,7 +29,7 @@ StaticList<IotPacket>* RF24Receiver::getIncomingPackets()
 
 bool RF24Receiver::available()
 {
-	return rf24Device->available() && rf24Device->isChipConnected();
+	return device->available() && device->isChipConnected();
 }
 
 bool RF24Receiver::readIncomingPacket()
@@ -39,9 +39,9 @@ bool RF24Receiver::readIncomingPacket()
 	}
 
 	IotPacket incomingPacket;
-	rf24Device->read(&incomingPacket, DEFAULT_PACKET_SIZE);
+	device->read(&incomingPacket, DEFAULT_PACKET_SIZE);
 
-	if(!rf24Device->isChipConnected())
+	if(!device->isChipConnected())
 	{
 		return false;
 	}
