@@ -7,7 +7,7 @@
 
 #include "Ping.h"
 
-#include "../../network/interface/rf24/Interface.h"
+#include "../../network/interface/Interface.h"
 
 extern Interface radio;
 

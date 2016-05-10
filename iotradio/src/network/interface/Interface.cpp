@@ -7,9 +7,9 @@
 
 #include "Interface.h"
 
-#include "../../packet/AckPacket.h"
-#include "../../packet/PingPacket.h"
-#include "../../packet/TcpPacket.h"
+#include "../packet/AckPacket.h"
+#include "../packet/PingPacket.h"
+#include "../packet/TcpPacket.h"
 
 Interface::Interface(Device *device) : transmitter(Transmitter(device)), receiver(Receiver(device))
 {

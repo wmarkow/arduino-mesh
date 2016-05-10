@@ -5,12 +5,12 @@
  *      Author: witek
  */
 
-#ifndef INTERFACE_RF24TRANSMITTER_H_
-#define INTERFACE_RF24TRANSMITTER_H_
+#ifndef INTERFACE_TRANSMITTER_H_
+#define INTERFACE_TRANSMITTER_H_
 
-#include "../../../link/Device.h"
-#include "../../packet/core/IotPacket.h"
-#include "../../../list/StaticList.h"
+#include "../../link/Device.h"
+#include "../packet/core/IotPacket.h"
+#include "../../list/StaticList.h"
 
 #define OUTGOING_PACKETS_BUFFER_SIZE 3
 
@@ -35,4 +35,4 @@ public:
 };
 
 
-#endif /* INTERFACE_RF24TRANSMITTER_H_ */
+#endif /* INTERFACE_TRANSMITTER_H_ */

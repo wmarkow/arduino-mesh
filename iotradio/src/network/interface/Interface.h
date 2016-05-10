@@ -8,10 +8,10 @@
 #ifndef INTERFACE_INTERFACE_H_
 #define INTERFACE_INTERFACE_H_
 
-#include "../../../link/Device.h"
-#include "../../packet/core/IotPacket.h"
-#include "../PacketCounters.h"
-#include "../../flooder/Flooder.h"
+#include "../../link/Device.h"
+#include "../packet/core/IotPacket.h"
+#include "PacketCounters.h"
+#include "../flooder/Flooder.h"
 #include "Receiver.h"
 #include "Transmitter.h"
 

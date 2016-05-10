@@ -8,7 +8,7 @@
 #ifndef FLOODER_FLOODER_H_
 #define FLOODER_FLOODER_H_
 
-#include "../interface/rf24/Interface.h"
+#include "../interface/Interface.h"
 #include "FlooderCounters.h"
 
 class Interface;

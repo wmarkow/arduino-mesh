@@ -5,12 +5,12 @@
  *      Author: witek
  */
 
-#ifndef INTERFACE_RF24RECEIVER_H_
-#define INTERFACE_RF24RECEIVER_H_
+#ifndef INTERFACE_RECEIVER_H_
+#define INTERFACE_RECEIVER_H_
 
-#include "../../../link/Device.h"
-#include "../../packet/core/IotPacket.h"
-#include "../../../list/StaticList.h"
+#include "../../link/Device.h"
+#include "../packet/core/IotPacket.h"
+#include "../../list/StaticList.h"
 
 #define INCOMMING_PACKETS_BUFFER_SIZE 3
 
@@ -30,4 +30,4 @@ public:
 	StaticList<IotPacket>* getIncomingPackets();
 };
 
-#endif /* INTERFACE_RF24RECEIVER_H_ */
+#endif /* INTERFACE_RECEIVER_H_ */
