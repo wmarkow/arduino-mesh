@@ -13,12 +13,6 @@
 RF24Interface::RF24Interface(RF24Device *rf24Device) : transmitter(RF24Transmitter(rf24Device)), receiver(RF24Receiver(rf24Device))
 {
 	rf24 = rf24Device;
-	linkAddress[0] = 0xc1;
-	linkAddress[1] = 0xc1;
-	linkAddress[2] = 0xc1;
-	linkAddress[3] = 0xc1;
-	linkAddress[4] = 0xc1;
-
 	ipAddress = 1;
 	flooder= NULL;
 }
@@ -126,12 +120,10 @@ bool RF24Interface::sendTcpPacket(IotPacket* packet)
 	transmitter.addPacketToTransmissionQueue(packet);
 	tcpTransmitionState = WAITING_FOR_ACK;
 
-	unsigned long startedWaitingAtMicros = micros();               // Set up a timeout period, get the current microseconds
+	unsigned long startedWaitingAtMicros = micros();
 
 	while (!hasAckArrived(packet)){
-		if (micros() - startedWaitingAtMicros > 200000 ){            // If waited longer than 200ms, indicate timeout and exit while loop
-			Serial.println(F("Failed, response timed out."));
-
+		if (micros() - startedWaitingAtMicros > 200000 ) {
 			tcpTransmitionState = IDLE;
 			packetCounters.incTransmittedTcpFailed();
 
