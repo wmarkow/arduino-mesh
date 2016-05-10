@@ -13,7 +13,7 @@
 #include "../PacketCounters.h"
 #include "../../flooder/Flooder.h"
 #include "RF24Receiver.h"
-#include "RF24Transmitter.h"
+#include "Transmitter.h"
 
 enum TcpTransmitionState
 {
