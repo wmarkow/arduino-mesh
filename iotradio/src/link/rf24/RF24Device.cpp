@@ -80,14 +80,37 @@ String RF24Device::getLinkAddress()
 	return result;
 }
 
-uint8_t RF24Device::getPALevel()
+int8_t RF24Device::getPALevelInDbm()
 {
-	return rf24.getPALevel();
+	switch(rf24.getPALevel())
+	{
+		case RF24_PA_MIN:
+			return -18;
+		case RF24_PA_LOW:
+			return -12;
+		case RF24_PA_HIGH:
+			return -6;
+		case RF24_PA_MAX:
+			return 0;
+		case RF24_PA_ERROR:
+		default:
+			return -99;
+	}
 }
 
-uint8_t RF24Device::getDataRate()
+uint16_t RF24Device::getDataRateInKbs()
 {
-	return rf24.getDataRate();
+	switch(rf24.getDataRate())
+	{
+		case RF24_1MBPS:
+			return 1000;
+		case RF24_2MBPS:
+			return 2000;
+		case RF24_250KBPS:
+			return 250;
+		default:
+			return 0;
+	}
 }
 
 uint8_t RF24Device::getPayloadSize()

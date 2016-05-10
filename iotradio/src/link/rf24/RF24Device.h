@@ -36,8 +36,8 @@ public:
 	bool write(void* data, uint8_t size);
 
 	String getLinkAddress();
-	uint8_t getPALevel();
-	uint8_t getDataRate();
+	int8_t getPALevelInDbm();
+	uint16_t getDataRateInKbs();
 	uint8_t getPayloadSize();
 	uint8_t getRFChannel();
 	String getModel();

@@ -20,8 +20,8 @@ public:
 	virtual bool write(void* data, uint8_t size) = 0;
 
 	virtual String getLinkAddress() = 0;
-	virtual uint8_t getPALevel() = 0;
-	virtual uint8_t getDataRate() = 0;
+	virtual int8_t getPALevelInDbm() = 0;
+	virtual uint16_t getDataRateInKbs() = 0;
 	virtual uint8_t getPayloadSize() = 0;
 	virtual uint8_t getRFChannel() = 0;
 	virtual String getModel() = 0;
