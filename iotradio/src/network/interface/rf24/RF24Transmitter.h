@@ -8,7 +8,7 @@
 #ifndef INTERFACE_RF24TRANSMITTER_H_
 #define INTERFACE_RF24TRANSMITTER_H_
 
-#include "../../../link/rf24/RF24Device.h"
+#include "../../../link/Device.h"
 #include "../../packet/core/IotPacket.h"
 #include "../../../list/StaticList.h"
 
@@ -21,14 +21,14 @@
 class RF24Transmitter
 {
 private:
-	RF24Device *rf24Device;
+	Device *device;
 	StaticList<IotPacket> outgoingPackets;
 	uint8_t state = TRANSMITTER_STATE_IDLE;
 	unsigned long waitFinishTimeInMillis = 0;
 
 	bool write(IotPacket* packet);
 public:
-	RF24Transmitter(RF24Device* rf24Device);
+	RF24Transmitter(Device* device);
 
 	void loop();
 	bool addPacketToTransmissionQueue(IotPacket* packet);

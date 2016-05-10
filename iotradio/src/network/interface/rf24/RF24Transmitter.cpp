@@ -5,14 +5,13 @@
  *      Author: witek
  */
 
-
 #include "RF24Transmitter.h"
 
 IotPacket outgoingPacketsTable[OUTGOING_PACKETS_BUFFER_SIZE];
 
-RF24Transmitter::RF24Transmitter(RF24Device* rf24Device) : outgoingPackets(StaticList<IotPacket>(outgoingPacketsTable, OUTGOING_PACKETS_BUFFER_SIZE))
+RF24Transmitter::RF24Transmitter(Device* device) : outgoingPackets(StaticList<IotPacket>(outgoingPacketsTable, OUTGOING_PACKETS_BUFFER_SIZE))
 {
-	this->rf24Device = rf24Device;
+	this->device = device;
 }
 
 void RF24Transmitter::loop()
@@ -56,6 +55,6 @@ bool RF24Transmitter::addPacketToTransmissionQueue(IotPacket* packet)
 
 bool RF24Transmitter::write(IotPacket* packet)
 {
-	return rf24Device->write(packet, DEFAULT_PACKET_SIZE);
+	return device->write(packet, DEFAULT_PACKET_SIZE);
 }
 

@@ -8,8 +8,7 @@
 #ifndef DEVICE_H_
 #define DEVICE_H_
 
-#include <stdint.h>
-#include <string.h>
+#include <Arduino.h>
 
 class Device
 {
