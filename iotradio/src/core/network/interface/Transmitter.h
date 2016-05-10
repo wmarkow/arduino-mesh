@@ -10,7 +10,7 @@
 
 #include "../../link/Device.h"
 #include "../packet/core/IotPacket.h"
-#include "../../list/StaticList.h"
+#include "../../../list/StaticList.h"
 
 #define OUTGOING_PACKETS_BUFFER_SIZE 3
 

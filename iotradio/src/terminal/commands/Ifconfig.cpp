@@ -7,7 +7,7 @@
 
 #include "Ifconfig.h"
 
-#include "../../network/interface/Interface.h"
+#include "../../core/network/interface/Interface.h"
 
 extern Interface radio;
 
