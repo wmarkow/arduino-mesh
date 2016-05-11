@@ -46,5 +46,10 @@
 			<type>2</type>
 			<location>/home/witek/dev/tools/eclipse-cpp-mars/arduinoPlugin/packages/arduino/hardware/avr/1.6.9/libraries/SPI</location>
 		</link>
+		<link>
+			<name>libraries/arduino-static-vector</name>
+			<type>2</type>
+			<location>/home/witek/Arduino/libraries/arduino-static-vector</location>
+		</link>
 	</linkedResources>
 </projectDescription>

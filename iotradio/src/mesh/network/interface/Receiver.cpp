@@ -9,7 +9,7 @@
 
 IotPacket incomingPacketsTable[INCOMMING_PACKETS_BUFFER_SIZE];
 
-Receiver::Receiver(Device* device) : incomingPackets(StaticList<IotPacket>(incomingPacketsTable, INCOMMING_PACKETS_BUFFER_SIZE))
+Receiver::Receiver(Device* device) : incomingPackets(StaticVector<IotPacket>(incomingPacketsTable, INCOMMING_PACKETS_BUFFER_SIZE))
 {
 	this->device = device;
 }
@@ -22,7 +22,7 @@ void Receiver::loop()
 	}
 }
 
-StaticList<IotPacket>* Receiver::getIncomingPackets()
+StaticVector<IotPacket>* Receiver::getIncomingPackets()
 {
 	return &incomingPackets;
 }
