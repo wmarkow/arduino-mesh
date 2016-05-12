@@ -1,6 +1,7 @@
 arduino/**
 .settings/**
 Release/**
+Debug/**
 core/**
 libraries/**
 .ino.cpp
