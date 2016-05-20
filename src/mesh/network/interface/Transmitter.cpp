@@ -7,9 +7,7 @@
 
 #include "../../../mesh/network/interface/Transmitter.h"
 
-IotPacket outgoingPacketsTable[OUTGOING_PACKETS_BUFFER_SIZE];
-
-Transmitter::Transmitter(Device* device) : outgoingPackets(StaticVector<IotPacket>(outgoingPacketsTable, OUTGOING_PACKETS_BUFFER_SIZE))
+Transmitter::Transmitter(Device* device) : outgoingPackets(Array<IotPacket, OUTGOING_PACKETS_BUFFER_SIZE>())
 {
 	this->device = device;
 }

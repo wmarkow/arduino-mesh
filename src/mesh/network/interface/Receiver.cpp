@@ -7,9 +7,7 @@
 
 #include "../../../mesh/network/interface/Receiver.h"
 
-IotPacket incomingPacketsTable[INCOMMING_PACKETS_BUFFER_SIZE];
-
-Receiver::Receiver(Device* device) : incomingPackets(StaticVector<IotPacket>(incomingPacketsTable, INCOMMING_PACKETS_BUFFER_SIZE))
+Receiver::Receiver(Device* device) : incomingPackets(Array<IotPacket, INCOMMING_PACKETS_BUFFER_SIZE>())
 {
 	this->device = device;
 }
@@ -22,7 +20,7 @@ void Receiver::loop()
 	}
 }
 
-StaticVector<IotPacket>* Receiver::getIncomingPackets()
+Array<IotPacket, INCOMMING_PACKETS_BUFFER_SIZE>* Receiver::getIncomingPackets()
 {
 	return &incomingPackets;
 }

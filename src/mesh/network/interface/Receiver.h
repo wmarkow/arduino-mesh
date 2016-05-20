@@ -8,7 +8,7 @@
 #ifndef INTERFACE_RECEIVER_H_
 #define INTERFACE_RECEIVER_H_
 
-#include <StaticVector.h>
+#include <Array.h>
 #include "../../link/Device.h"
 #include "../packet/core/IotPacket.h"
 
@@ -18,7 +18,7 @@ class Receiver
 {
 private:
 	Device *device;
-	StaticVector<IotPacket> incomingPackets;
+	Array<IotPacket, INCOMMING_PACKETS_BUFFER_SIZE> incomingPackets;
 
 	bool available();
 	bool readIncomingPacket();
@@ -27,7 +27,7 @@ public:
 	Receiver(Device* rf24Device);
 
 	void loop();
-	StaticVector<IotPacket>* getIncomingPackets();
+	Array<IotPacket, INCOMMING_PACKETS_BUFFER_SIZE>* getIncomingPackets();
 };
 
 #endif /* INTERFACE_RECEIVER_H_ */

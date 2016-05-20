@@ -8,7 +8,7 @@
 #ifndef INTERFACE_TRANSMITTER_H_
 #define INTERFACE_TRANSMITTER_H_
 
-#include <StaticVector.h>
+#include <Array.h>
 
 #include "../../link/Device.h"
 #include "../packet/core/IotPacket.h"
@@ -23,7 +23,7 @@ class Transmitter
 {
 private:
 	Device *device;
-	StaticVector<IotPacket> outgoingPackets;
+	Array<IotPacket, OUTGOING_PACKETS_BUFFER_SIZE> outgoingPackets;
 	uint8_t state = TRANSMITTER_STATE_IDLE;
 	unsigned long waitFinishTimeInMillis = 0;
 
