@@ -157,7 +157,7 @@ bool Interface::hasAckArrived(IotPacket* sentPacket)
 
 	for (uint8_t index = 0 ; index < receiver.getIncomingPackets()->getSize(); index ++)
 	{
-		IotPacket* itr = receiver.getIncomingPackets()->get(index);
+		IotPacket* itr = receiver.getIncomingPackets()->peek(index);
 
 		if(itr->getType() != ACK) {
 			continue;
@@ -191,7 +191,7 @@ void Interface::processIncomingPackets()
 {
 	for (uint8_t index = 0 ; index < receiver.getIncomingPackets()->getSize() ; index ++)
 	{
-		IotPacket* itr = receiver.getIncomingPackets()->get(index);
+		IotPacket* itr = receiver.getIncomingPackets()->peek(index);
 
 		if(itr->getDstAddress() != ipAddress)
 		{

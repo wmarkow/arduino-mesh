@@ -11,11 +11,16 @@
 
 extern Interface radio;
 
-void Ifconfig::process(CommandParams *params)
+const __FlashStringHelper* Ifconfig::getName()
+{
+	return F("ifconfig");
+}
+
+void Ifconfig::process(CommandParams *params, HardwareSerial *serial)
 {
 	if(params->getNumberOfParameters() == 1)
 	{
-		processIfconfig();
+		processIfconfig(serial);
 
 		return;
 	}
@@ -25,30 +30,35 @@ void Ifconfig::process(CommandParams *params)
 		String interface = params->getParam(1);
 		if(!interface.equals(F("rf24")))
 		{
-			Serial.print(F("Unknown interface "));
-			Serial.println(interface);
+			serial->print(F("Unknown interface "));
+			serial->println(interface);
 			return;
 		}
 
 		String subcommand = params->getParam(2);
 		if(subcommand.equals(F("up")))
 		{
-			processIfconfigUp();
+			processIfconfigUp(serial);
 			return;
 		}
 
 		uint8_t address = subcommand.toInt();
-		processIfconfigSetIp(address);
+		processIfconfigSetIp(address, serial);
 
 		return;
 	}
 
-	Serial.println(F("Unknown parameters"));
+	serial->println(F("Unknown parameters"));
 }
 
-void Ifconfig::processIfconfig()
+void Ifconfig::processBackground(HardwareSerial *serial)
 {
-	Serial.println(F("rf24"));
+
+}
+
+void Ifconfig::processIfconfig(HardwareSerial *serial)
+{
+	serial->println(F("rf24"));
 
 	if(!radio.isChipConnected())
 	{
@@ -57,42 +67,42 @@ void Ifconfig::processIfconfig()
 		return;
 	}
 
-	Serial.print(F("  Model         "));
-	Serial.println(radio.getDevice()->getModel());
-	Serial.print(F("  inet addr     "));
-	Serial.println((int)radio.getIpAddress(), DEC);
-	Serial.print(F("  HWaddr        "));
-	Serial.println(radio.getDevice()->getLinkAddress());
+	serial->print(F("  Model         "));
+	serial->println(radio.getDevice()->getModel());
+	serial->print(F("  inet addr     "));
+	serial->println((int)radio.getIpAddress(), DEC);
+	serial->print(F("  HWaddr        "));
+	serial->println(radio.getDevice()->getLinkAddress());
 
-	Serial.print(F("  PA level      "));
-	Serial.print(radio.getDevice()->getPALevelInDbm());
-	Serial.println(F("dBm"));
+	serial->print(F("  PA level      "));
+	serial->print(radio.getDevice()->getPALevelInDbm());
+	serial->println(F("dBm"));
 
-	Serial.print(F("  Data rate     "));
-	Serial.print(radio.getDevice()->getDataRateInKbs());
-	Serial.println(F("kbps"));
+	serial->print(F("  Data rate     "));
+	serial->print(radio.getDevice()->getDataRateInKbs());
+	serial->println(F("kbps"));
 
-	Serial.print(F("  RF channel    "));
-	Serial.println(radio.getDevice()->getRFChannel());
+	serial->print(F("  RF channel    "));
+	serial->println(radio.getDevice()->getRFChannel());
 
-	Serial.print(F("  Payload size  "));
-	Serial.println(radio.getDevice()->getPayloadSize());
+	serial->print(F("  Payload size  "));
+	serial->println(radio.getDevice()->getPayloadSize());
 
-	Serial.println(F("  TX"));
-	Serial.print(F("   + TCP success ")); Serial.println(radio.getCounters()->getTransmittedTcpSuccess());
-	Serial.print(F("   + TCP fail ")); Serial.println(radio.getCounters()->getTransmittedTcpFailed());
-	Serial.print(F("   + UDP ACK ")); Serial.println(radio.getCounters()->getTransmittedUdpAck());
-	Serial.print(F("   \\ UDP other ")); Serial.println(radio.getCounters()->getTransmittedUdpOther());
+	serial->println(F("  TX"));
+	serial->print(F("   + TCP success ")); Serial.println(radio.getCounters()->getTransmittedTcpSuccess());
+	serial->print(F("   + TCP fail ")); Serial.println(radio.getCounters()->getTransmittedTcpFailed());
+	serial->print(F("   + UDP ACK ")); Serial.println(radio.getCounters()->getTransmittedUdpAck());
+	serial->print(F("   \\ UDP other ")); Serial.println(radio.getCounters()->getTransmittedUdpOther());
 }
 
-void Ifconfig::processIfconfigUp()
+void Ifconfig::processIfconfigUp(HardwareSerial *serial)
 {
 	radio.up();
-	processIfconfig();
+	processIfconfig(serial);
 }
 
-void Ifconfig::processIfconfigSetIp(uint8_t address)
+void Ifconfig::processIfconfigSetIp(uint8_t address, HardwareSerial *serial)
 {
 	radio.setIpAddress(address);
-	processIfconfig();
+	processIfconfig(serial);
 }

@@ -11,22 +11,28 @@
 
 extern Interface radio;
 
-void Ping::process(CommandParams *params)
+const __FlashStringHelper* Ping::getName()
+{
+	return F("ping");
+}
+
+void Ping::process(CommandParams *params, HardwareSerial *serial)
 {
 	if(params->getNumberOfParameters() != 2)
 	{
-		Serial.println(F("error: Usage is ping <address> "));
+		serial->println(F("error: Usage is ping <address> "));
 
 		return;
 	}
 
-	uint8_t address = params->getParam(1).toInt();
+	String param = String(params->getParam(1));
+	uint8_t address = param.toInt();
 
-	processPing(address);
+	processPing(address, serial);
 	this->setBackground(true);
 }
 
-void Ping::processPing(uint8_t address)
+void Ping::processPing(uint8_t address, HardwareSerial* serial)
 {
 	lastCommandExecutionMillis = millis();
 	pingAddress = address;
@@ -34,22 +40,22 @@ void Ping::processPing(uint8_t address)
 	PingResult pingResult = radio.ping(address);
 	if(pingResult.success)
 	{
-		Serial.print(pingResult.packetSize);
-		Serial.print(F(" bytes from '"));
-		Serial.print(address);
-		Serial.print(F("': time= "));
-		Serial.print(pingResult.timeInUs);
-		Serial.println(F(" us"));
+		serial->print(pingResult.packetSize);
+		serial->print(F(" bytes from '"));
+		serial->print(address);
+		serial->print(F("': time= "));
+		serial->print(pingResult.timeInUs);
+		serial->println(F(" us"));
 
 		return;
 	}
 
-	Serial.print(F("Destination host '"));
-	Serial.print(address);
-	Serial.println(F("' is unreachable."));
+	serial->print(F("Destination host '"));
+	serial->print(address);
+	serial->println(F("' is unreachable."));
 }
 
-void Ping::loopBackgroundIfNeeded()
+void Ping::processBackground(HardwareSerial *serial)
 {
 	if(!this->isBackground())
 	{
@@ -63,5 +69,5 @@ void Ping::loopBackgroundIfNeeded()
 		return;
 	}
 
-	processPing(this->pingAddress);
+	processPing(this->pingAddress, serial);
 }

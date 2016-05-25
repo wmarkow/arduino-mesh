@@ -13,9 +13,11 @@
 class FlooderCmd : public AbstractCommand
 {
 private:
-	void processFlooder();
+	void processFlooder(HardwareSerial *serial);
 public:
-	void process(CommandParams *params);
+	const __FlashStringHelper* getName();
+	void process(CommandParams *params, HardwareSerial *serial);
+	void processBackground(HardwareSerial *serial);
 };
 
 

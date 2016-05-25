@@ -11,21 +11,31 @@
 
 extern Flooder flooder;
 
-void FlooderCmd::process(CommandParams *params)
+const __FlashStringHelper* FlooderCmd::getName()
+{
+	return F("flooder");
+}
+
+void FlooderCmd::process(CommandParams *params, HardwareSerial *serial)
 {
 	if(params->getNumberOfParameters() == 1)
 	{
-		processFlooder();
+		processFlooder(serial);
 
 		return;
 	}
 }
 
-void FlooderCmd::processFlooder()
+void FlooderCmd::processBackground(HardwareSerial *serial)
 {
-	Serial.print(F("Packets: dropped "));
-	Serial.println(flooder.getCounters()->getDroppedCount());
 
-	Serial.print(F("Packets: flooded "));
-	Serial.println(flooder.getCounters()->getFloodedCount());
+}
+
+void FlooderCmd::processFlooder(HardwareSerial *serial)
+{
+	serial->print(F("Packets: dropped "));
+	serial->println(flooder.getCounters()->getDroppedCount());
+
+	serial->print(F("Packets: flooded "));
+	serial->println(flooder.getCounters()->getFloodedCount());
 }

@@ -13,11 +13,13 @@
 class Ifconfig : public AbstractCommand
 {
 private:
-	void processIfconfig();
-	void processIfconfigUp();
-	void processIfconfigSetIp(uint8_t address);
+	void processIfconfig(HardwareSerial *serial);
+	void processIfconfigUp(HardwareSerial *serial);
+	void processIfconfigSetIp(uint8_t address, HardwareSerial *serial);
 public:
-	void process(CommandParams *params);
+	const __FlashStringHelper* getName();
+	void process(CommandParams *params, HardwareSerial *serial);
+	void processBackground(HardwareSerial *serial);
 };
 
 #endif /* TERMINAL_COMMANDS_IFCONFIG_H_ */

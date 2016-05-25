@@ -15,10 +15,11 @@ class Ping : public AbstractCommand
 private:
 	uint8_t pingAddress = 0;
 	unsigned long lastCommandExecutionMillis = 0;
-	void processPing(uint8_t address);
+	void processPing(uint8_t address, HardwareSerial* serial);
 public:
-	void process(CommandParams *params);
-	void loopBackgroundIfNeeded();
+	const __FlashStringHelper* getName();
+	void process(CommandParams *params, HardwareSerial *serial);
+	void processBackground(HardwareSerial *serial);
 };
 
 

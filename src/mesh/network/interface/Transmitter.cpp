@@ -7,7 +7,7 @@
 
 #include "../../../mesh/network/interface/Transmitter.h"
 
-Transmitter::Transmitter(Device* device) : outgoingPackets(Array<IotPacket, OUTGOING_PACKETS_BUFFER_SIZE>())
+Transmitter::Transmitter(Device* device) : outgoingPackets(FixedSizeArray<IotPacket, OUTGOING_PACKETS_BUFFER_SIZE>())
 {
 	this->device = device;
 }
@@ -36,7 +36,7 @@ void Transmitter::loop()
 
 	if(this->state == TRANSMITTER_STATE_SENDING) {
 		if(outgoingPackets.getSize() > 0) {
-			write(outgoingPackets.get(0));
+			write(outgoingPackets.peek(0));
 			outgoingPackets.remove(0);
 		}
 
