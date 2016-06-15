@@ -16,8 +16,8 @@
 	#define IOT_HARDWARE_CE_PIN D4
 	#define IOT_HARDWARE_CS_PIN D8
 #else
-	#define IOT_HARDWARE_CE_PIN 7
-	#define IOT_HARDWARE_CS_PIN 8
+	#define IOT_HARDWARE_CE_PIN 9
+	#define IOT_HARDWARE_CS_PIN 10
 #endif
 
 #define IOT_ADDRESS_LENGTH 5
