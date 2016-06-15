@@ -221,25 +221,31 @@ void Interface::processIncomingPackets()
 			index --;
 			continue;
 		}
-		receiver.getIncomingPackets()->remove(index);
-		index --;
 
-/*      // Some other packet addressed to me
+		// Some other packet addressed to me
 		if(itr->getProtocol() == TCP && itr->getType() == REGULAR)
 		{
-			// ACK sent; move incoming packet to incoming queue
-			if(incomingPackets.size() >= APPLICATION_LAYER_INCOMING_PACKETS_NUMBER)
-			{
-				//incoming buffer is full; purge that packet
-				itr = preProcessedIncomingPackets.erase(itr);
-				continue;
-			}
-
-			// send ack back
 			AckPacket ackPacket(itr);
-			write(&ackPacket);
+			transmitter.addPacketToTransmissionQueue(&ackPacket);
+			this->packetCounters.incTransmittedUdpAck();
+
+			// ACK sent.
+			// TODO: move that packet into incoming packets queue
+			//			if(incomingPackets.size() >= APPLICATION_LAYER_INCOMING_PACKETS_NUMBER)
+			//			{
+			//				//incoming buffer is full; purge that packet
+			//				itr = preProcessedIncomingPackets.erase(itr);
+			//				continue;
+			//			}
+			receiver.getIncomingPackets()->remove(index);
+
+			index --;
+			continue;
 		}
-*/
+
+		// some kind of unknown packet; purge it
+		receiver.getIncomingPackets()->remove(index);
+		index --;
 	}
 }
 
