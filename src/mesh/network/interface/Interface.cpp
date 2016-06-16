@@ -96,6 +96,11 @@ uint8_t Interface::getIpAddress()
 	return ipAddress;
 }
 
+FixedSizeArray<IncomingTransportPacket, INCOMMING_TRANSPORT_PACKETS_SIZE>* Interface::getIncomingTransportPackets()
+{
+	return &incomingTransportPackets;
+}
+
 bool Interface::sendPacket(IotPacket* packet, uint8_t dstAddress)
 {
 	packet->setSrcAddress(ipAddress);
@@ -229,14 +234,15 @@ void Interface::processIncomingPackets()
 			transmitter.addPacketToTransmissionQueue(&ackPacket);
 			this->packetCounters.incTransmittedUdpAck();
 
-			// ACK sent.
-			// TODO: move that packet into incoming packets queue
-			//			if(incomingPackets.size() >= APPLICATION_LAYER_INCOMING_PACKETS_NUMBER)
-			//			{
-			//				//incoming buffer is full; purge that packet
-			//				itr = preProcessedIncomingPackets.erase(itr);
-			//				continue;
-			//			}
+			IncomingTransportPacket itp;
+			itp.srcAddress = receiver.getIncomingPackets()->peek(index)->getSrcAddress();
+			memcpy(itp.payload, receiver.getIncomingPackets()->peek(index)->payload, DEFAULT_PACKET_PAYLOAD_SIZE);
+
+			if(this->incomingTransportPackets.isFull()) {
+				this->incomingTransportPackets.remove(0);
+			}
+			this->incomingTransportPackets.add(&itp);
+
 			receiver.getIncomingPackets()->remove(index);
 
 			index --;

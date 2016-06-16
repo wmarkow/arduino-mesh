@@ -13,7 +13,10 @@
 #include "../../../mesh/network/interface/Receiver.h"
 #include "../../../mesh/network/interface/Transmitter.h"
 #include "../../../mesh/network/packet/core/IotPacket.h"
+#include "../../../mesh/transport/packet/IncomingTransportPacket.h"
 #include "../flooder/Flooder.h"
+
+#define INCOMMING_TRANSPORT_PACKETS_SIZE 3
 
 enum TcpTransmitionState
 {
@@ -43,6 +46,8 @@ private:
 	TcpTransmitionState tcpTransmitionState = IDLE;
 	PacketCounters packetCounters;
 
+	FixedSizeArray<IncomingTransportPacket, INCOMMING_TRANSPORT_PACKETS_SIZE> incomingTransportPackets;
+
 	bool sendPacket(IotPacket* packet, uint8_t dstAddress);
 	bool sendPacket(IotPacket* packet);
 	bool sendTcpPacket(IotPacket* packet);
@@ -64,6 +69,7 @@ public:
 	PingResult ping(uint8_t dstAddress);
 	bool sendTcp(uint8_t dstAddress, uint8_t* data, uint8_t length);
 	PacketCounters* getCounters();
+	FixedSizeArray<IncomingTransportPacket, INCOMMING_TRANSPORT_PACKETS_SIZE>* getIncomingTransportPackets();
 
     void loop();
 };
