@@ -28,6 +28,12 @@ class RF24Device : public Device
 private:
 	RF24 rf24;
 	byte linkAddress[IOT_ADDRESS_LENGTH];
+
+	// helper methods to extends RF24 functionality
+	uint8_t read_register(uint8_t reg);
+	inline void beginTransaction();
+	inline void endTransaction();
+	void csn(bool mode);
 public:
 	RF24Device();
 	bool up();

@@ -8,6 +8,7 @@
 #include "../../mesh/link/RF24Device.h"
 
 #include <RF24.h>
+#include <nRF24L01.h>
 
 RF24Device::RF24Device() : rf24(RF24(IOT_HARDWARE_CE_PIN, IOT_HARDWARE_CS_PIN))
 {
@@ -40,7 +41,13 @@ bool RF24Device::up()
 
 bool RF24Device::isChipConnected()
 {
-	return rf24.isChipConnected();
+	uint8_t setup = read_register(SETUP_AW);
+	if(setup == 1 || setup == 2 || setup == 3)
+	{
+		return true;
+	}
+
+	return false;
 }
 
 bool RF24Device::available()
@@ -132,4 +139,75 @@ String RF24Device::getModel()
 	}
 
 	return F("nRF24L01");
+}
+
+void RF24Device::csn(bool mode)
+{
+
+#if defined (RF24_TINY)
+	if (ce_pin != csn_pin) {
+		digitalWrite(csn_pin,mode);
+	}
+	else {
+		if (mode == HIGH) {
+			PORTB |= (1<<PINB2);  	// SCK->CSN HIGH
+			delayMicroseconds(100); // allow csn to settle.
+		}
+		else {
+			PORTB &= ~(1<<PINB2);	// SCK->CSN LOW
+			delayMicroseconds(11);  // allow csn to settle
+		}
+	}
+	// Return, CSN toggle complete
+	return;
+
+#elif defined(ARDUINO) && !defined (RF24_SPI_TRANSACTIONS)
+	// Minimum ideal SPI bus speed is 2x data rate
+	// If we assume 2Mbs data rate and 16Mhz clock, a
+	// divider of 4 is the minimum we want.
+	// CLK:BUS 8Mhz:2Mhz, 16Mhz:4Mhz, or 20Mhz:5Mhz
+
+      #if !defined (SOFTSPI)
+		_SPI.setBitOrder(MSBFIRST);
+		_SPI.setDataMode(SPI_MODE0);
+		_SPI.setClockDivider(SPI_CLOCK_DIV2);
+      #endif
+#elif defined (RF24_RPi)
+      if(!mode)
+	    _SPI.chipSelect(csn_pin);
+#endif
+
+#if !defined (RF24_LINUX)
+	digitalWrite(IOT_HARDWARE_CS_PIN, mode);
+	delayMicroseconds(5);
+#endif
+
+}
+
+inline void RF24Device::beginTransaction()
+{
+  #if defined (RF24_SPI_TRANSACTIONS)
+  _SPI.beginTransaction(SPISettings(RF24_SPI_SPEED, MSBFIRST, SPI_MODE0));
+	#endif
+  csn(LOW);
+}
+
+inline void RF24Device::endTransaction()
+{
+  csn(HIGH);
+	#if defined (RF24_SPI_TRANSACTIONS)
+  _SPI.endTransaction();
+	#endif
+}
+
+uint8_t RF24Device::read_register(uint8_t reg)
+{
+  uint8_t result = 0;
+
+  beginTransaction();
+  _SPI.transfer( R_REGISTER | ( REGISTER_MASK & reg ) );
+  result = _SPI.transfer(0xff);
+  endTransaction();
+
+  return result;
 }
