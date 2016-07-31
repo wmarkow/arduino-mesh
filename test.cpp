@@ -11,7 +11,8 @@ IotRadio radio;
 
 // Used to control whether this node is sending or receiving
 bool role = 0;
-bool chipConnetced = false;
+uint8_t pingerAddress = 1;
+uint8_t ackAddress = 2;
 
 void setup() {
   Serial.begin(9600);
@@ -19,6 +20,7 @@ void setup() {
   Serial.println(F("*** PRESS 'T' to begin transmitting to the other node"));
 
   radio.begin();
+  radio.setIpAddress(ackAddress);
 }
 
 void loop() {
@@ -27,18 +29,11 @@ void loop() {
 	/****************** Ping Out Role ***************************/
 	if (role == 1)
 	{
-		radio.ping();
+		radio.ping(ackAddress);
 
 		// Try again 1s later
 		delay(1000);
 		Serial.println("tu jestem");
-	}
-
-
-	/****************** Pong Back Role ***************************/
-	if ( role == 0 )
-	{
-		radio.pong();
 	}
 
 	/****************** Change Roles via Serial Commands ***************************/
@@ -49,11 +44,12 @@ void loop() {
     if ( c == 'T' && role == 0 ){
       Serial.println(F("*** CHANGING TO TRANSMIT ROLE -- PRESS 'R' TO SWITCH BACK"));
       role = 1;                  // Become the primary transmitter (ping out)
+      radio.setIpAddress(pingerAddress);
    }else
     if ( c == 'R' && role == 1 ){
       Serial.println(F("*** CHANGING TO RECEIVE ROLE -- PRESS 'T' TO SWITCH BACK"));
        role = 0;                // Become the primary receiver (pong back)
-       radio.startListening();
+       radio.setIpAddress(ackAddress);
     }
   }
 } // Loop

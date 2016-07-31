@@ -10,27 +10,39 @@
 
 #include <SPI.h>
 #include <RF24.h>
-
+#include "IotPacket.h"
 
 #define IOT_HARDWARE_CE_PIN 7
 #define IOT_HARDWARE_CS_PIN 8
 #define IOT_ADDRESS_LENGTH 5
 
+enum TransmitterState
+{
+	IDLE = 0,
+	WAITING_FOR_ACK = 1
+};
+
 class IotRadio
 {
   private:
 	byte linkAddress[5];
+	byte ipAddress;
 	RF24 radio;
+
+	bool sendPacket(GenericPacketData* packet, uint8_t dstAddress);
+	bool sendPacket(GenericPacketData* packet);
+	bool sendPacketWaitForAck(GenericPacketData* packet);
+	bool write(GenericPacketData* packet);
+	bool hasAckArrived(GenericPacketData* sentPacket);
+	bool readIncomingPacket(GenericPacketData* incomingPacket);
+	void processIncomingPackets();
 
   public:
 	IotRadio();
 	bool begin();
-    void startListening();
-    void stopListening();
-    bool ping();
-    void pong();
+	void setIpAddress(uint8_t address);
+    bool ping(uint8_t dstAddress);
 };
-
 
 
 
