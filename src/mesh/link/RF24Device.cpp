@@ -31,7 +31,7 @@ bool RF24Device::up()
 	rf24.openWritingPipe(linkAddress);
 	rf24.openReadingPipe(1, linkAddress);
 	rf24.setPALevel(RF24_PA_MIN);
-	rf24.setDataRate(RF24_1MBPS);
+	rf24.setDataRate(RF24_250KBPS);
 	rf24.setAutoAck(false);
 	rf24.setPayloadSize(RF24_DEFAULT_PACKET_SIZE);
 	rf24.openWritingPipe(linkAddress);
