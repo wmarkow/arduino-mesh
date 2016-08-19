@@ -26,6 +26,8 @@ bool RF24Device::up()
 		return false;
 	}
 
+	rf24.powerUp();
+
 	rf24.openWritingPipe(linkAddress);
 	rf24.openReadingPipe(1, linkAddress);
 	rf24.setPALevel(RF24_PA_MIN);
@@ -37,6 +39,13 @@ bool RF24Device::up()
 	rf24.startListening();
 
 	return isChipConnected();
+}
+
+bool RF24Device::powerDown()
+{
+	rf24.powerDown();
+
+	return true;
 }
 
 bool RF24Device::isChipConnected()

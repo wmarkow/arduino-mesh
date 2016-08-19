@@ -38,6 +38,11 @@ bool Interface::isUp()
 	return isChipConnected();
 }
 
+bool Interface::powerDown()
+{
+	return device->powerDown();
+}
+
 bool Interface::isChipConnected()
 {
 	return device->isChipConnected();

@@ -63,6 +63,7 @@ public:
 	void setFlooder(Flooder *flooder);
 	bool up();
 	bool isUp();
+	bool powerDown();
 	bool isChipConnected();
 	void setIpAddress(uint8_t address);
 	uint8_t getIpAddress();

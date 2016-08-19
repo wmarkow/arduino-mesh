@@ -14,6 +14,7 @@ class Device
 {
 public:
 	virtual bool up() = 0;
+	virtual bool powerDown() = 0;
 	virtual bool isChipConnected() = 0;
 	virtual bool available() = 0;
 	virtual void read(void* data, uint8_t size) = 0;

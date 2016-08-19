@@ -37,6 +37,7 @@ private:
 public:
 	RF24Device();
 	bool up();
+	bool powerDown();
 	bool isChipConnected();
 	bool available();
 	void read(void* data, uint8_t size);
