@@ -61,7 +61,7 @@ bool RF24Device::isChipConnected()
 
 bool RF24Device::available()
 {
-	return rf24.available() && rf24.isChipConnected();
+	return rf24.available() && isChipConnected();
 }
 
 void RF24Device::read(void* data, uint8_t size)
