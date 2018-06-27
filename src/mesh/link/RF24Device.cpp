@@ -150,6 +150,11 @@ String RF24Device::getModel()
 	return F("nRF24L01");
 }
 
+String RF24Device::getInterfaceName()
+{
+   return F("rf24");
+}
+
 void RF24Device::csn(bool mode)
 {
 

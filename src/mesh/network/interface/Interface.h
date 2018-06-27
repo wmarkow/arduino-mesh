@@ -60,6 +60,7 @@ private:
 public:
 	Interface(Device *device);
 	Device* getDevice();
+	String getName();
 	void setFlooder(Flooder *flooder);
 	bool up();
 	bool isUp();

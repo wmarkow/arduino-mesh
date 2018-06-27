@@ -26,7 +26,7 @@ public:
 	virtual uint8_t getPayloadSize() = 0;
 	virtual uint8_t getRFChannel() = 0;
 	virtual String getModel() = 0;
-
+	virtual String getInterfaceName() = 0;
 };
 
 

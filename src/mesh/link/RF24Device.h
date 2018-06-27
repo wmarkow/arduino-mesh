@@ -49,6 +49,7 @@ public:
 	uint8_t getPayloadSize();
 	uint8_t getRFChannel();
 	String getModel();
+	String getInterfaceName();
 };
 
 #endif /* LINK_RF24_RF24DEVICE_H_ */
