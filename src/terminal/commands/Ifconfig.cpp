@@ -52,6 +52,12 @@ void Ifconfig::process(CommandParams *params, HardwareSerial *serial)
    serial->println(F("Unknown parameters"));
 }
 
+void Ifconfig::processIfconfigSetIp(uint8_t address, HardwareSerial *serial)
+{
+   radioRF24.setIpAddress(address);
+   processIfconfig(serial, &radioRF24);
+}
+
 void Ifconfig::processBackground(HardwareSerial *serial)
 {
 
@@ -109,12 +115,6 @@ void Ifconfig::processIfconfigUp(HardwareSerial *serial, Interface *interface)
 {
    interface->up();
    processIfconfig(serial, interface);
-}
-
-void Ifconfig::processIfconfigSetIp(uint8_t address, HardwareSerial *serial)
-{
-   radioRF24.setIpAddress(address);
-   processIfconfig(serial, &radioRF24);
 }
 
 Interface* Ifconfig::getInterfaceByName(String name)
