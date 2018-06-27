@@ -14,6 +14,7 @@
 #include <Terminal.h>
 #include <UptimeCommand.h>
 #include "../src/mesh/link/RF24Device.h"
+#include "../src/mesh/link/HC12Device.h"
 #include "../src/mesh/network/flooder/Flooder.h"
 #include "../src/mesh/network/interface/Interface.h"
 #include "../src/terminal/commands/FlooderCmd.h"
@@ -24,6 +25,9 @@ Flooder flooder;
 
 RF24Device rf24Device;
 Interface radioRF24 = Interface(&rf24Device);
+
+HC12Device hc12Device;
+Interface radioHC12 = Interface(&hc12Device);
 
 FixedSizeArray<AbstractCommand*, 5> commands;
 Array<AbstractCommand*> *commandsArray = &commands;
@@ -53,4 +57,5 @@ void loop()
 {
    terminal.loop();
    radioRF24.loop();
+   radioHC12.loop();
 }

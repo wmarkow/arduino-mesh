@@ -10,6 +10,7 @@
 #include "../../mesh/network/interface/Interface.h"
 
 extern Interface radioRF24;
+extern Interface radioHC12;
 
 const __FlashStringHelper* Ifconfig::getName()
 {
@@ -55,7 +56,8 @@ void Ifconfig::process(CommandParams *params, HardwareSerial *serial)
 void Ifconfig::processIfconfigSetIp(uint8_t address, HardwareSerial *serial)
 {
    radioRF24.setIpAddress(address);
-   processIfconfig(serial, &radioRF24);
+   radioHC12.setIpAddress(address);
+   processIfconfig(serial);
 }
 
 void Ifconfig::processBackground(HardwareSerial *serial)
@@ -66,6 +68,7 @@ void Ifconfig::processBackground(HardwareSerial *serial)
 void Ifconfig::processIfconfig(HardwareSerial *serial)
 {
    processIfconfig(serial, &radioRF24);
+   processIfconfig(serial, &radioHC12);
 }
 
 void Ifconfig::processIfconfig(HardwareSerial *serial, Interface *interface)
@@ -119,9 +122,14 @@ void Ifconfig::processIfconfigUp(HardwareSerial *serial, Interface *interface)
 
 Interface* Ifconfig::getInterfaceByName(String name)
 {
-   if(name.equals(radioRF24.getName()))
+   if (name.equals(radioRF24.getName()))
    {
       return &radioRF24;
+   }
+
+   if (name.equals(radioHC12.getName()))
+   {
+      return &radioHC12;
    }
 
    return NULL;

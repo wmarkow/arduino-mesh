@@ -5,8 +5,8 @@
  *      Author: witek
  */
 
-#ifndef LINK_RF24_RF24DEVICE_H_
-#define LINK_RF24_RF24DEVICE_H_
+#ifndef MESH_LINK_RF24DEVICE_H_
+#define MESH_LINK_RF24DEVICE_H_
 
 #include <RF24.h>
 
@@ -52,4 +52,4 @@ public:
 	String getInterfaceName();
 };
 
-#endif /* LINK_RF24_RF24DEVICE_H_ */
+#endif /* MESH_LINK_RF24DEVICE_H_ */

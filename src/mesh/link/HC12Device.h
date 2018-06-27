@@ -5,26 +5,17 @@
  *      Author: witek
  */
 
-#ifndef LINK_RF24_RF24DEVICE_H_
-#define LINK_RF24_RF24DEVICE_H_
+#ifndef MESH_LINK_HC12DEVICE_H_
+#define MESH_LINK_HC12DEVICE_H_
 
-#include <RF24.h>
+#include "HC12.h"
 
 #include "../../mesh/link/Device.h"
-
-#define HC12_TXD_PIN 2
-#define HC12_RXD_PIN 3
-#define HC12_SET_PIN 1
-
-#define HC12_DEFAULT_BAUDRATE 9600
-
-#define IOT_ADDRESS_LENGTH 5
-#define RF24_DEFAULT_PACKET_SIZE 32
 
 class HC12Device : public Device
 {
 private:
-
+   HC12 hc12;
 public:
 	HC12Device();
 	bool up();
@@ -40,6 +31,7 @@ public:
 	uint8_t getPayloadSize();
 	uint8_t getRFChannel();
 	String getModel();
+	String getInterfaceName();
 };
 
-#endif /* LINK_RF24_RF24DEVICE_H_ */
+#endif /* MESH_LINK_HC12DEVICE_H_ */
