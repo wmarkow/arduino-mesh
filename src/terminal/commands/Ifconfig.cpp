@@ -9,7 +9,7 @@
 
 #include "../../mesh/network/interface/Interface.h"
 
-extern Interface radio;
+extern Interface radioRF24;
 
 const __FlashStringHelper* Ifconfig::getName()
 {
@@ -60,7 +60,7 @@ void Ifconfig::processIfconfig(HardwareSerial *serial)
 {
 	serial->println(F("rf24"));
 
-	if(!radio.isChipConnected())
+	if(!radioRF24.isChipConnected())
 	{
 		Serial.println(F("    down, chip not connected "));
 
@@ -68,41 +68,41 @@ void Ifconfig::processIfconfig(HardwareSerial *serial)
 	}
 
 	serial->print(F("  Model         "));
-	serial->println(radio.getDevice()->getModel());
+	serial->println(radioRF24.getDevice()->getModel());
 	serial->print(F("  inet addr     "));
-	serial->println((int)radio.getIpAddress(), DEC);
+	serial->println((int)radioRF24.getIpAddress(), DEC);
 	serial->print(F("  HWaddr        "));
-	serial->println(radio.getDevice()->getLinkAddress());
+	serial->println(radioRF24.getDevice()->getLinkAddress());
 
 	serial->print(F("  PA level      "));
-	serial->print(radio.getDevice()->getPALevelInDbm());
+	serial->print(radioRF24.getDevice()->getPALevelInDbm());
 	serial->println(F("dBm"));
 
 	serial->print(F("  Data rate     "));
-	serial->print(radio.getDevice()->getDataRateInKbs());
+	serial->print(radioRF24.getDevice()->getDataRateInKbs());
 	serial->println(F("kbps"));
 
 	serial->print(F("  RF channel    "));
-	serial->println(radio.getDevice()->getRFChannel());
+	serial->println(radioRF24.getDevice()->getRFChannel());
 
 	serial->print(F("  Payload size  "));
-	serial->println(radio.getDevice()->getPayloadSize());
+	serial->println(radioRF24.getDevice()->getPayloadSize());
 
 	serial->println(F("  TX"));
-	serial->print(F("   + TCP success ")); Serial.println(radio.getCounters()->getTransmittedTcpSuccess());
-	serial->print(F("   + TCP fail ")); Serial.println(radio.getCounters()->getTransmittedTcpFailed());
-	serial->print(F("   + UDP ACK ")); Serial.println(radio.getCounters()->getTransmittedUdpAck());
-	serial->print(F("   \\ UDP other ")); Serial.println(radio.getCounters()->getTransmittedUdpOther());
+	serial->print(F("   + TCP success ")); Serial.println(radioRF24.getCounters()->getTransmittedTcpSuccess());
+	serial->print(F("   + TCP fail ")); Serial.println(radioRF24.getCounters()->getTransmittedTcpFailed());
+	serial->print(F("   + UDP ACK ")); Serial.println(radioRF24.getCounters()->getTransmittedUdpAck());
+	serial->print(F("   \\ UDP other ")); Serial.println(radioRF24.getCounters()->getTransmittedUdpOther());
 }
 
 void Ifconfig::processIfconfigUp(HardwareSerial *serial)
 {
-	radio.up();
+   radioRF24.up();
 	processIfconfig(serial);
 }
 
 void Ifconfig::processIfconfigSetIp(uint8_t address, HardwareSerial *serial)
 {
-	radio.setIpAddress(address);
+   radioRF24.setIpAddress(address);
 	processIfconfig(serial);
 }

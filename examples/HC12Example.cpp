@@ -23,7 +23,7 @@
 Flooder flooder;
 
 RF24Device rf24Device;
-Interface radio = Interface(&rf24Device);
+Interface radioRF24 = Interface(&rf24Device);
 
 FixedSizeArray<AbstractCommand*, 5> commands;
 Array<AbstractCommand*> *commandsArray = &commands;
@@ -45,12 +45,12 @@ void setup()
    commandsArray->add(&ifconfigCommand);
    commandsArray->add(&flodderCommand);
 
-   radio.setFlooder(&flooder);
-   flooder.setRF24Interface(&radio);
+   radioRF24.setFlooder(&flooder);
+   flooder.setRF24Interface(&radioRF24);
 }
 
 void loop()
 {
    terminal.loop();
-   radio.loop();
+   radioRF24.loop();
 }

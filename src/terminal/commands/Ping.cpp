@@ -9,7 +9,7 @@
 
 #include "../../mesh/network/interface/Interface.h"
 
-extern Interface radio;
+extern Interface radioRF24;
 
 const __FlashStringHelper* Ping::getName()
 {
@@ -37,7 +37,7 @@ void Ping::processPing(uint8_t address, HardwareSerial* serial)
 	lastCommandExecutionMillis = millis();
 	pingAddress = address;
 
-	PingResult pingResult = radio.ping(address);
+	PingResult pingResult = radioRF24.ping(address);
 	if(pingResult.success)
 	{
 		serial->print(pingResult.packetSize);
