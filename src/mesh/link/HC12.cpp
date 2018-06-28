@@ -34,7 +34,8 @@ bool HC12::icChipConnected()
    {
       if (softwareSerial.available())
       {
-         Serial.write(softwareSerial.read());
+         Serial.print(softwareSerial.read(), HEX);
+         Serial.print(F(" "));
          receivedCount ++;
       }
    }
@@ -47,6 +48,7 @@ bool HC12::icChipConnected()
       return false;
    }
 
+   Serial.println(receivedCount);
    return true;
 }
 
@@ -55,7 +57,7 @@ void HC12::enterTransparentMode()
    pinMode(HC12_SET_PIN, OUTPUT);
    digitalWrite(HC12_SET_PIN, HIGH);
 
-   delay(100);
+   delay(50);
 }
 
 void HC12::enterCommandMode()
@@ -63,6 +65,6 @@ void HC12::enterCommandMode()
    pinMode(HC12_SET_PIN, OUTPUT);
    digitalWrite(HC12_SET_PIN, LOW);
 
-   delay(100);
+   delay(50);
 }
 
