@@ -22,6 +22,7 @@ private:
    SoftwareSerial softwareSerial;
    void enterTransparentMode();
    void enterCommandMode();
+   String getCommandResponse();
 public:
    HC12();
    void begin();

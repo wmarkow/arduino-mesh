@@ -28,28 +28,17 @@ bool HC12::icChipConnected()
    // send some command
    softwareSerial.print(F("AT"));
    // wait with timeout for response
-   unsigned long time = millis();
-   uint8_t receivedCount = 0;
-   while (millis() - time < 200)
-   {
-      if (softwareSerial.available())
-      {
-         Serial.print(softwareSerial.read(), HEX);
-         Serial.print(F(" "));
-         receivedCount ++;
-      }
-   }
-
+   String response = getCommandResponse();
    // switch back to direct send mode
    enterTransparentMode();
 
-   if(receivedCount == 0)
+   if (response.equals(F("OK")))
    {
-      return false;
+      return true;
    }
 
-   Serial.println(receivedCount);
-   return true;
+   Serial.println(response);
+   return false;
 }
 
 void HC12::enterTransparentMode()
@@ -68,3 +57,29 @@ void HC12::enterCommandMode()
    delay(50);
 }
 
+String HC12::getCommandResponse()
+{
+   unsigned long time = millis();
+   String resultString = "";
+
+   while (millis() - time < 200)
+   {
+      if (softwareSerial.available())
+      {
+         char character = softwareSerial.read();
+
+         if (character == '\n')
+         {
+            break;
+         }
+
+         if (character != '\r')
+         {
+            resultString += character;
+         }
+
+      }
+   }
+
+   return resultString;
+}
