@@ -27,6 +27,9 @@ public:
    HC12();
    void begin();
    bool icChipConnected();
+   int8_t getTransmitterPowerInDbm();
+   uint16_t getDataRateInKbs();
+   uint8_t getRFChannel();
 };
 
 

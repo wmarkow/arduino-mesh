@@ -55,12 +55,12 @@ String HC12Device::getLinkAddress()
 
 int8_t HC12Device::getPALevelInDbm()
 {
-   return -99;
+   return hc12.getTransmitterPowerInDbm();
 }
 
 uint16_t HC12Device::getDataRateInKbs()
 {
-   return 0;
+   return hc12.getDataRateInKbs();
 
 }
 
@@ -71,7 +71,7 @@ uint8_t HC12Device::getPayloadSize()
 
 uint8_t HC12Device::getRFChannel()
 {
-   return 1;
+   return hc12.getRFChannel();
 }
 
 String HC12Device::getModel()

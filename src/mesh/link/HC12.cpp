@@ -23,13 +23,9 @@ void HC12::begin()
 
 bool HC12::icChipConnected()
 {
-   // switch to AT mode
    enterCommandMode();
-   // send some command
    softwareSerial.print(F("AT"));
-   // wait with timeout for response
    String response = getCommandResponse();
-   // switch back to direct send mode
    enterTransparentMode();
 
    if (response.equals(F("OK")))
@@ -39,6 +35,68 @@ bool HC12::icChipConnected()
 
    Serial.println(response);
    return false;
+}
+
+int8_t HC12::getTransmitterPowerInDbm()
+{
+   enterCommandMode();
+   softwareSerial.print(F("AT+RP"));
+   String response = getCommandResponse();
+   enterTransparentMode();
+
+   if (!response.startsWith(F("OK+RP:")))
+   {
+      return -99;
+   }
+
+   String valueAsString = response.substring(6, response.indexOf(F("dBm")));
+   return valueAsString.toInt();
+}
+
+uint16_t HC12::getDataRateInKbs()
+{
+   enterCommandMode();
+   softwareSerial.print(F("AT+RB"));
+   String response = getCommandResponse();
+   enterTransparentMode();
+
+   if (!response.startsWith(F("OK+B")))
+   {
+      return 0;
+   }
+
+   String valueAsString = response.substring(4);
+   long int uartBaudRate = valueAsString.toInt();
+   if (uartBaudRate <= 2400)
+   {
+      return 5;
+   }
+   if (uartBaudRate <= 9600)
+   {
+      return 15;
+   }
+   if (uartBaudRate <= 38400)
+   {
+      return 58;
+   }
+
+   return 236;
+}
+
+uint8_t HC12::getRFChannel()
+{
+   enterCommandMode();
+   softwareSerial.print(F("AT+RC"));
+   String response = getCommandResponse();
+   enterTransparentMode();
+
+   if (!response.startsWith(F("OK+RC")))
+   {
+      return 0;
+   }
+
+   String valueAsString = response.substring(5);
+   return valueAsString.toInt();
 }
 
 void HC12::enterTransparentMode()
