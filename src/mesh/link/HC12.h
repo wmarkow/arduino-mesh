@@ -10,9 +10,9 @@
 
 #include <SoftwareSerial.h>
 
-#define HC12_TXD_PIN 2
-#define HC12_RXD_PIN 3
-#define HC12_SET_PIN 1
+#define HC12_TXD_UNO_RX_PIN 8
+#define HC12_RXD_UNO_TX_PIN 7
+#define HC12_SET_PIN 6
 
 #define HC12_DEFAULT_BAUDRATE 9600
 
@@ -20,6 +20,8 @@ class HC12
 {
 private:
    SoftwareSerial softwareSerial;
+   void enterTransparentMode();
+   void enterCommandMode();
 public:
    HC12();
    void begin();

@@ -5,10 +5,11 @@
  *      Author: wmarkowski
  */
 
+#include <Arduino.h>
 #include "HC12.h"
 
 HC12::HC12() :
-      softwareSerial(HC12_RXD_PIN, HC12_TXD_PIN)
+      softwareSerial(HC12_TXD_UNO_RX_PIN, HC12_RXD_UNO_TX_PIN)
 {
 
 }
@@ -16,16 +17,52 @@ HC12::HC12() :
 void HC12::begin()
 {
    softwareSerial.begin(HC12_DEFAULT_BAUDRATE);
+
+   enterTransparentMode();
 }
 
 bool HC12::icChipConnected()
 {
    // switch to AT mode
+   enterCommandMode();
    // send some command
+   softwareSerial.print(F("AT"));
    // wait with timeout for response
-   // switch back to direct send mode
+   unsigned long time = millis();
+   uint8_t receivedCount = 0;
+   while (millis() - time < 200)
+   {
+      if (softwareSerial.available())
+      {
+         Serial.write(softwareSerial.read());
+         receivedCount ++;
+      }
+   }
 
-   // return result
-   return false;
+   // switch back to direct send mode
+   enterTransparentMode();
+
+   if(receivedCount == 0)
+   {
+      return false;
+   }
+
+   return true;
+}
+
+void HC12::enterTransparentMode()
+{
+   pinMode(HC12_SET_PIN, OUTPUT);
+   digitalWrite(HC12_SET_PIN, HIGH);
+
+   delay(100);
+}
+
+void HC12::enterCommandMode()
+{
+   pinMode(HC12_SET_PIN, OUTPUT);
+   digitalWrite(HC12_SET_PIN, LOW);
+
+   delay(100);
 }
 
