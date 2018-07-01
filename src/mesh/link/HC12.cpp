@@ -99,6 +99,11 @@ uint8_t HC12::getRFChannel()
    return valueAsString.toInt();
 }
 
+bool HC12::write(void* data, uint8_t size)
+{
+   softwareSerial.write((char*)data, size);
+}
+
 void HC12::enterTransparentMode()
 {
    pinMode(HC12_SET_PIN, OUTPUT);

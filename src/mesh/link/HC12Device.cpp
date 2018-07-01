@@ -45,7 +45,7 @@ void HC12Device::read(void* data, uint8_t size)
 
 bool HC12Device::write(void* data, uint8_t size)
 {
-
+   return hc12.write(data, size);
 }
 
 String HC12Device::getLinkAddress()
