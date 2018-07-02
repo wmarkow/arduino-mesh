@@ -11,19 +11,21 @@
 #include "HC12.h"
 
 #include "../../mesh/link/Device.h"
+#include "../../mesh/network/packet/core/IotPacket.h"
 
 class HC12Device : public Device
 {
 private:
    HC12 hc12;
+   bool chipConnected = false;
 public:
 	HC12Device();
 	bool up();
 	bool powerDown();
 	bool isChipConnected();
 	bool available();
-	void read(void* data, uint8_t size);
-	bool write(void* data, uint8_t size);
+	bool readPacket(IotPacket* data);
+	bool writePacket(IotPacket* packet);
 
 	String getLinkAddress();
 	int8_t getPALevelInDbm();

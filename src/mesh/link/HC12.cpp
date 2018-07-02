@@ -99,9 +99,19 @@ uint8_t HC12::getRFChannel()
    return valueAsString.toInt();
 }
 
-bool HC12::write(void* data, uint8_t size)
+bool HC12::write(uint8_t* data, uint8_t size)
 {
-   softwareSerial.write((char*)data, size);
+   softwareSerial.write((char*) data, size);
+}
+
+uint8_t HC12::available()
+{
+   return softwareSerial.available();
+}
+
+int HC12::read(uint8_t *buffer, size_t length)
+{
+   return softwareSerial.readBytes(buffer, length);
 }
 
 void HC12::enterTransparentMode()

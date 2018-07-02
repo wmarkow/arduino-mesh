@@ -53,6 +53,5 @@ bool Transmitter::addPacketToTransmissionQueue(IotPacket* packet)
 
 bool Transmitter::write(IotPacket* packet)
 {
-	return device->write(packet, DEFAULT_PACKET_SIZE);
+	return device->writePacket(packet);
 }
-

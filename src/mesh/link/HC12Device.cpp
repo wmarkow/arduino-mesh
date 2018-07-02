@@ -30,22 +30,39 @@ bool HC12Device::powerDown()
 
 bool HC12Device::isChipConnected()
 {
-   return hc12.icChipConnected();
+   if (!chipConnected)
+   {
+      chipConnected = hc12.icChipConnected();
+   }
+
+   return chipConnected;
 }
 
 bool HC12Device::available()
 {
+   if(hc12.available() >= DEFAULT_PACKET_SIZE)
+   {
+      return true;
+   }
+
    return false;
 }
 
-void HC12Device::read(void* data, uint8_t size)
+bool HC12Device::readPacket(IotPacket* data)
 {
+   if(hc12.available() >= DEFAULT_PACKET_SIZE)
+   {
+      hc12.read((uint8_t*)data, DEFAULT_PACKET_SIZE);
 
+      return true;
+   }
+
+   return false;
 }
 
-bool HC12Device::write(void* data, uint8_t size)
+bool HC12Device::writePacket(IotPacket* packet)
 {
-   return hc12.write(data, size);
+   return hc12.write((uint8_t*)packet, DEFAULT_PACKET_SIZE);
 }
 
 String HC12Device::getLinkAddress()
@@ -66,7 +83,7 @@ uint16_t HC12Device::getDataRateInKbs()
 
 uint8_t HC12Device::getPayloadSize()
 {
-   return 0;
+   return DEFAULT_PACKET_SIZE;
 }
 
 uint8_t HC12Device::getRFChannel()

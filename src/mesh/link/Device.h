@@ -9,6 +9,7 @@
 #define DEVICE_H_
 
 #include <Arduino.h>
+#include "../network/packet/core/IotPacket.h"
 
 class Device
 {
@@ -17,8 +18,8 @@ public:
 	virtual bool powerDown() = 0;
 	virtual bool isChipConnected() = 0;
 	virtual bool available() = 0;
-	virtual void read(void* data, uint8_t size) = 0;
-	virtual bool write(void* data, uint8_t size) = 0;
+	virtual bool readPacket(IotPacket* packet) = 0;
+	virtual bool writePacket(IotPacket* packet) = 0;
 
 	virtual String getLinkAddress() = 0;
 	virtual int8_t getPALevelInDbm() = 0;

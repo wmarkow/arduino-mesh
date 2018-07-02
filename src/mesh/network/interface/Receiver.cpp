@@ -37,7 +37,10 @@ bool Receiver::readIncomingPacket()
 	}
 
 	IotPacket incomingPacket;
-	device->read(&incomingPacket, DEFAULT_PACKET_SIZE);
+	if(device->readPacket(&incomingPacket) == false)
+	{
+	   return false;
+	}
 
 	if(!device->isChipConnected())
 	{

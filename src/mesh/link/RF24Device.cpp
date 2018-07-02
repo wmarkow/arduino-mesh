@@ -64,16 +64,18 @@ bool RF24Device::available()
 	return rf24.available() && isChipConnected();
 }
 
-void RF24Device::read(void* data, uint8_t size)
+bool RF24Device::readPacket(IotPacket* packet)
 {
-	rf24.read(data, size);
+	rf24.read((uint8_t*)packet, DEFAULT_PACKET_SIZE);
+
+	return true;
 }
 
-bool RF24Device::write(void* data, uint8_t size)
+bool RF24Device::writePacket(IotPacket* packet)
 {
 	rf24.stopListening();
 
-	bool result = rf24.write(data, size);
+	bool result = rf24.write((uint8_t*)packet, DEFAULT_PACKET_SIZE);
 
 	rf24.startListening();
 

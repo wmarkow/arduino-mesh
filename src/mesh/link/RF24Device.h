@@ -11,6 +11,7 @@
 #include <RF24.h>
 
 #include "../../mesh/link/Device.h"
+#include "../../mesh/network/packet/core/IotPacket.h"
 
 #if defined(ESP8266)
 	#define IOT_HARDWARE_CE_PIN D4
@@ -40,8 +41,8 @@ public:
 	bool powerDown();
 	bool isChipConnected();
 	bool available();
-	void read(void* data, uint8_t size);
-	bool write(void* data, uint8_t size);
+	bool readPacket(IotPacket* packet);
+	bool writePacket(IotPacket* packet);
 
 	String getLinkAddress();
 	int8_t getPALevelInDbm();

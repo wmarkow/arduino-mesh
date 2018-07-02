@@ -17,6 +17,7 @@
 #include "../src/mesh/link/HC12Device.h"
 #include "../src/mesh/network/flooder/Flooder.h"
 #include "../src/mesh/network/interface/Interface.h"
+#include "../src/mesh/network/packet/AckPacket.h"
 #include "../src/terminal/commands/FlooderCmd.h"
 #include "../src/terminal/commands/Ifconfig.h"
 #include "../src/terminal/commands/Ping.h"
@@ -43,6 +44,8 @@ void setup()
    _SPI.begin();
 
    randomSeed(analogRead(0));
+
+   radioHC12.up();
 
    commandsArray->add(&uptimeCommand);
    commandsArray->add(&pingCommand);

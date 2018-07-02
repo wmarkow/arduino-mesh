@@ -30,7 +30,9 @@ public:
    int8_t getTransmitterPowerInDbm();
    uint16_t getDataRateInKbs();
    uint8_t getRFChannel();
-   bool write(void* data, uint8_t size);
+   bool write(uint8_t *data, uint8_t size);
+   int read(uint8_t *buffer, size_t length);
+   uint8_t available();
 };
 
 
