@@ -114,6 +114,16 @@ int HC12::read(uint8_t *buffer, size_t length)
    return softwareSerial.readBytes(buffer, length);
 }
 
+int HC12::read()
+{
+   return softwareSerial.read();
+}
+
+int HC12::write(uint8_t data)
+{
+   return softwareSerial.write(data);
+}
+
 void HC12::enterTransparentMode()
 {
    pinMode(HC12_SET_PIN, OUTPUT);

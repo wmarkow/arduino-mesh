@@ -13,11 +13,28 @@
 #include "../../mesh/link/Device.h"
 #include "../../mesh/network/packet/core/IotPacket.h"
 
+#define HC12_PREAMBLE 0b01010101
+/***
+ * With serial port speed 9600 bps it take around 1ms to send one bit
+ */
+#define HC12_OUT_OF_SYNC_TIMEOUT_IN_MILLIS 1000
+
+enum  HC12ReceiverState
+{
+   HC12_RECEIVE_WAIT_FOR_PREAMBLE,
+   HC12_RECEIVE_WAIT_FOR_PAYLOAD
+};
+
 class HC12Device : public Device
 {
 private:
    HC12 hc12;
    bool chipConnected = false;
+   uint8_t receivedPacket[DEFAULT_PACKET_SIZE];
+   uint8_t receiverState = HC12_RECEIVE_WAIT_FOR_PREAMBLE;
+   uint8_t receiverIndex = 0;
+   unsigned long lastReceivedByteInMillis = 0;
+   void resetReceiver();
 public:
 	HC12Device();
 	bool up();

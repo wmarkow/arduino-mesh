@@ -8,7 +8,6 @@
 #include <SoftwareSerial.h>
 
 #include "HC12Device.h"
-#include "../network/packet/core/IotPacketHeader.h"
 
 HC12Device::HC12Device() :
       hc12()
@@ -40,7 +39,7 @@ bool HC12Device::isChipConnected()
 
 bool HC12Device::available()
 {
-   if(hc12.available() >= DEFAULT_PACKET_SIZE)
+   if (hc12.available() >= DEFAULT_PACKET_SIZE)
    {
       return true;
    }
@@ -50,19 +49,72 @@ bool HC12Device::available()
 
 bool HC12Device::readPacket(IotPacket* data)
 {
-   if(hc12.available() >= DEFAULT_PACKET_SIZE)
+   do
    {
-      hc12.read((uint8_t*)data, DEFAULT_PACKET_SIZE);
+      switch (receiverState)
+      {
+         case HC12_RECEIVE_WAIT_FOR_PREAMBLE:
+         {
+            int receivedByte = hc12.read();
+            if (receivedByte == HC12_PREAMBLE)
+            {
+               this->receiverState = HC12_RECEIVE_WAIT_FOR_PAYLOAD;
+               lastReceivedByteInMillis = millis();
+            }
+            else
+            {
+               resetReceiver();
+            }
+            break;
+         }
+         case HC12_RECEIVE_WAIT_FOR_PAYLOAD:
+         {
+            if (millis()
+                  - lastReceivedByteInMillis> HC12_OUT_OF_SYNC_TIMEOUT_IN_MILLIS)
+            {
+               // out of sync
+               resetReceiver();
 
-      return true;
+               break;
+            }
+
+            if (hc12.available() == 0)
+            {
+               return false;
+            }
+
+            int receivedByte = hc12.read();
+            unsigned long currentReceivedByteInMillis = millis();
+
+            receivedPacket[receiverIndex] = receivedByte;
+            lastReceivedByteInMillis = currentReceivedByteInMillis;
+            receiverIndex++;
+
+            if (receiverIndex == DEFAULT_PACKET_SIZE)
+            {
+               // packet received
+               memcpy(data, receivedPacket, DEFAULT_PACKET_SIZE);
+               resetReceiver();
+
+               return true;
+            }
+            break;
+         }
+         default:
+         {
+            resetReceiver();
+         }
+      }
    }
+   while (hc12.available() > 0);
 
    return false;
 }
 
 bool HC12Device::writePacket(IotPacket* packet)
 {
-   return hc12.write((uint8_t*)packet, DEFAULT_PACKET_SIZE);
+   hc12.write(HC12_PREAMBLE);
+   return hc12.write((uint8_t*) packet, DEFAULT_PACKET_SIZE);
 }
 
 String HC12Device::getLinkAddress()
@@ -99,4 +151,11 @@ String HC12Device::getModel()
 String HC12Device::getInterfaceName()
 {
    return F("hc12");
+}
+
+void HC12Device::resetReceiver()
+{
+   this->receiverIndex = 0;
+   this->receiverState = HC12_RECEIVE_WAIT_FOR_PREAMBLE;
+   this->lastReceivedByteInMillis = 0;
 }

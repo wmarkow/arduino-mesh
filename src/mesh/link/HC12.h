@@ -32,6 +32,8 @@ public:
    uint8_t getRFChannel();
    bool write(uint8_t *data, uint8_t size);
    int read(uint8_t *buffer, size_t length);
+   int read();
+   int write(uint8_t data);
    uint8_t available();
 };
 
