@@ -55,6 +55,7 @@ void setup()
    radioRF24.setFlooder(&flooder);
    radioHC12.setFlooder(&flooder);
    flooder.setRF24Interface(&radioRF24);
+   flooder.setHC12Interface(&radioHC12);
 }
 
 void loop()

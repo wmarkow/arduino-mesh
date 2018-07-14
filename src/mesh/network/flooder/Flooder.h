@@ -17,10 +17,13 @@ class Flooder
 {
 private:
 	FlooderCounters counters;
-	Interface *interface;
+	Interface *rf24interface;
+	Interface *hc12interface;
 
 public:
+	Flooder();
 	void setRF24Interface(Interface *interface);
+	void setHC12Interface(Interface *interface);
 	void flood(IotPacket* packet);
 	FlooderCounters* getCounters();
 };
