@@ -140,7 +140,7 @@ bool Interface::sendTcpPacket(IotPacket* packet)
 
    while (!hasAckArrived(packet))
    {
-      if (micros() - startedWaitingAtMicros > 200000)
+      if (micros() - startedWaitingAtMicros > 300000)
       {
          tcpTransmitionState = IDLE;
          packetCounters.incTransmittedTcpFailed();
