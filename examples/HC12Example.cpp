@@ -53,6 +53,7 @@ void setup()
    commandsArray->add(&flodderCommand);
 
    radioRF24.setFlooder(&flooder);
+   radioHC12.setFlooder(&flooder);
    flooder.setRF24Interface(&radioRF24);
 }
 
