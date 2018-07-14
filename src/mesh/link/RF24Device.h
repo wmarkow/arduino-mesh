@@ -40,7 +40,6 @@ public:
 	bool up();
 	bool powerDown();
 	bool isChipConnected();
-	bool available();
 	bool readPacket(IotPacket* packet);
 	bool writePacket(IotPacket* packet);
 

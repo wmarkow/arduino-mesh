@@ -17,7 +17,6 @@ public:
 	virtual bool up() = 0;
 	virtual bool powerDown() = 0;
 	virtual bool isChipConnected() = 0;
-	virtual bool available() = 0;
 	virtual bool readPacket(IotPacket* packet) = 0;
 	virtual bool writePacket(IotPacket* packet) = 0;
 

@@ -37,16 +37,6 @@ bool HC12Device::isChipConnected()
    return chipConnected;
 }
 
-bool HC12Device::available()
-{
-   if (hc12.available() >= DEFAULT_PACKET_SIZE)
-   {
-      return true;
-   }
-
-   return false;
-}
-
 bool HC12Device::readPacket(IotPacket* data)
 {
    do

@@ -20,7 +20,6 @@ private:
 	Device *device;
 	FixedSizeArray<IotPacket, INCOMMING_PACKETS_BUFFER_SIZE> incomingPackets;
 
-	bool available();
 	bool readIncomingPacket();
 	/*void debugHexPrintToSerial(void* object, uint8_t length);*/
 public:
