@@ -6,6 +6,8 @@
  */
 
 #include "../../../mesh/network/flooder/Flooder.h"
+#include "../host/Host.h"
+
 
 Flooder::Flooder()
 {
@@ -26,7 +28,7 @@ void Flooder::flood(IotPacket* packet)
 {
    if (rf24interface != NULL)
    {
-      if (packet->getSrcAddress() == rf24interface->getIpAddress())
+      if (packet->getSrcAddress() == Localhost.getIpAddress())
       {
          // I'm originator of this packet; drop it
          counters.incDroppedCount();
@@ -37,7 +39,7 @@ void Flooder::flood(IotPacket* packet)
 
    if (hc12interface != NULL)
    {
-      if (packet->getSrcAddress() == hc12interface->getIpAddress())
+      if (packet->getSrcAddress() == Localhost.getIpAddress())
       {
          // I'm originator of this packet; drop it
          counters.incDroppedCount();

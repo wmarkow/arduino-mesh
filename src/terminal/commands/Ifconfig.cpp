@@ -43,21 +43,9 @@ void Ifconfig::process(CommandParams *params, HardwareSerial *serial)
          processIfconfigUp(serial, interface);
          return;
       }
-
-      uint8_t address = subcommand.toInt();
-      processIfconfigSetIp(address, serial);
-
-      return;
    }
 
    serial->println(F("Unknown parameters"));
-}
-
-void Ifconfig::processIfconfigSetIp(uint8_t address, HardwareSerial *serial)
-{
-   radioRF24.setIpAddress(address);
-   radioHC12.setIpAddress(address);
-   processIfconfig(serial);
 }
 
 void Ifconfig::processBackground(HardwareSerial *serial)
@@ -84,8 +72,6 @@ void Ifconfig::processIfconfig(HardwareSerial *serial, Interface *interface)
 
    serial->print(F("  Model         "));
    serial->println(interface->getDevice()->getModel());
-   serial->print(F("  inet addr     "));
-   serial->println((int) interface->getIpAddress(), DEC);
    serial->print(F("  HWaddr        "));
    serial->println(interface->getDevice()->getLinkAddress());
 

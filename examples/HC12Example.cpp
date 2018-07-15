@@ -20,6 +20,7 @@
 #include "../src/mesh/network/packet/AckPacket.h"
 #include "../src/terminal/commands/FlooderCmd.h"
 #include "../src/terminal/commands/Ifconfig.h"
+#include "../src/terminal/commands/IpConfig.h"
 #include "../src/terminal/commands/Ping.h"
 
 Flooder flooder;
@@ -35,6 +36,7 @@ Array<AbstractCommand*> *commandsArray = &commands;
 UptimeCommand uptimeCommand;
 Ping pingCommand;
 Ifconfig ifconfigCommand;
+IpConfig ipConfigCommand;
 FlooderCmd flodderCommand;
 Terminal terminal(&Serial, commandsArray);
 
@@ -51,6 +53,7 @@ void setup()
    commandsArray->add(&pingCommand);
    commandsArray->add(&ifconfigCommand);
    commandsArray->add(&flodderCommand);
+   commandsArray->add(&ipConfigCommand);
 
    radioRF24.setFlooder(&flooder);
    radioHC12.setFlooder(&flooder);

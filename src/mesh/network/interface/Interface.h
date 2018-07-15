@@ -42,7 +42,6 @@ private:
 	Device* device;
 	Receiver receiver;
 	Transmitter transmitter;
-	byte ipAddress;
 	TcpTransmitionState tcpTransmitionState = IDLE;
 	PacketCounters packetCounters;
 
@@ -66,8 +65,6 @@ public:
 	bool isUp();
 	bool powerDown();
 	bool isChipConnected();
-	void setIpAddress(uint8_t address);
-	uint8_t getIpAddress();
 	PingResult ping(uint8_t dstAddress);
 	bool sendTcp(uint8_t dstAddress, uint8_t* data, uint8_t length);
 	PacketCounters* getCounters();

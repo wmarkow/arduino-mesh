@@ -11,11 +11,12 @@
 #include "../../../mesh/network/packet/PingPacket.h"
 #include "../../../mesh/network/packet/TcpPacket.h"
 
+#include "../host/Host.h"
+
 Interface::Interface(Device *device) :
       transmitter(Transmitter(device)), receiver(Receiver(device))
 {
    this->device = device;
-   ipAddress = 1;
    flooder = NULL;
 }
 
@@ -52,11 +53,6 @@ bool Interface::powerDown()
 bool Interface::isChipConnected()
 {
    return device->isChipConnected();
-}
-
-void Interface::setIpAddress(uint8_t address)
-{
-   ipAddress = address;
 }
 
 PingResult Interface::ping(uint8_t dstAddress)
@@ -103,11 +99,6 @@ PacketCounters* Interface::getCounters()
    return &packetCounters;
 }
 
-uint8_t Interface::getIpAddress()
-{
-   return ipAddress;
-}
-
 FixedSizeArray<IncomingTransportPacket, INCOMMING_TRANSPORT_PACKETS_SIZE>* Interface::getIncomingTransportPackets()
 {
    return &incomingTransportPackets;
@@ -115,7 +106,7 @@ FixedSizeArray<IncomingTransportPacket, INCOMMING_TRANSPORT_PACKETS_SIZE>* Inter
 
 bool Interface::sendPacket(IotPacket* packet, uint8_t dstAddress)
 {
-   packet->setSrcAddress(ipAddress);
+   packet->setSrcAddress(Localhost.getIpAddress());
    packet->setDstAddress(dstAddress);
 
    return sendPacket(packet);
@@ -218,7 +209,7 @@ void Interface::processIncomingPackets()
    {
       IotPacket* itr = receiver.getIncomingPackets()->peek(index);
 
-      if (itr->getDstAddress() != ipAddress)
+      if (itr->getDstAddress() != Localhost.getIpAddress())
       {
          // this packet is not addressed for me; flood that packet
          flooder->flood(itr);
