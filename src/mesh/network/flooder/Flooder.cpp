@@ -8,7 +8,6 @@
 #include "../../../mesh/network/flooder/Flooder.h"
 #include "../host/Host.h"
 
-
 Flooder::Flooder()
 {
    rf24interface = NULL;
@@ -26,26 +25,12 @@ void Flooder::setHC12Interface(Interface *interface)
 
 void Flooder::flood(IotPacket* packet)
 {
-   if (rf24interface != NULL)
+   if (packet->getSrcAddress() == Localhost.getIpAddress())
    {
-      if (packet->getSrcAddress() == Localhost.getIpAddress())
-      {
-         // I'm originator of this packet; drop it
-         counters.incDroppedCount();
+      // I'm originator of this packet; drop it
+      counters.incDroppedCount();
 
-         return;
-      }
-   }
-
-   if (hc12interface != NULL)
-   {
-      if (packet->getSrcAddress() == Localhost.getIpAddress())
-      {
-         // I'm originator of this packet; drop it
-         counters.incDroppedCount();
-
-         return;
-      }
+      return;
    }
 
    if (packet->decrementTTL() == 0)
