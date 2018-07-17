@@ -11,3 +11,8 @@ IotPacket::IotPacket() : IotPacketHeader()
 {
 
 }
+
+uint8_t IotPacket::getPacketSize()
+{
+   return DEFAULT_PACKET_HEADER_SIZE + getPayloadSize();
+}

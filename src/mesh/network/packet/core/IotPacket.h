@@ -17,6 +17,8 @@ class IotPacket : public IotPacketHeader
 public:
 	IotPacket();
 	uint8_t payload[DEFAULT_PACKET_PAYLOAD_SIZE];
+
+	uint8_t getPacketSize();
 };
 
 #endif /* IOTPACKET_H_ */

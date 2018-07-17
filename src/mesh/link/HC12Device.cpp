@@ -133,8 +133,8 @@ bool HC12Device::readPacket(IotPacket* data)
 bool HC12Device::writePacket(IotPacket* packet)
 {
    hc12.write(HC12_PREAMBLE);
-   hc12.write(DEFAULT_PACKET_SIZE);
-   return hc12.write((uint8_t*) packet, DEFAULT_PACKET_SIZE);
+   hc12.write(packet->getPacketSize());
+   return hc12.write((uint8_t*) packet, packet->getPacketSize());
 }
 
 String HC12Device::getLinkAddress()
