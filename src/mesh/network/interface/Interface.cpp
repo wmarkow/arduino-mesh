@@ -57,12 +57,12 @@ bool Interface::isChipConnected()
 
 PingResult Interface::ping(uint8_t dstAddress)
 {
+   PingPacket pingPacket;
+
    PingResult pingResult;
-   pingResult.packetSize = DEFAULT_PACKET_SIZE;
+   pingResult.packetSize = pingPacket.getPacketSize();
    pingResult.success = false;
    pingResult.timeInUs = 0;
-
-   PingPacket pingPacket;
 
    unsigned long sentTime = micros();
    if (sendPacket(&pingPacket, dstAddress))
