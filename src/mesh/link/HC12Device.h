@@ -22,6 +22,7 @@
 enum  HC12ReceiverState
 {
    HC12_RECEIVE_WAIT_FOR_PREAMBLE,
+   HC12_RECEIVE_WAIT_FOR_PAYLOAD_SIZE,
    HC12_RECEIVE_WAIT_FOR_PAYLOAD
 };
 
@@ -33,6 +34,7 @@ private:
    uint8_t receivedPacket[DEFAULT_PACKET_SIZE];
    uint8_t receiverState = HC12_RECEIVE_WAIT_FOR_PREAMBLE;
    uint8_t receiverIndex = 0;
+   uint8_t receiverPacketSize;
    unsigned long lastReceivedByteInMillis = 0;
    void resetReceiver();
 public:

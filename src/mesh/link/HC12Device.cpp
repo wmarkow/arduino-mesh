@@ -48,7 +48,36 @@ bool HC12Device::readPacket(IotPacket* data)
             int receivedByte = hc12.read();
             if (receivedByte == HC12_PREAMBLE)
             {
+               this->receiverState = HC12_RECEIVE_WAIT_FOR_PAYLOAD_SIZE;
+               lastReceivedByteInMillis = millis();
+            }
+            else
+            {
+               resetReceiver();
+            }
+            break;
+         }
+         case HC12_RECEIVE_WAIT_FOR_PAYLOAD_SIZE:
+         {
+            if (millis()
+                  - lastReceivedByteInMillis> HC12_OUT_OF_SYNC_TIMEOUT_IN_MILLIS)
+            {
+               // out of sync
+               resetReceiver();
+
+               break;
+            }
+
+            if (hc12.available() == 0)
+            {
+               return false;
+            }
+
+            int receivedByte = hc12.read();
+            if (receivedByte >= 0 && receivedByte <= DEFAULT_PACKET_SIZE)
+            {
                this->receiverState = HC12_RECEIVE_WAIT_FOR_PAYLOAD;
+               this->receiverPacketSize = receivedByte;
                lastReceivedByteInMillis = millis();
             }
             else
@@ -80,10 +109,10 @@ bool HC12Device::readPacket(IotPacket* data)
             lastReceivedByteInMillis = currentReceivedByteInMillis;
             receiverIndex++;
 
-            if (receiverIndex == DEFAULT_PACKET_SIZE)
+            if (receiverIndex == receiverPacketSize)
             {
                // packet received
-               memcpy(data, receivedPacket, DEFAULT_PACKET_SIZE);
+               memcpy(data, receivedPacket, receiverPacketSize);
                resetReceiver();
 
                return true;
@@ -104,6 +133,7 @@ bool HC12Device::readPacket(IotPacket* data)
 bool HC12Device::writePacket(IotPacket* packet)
 {
    hc12.write(HC12_PREAMBLE);
+   hc12.write(DEFAULT_PACKET_SIZE);
    return hc12.write((uint8_t*) packet, DEFAULT_PACKET_SIZE);
 }
 
