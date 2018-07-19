@@ -27,12 +27,14 @@ void Host::setIpAddress(uint8_t ipAddress)
 void Host::setRF24Interface(Interface *interface)
 {
    this->rf24interface = interface;
+   this->flooder.setRF24Interface(interface);
    interface->setFlooder(&flooder);
 }
 
 void Host::setHC12Interface(Interface *interface)
 {
    this->hc12interface = interface;
+   this->flooder.setHC12Interface(interface);
    interface->setFlooder(&flooder);
 }
 
