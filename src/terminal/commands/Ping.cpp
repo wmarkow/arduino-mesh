@@ -7,7 +7,7 @@
 
 #include "Ping.h"
 
-#include "../../mesh/network/interface/Interface.h"
+#include "../../mesh/network/host/Host.h"
 
 extern Interface radioRF24;
 extern Interface radioHC12;
@@ -38,17 +38,7 @@ void Ping::processPing(uint8_t address, HardwareSerial* serial)
    lastCommandExecutionMillis = millis();
    pingAddress = address;
 
-   // TODO: rework ping mechanism so there will be no need to ping all interfaces separately here
-   // Introduce some kind of wrapper/holder for all interfaces.
-
-   // ping with RF24
-   PingResult pingResult = radioRF24.ping(address);
-
-   if (!pingResult.success)
-   {
-      // try to ping with HC-12
-      pingResult = radioHC12.ping(address);
-   }
+   PingResult pingResult = Localhost.ping(address);
 
    if (pingResult.success)
    {

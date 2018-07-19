@@ -43,4 +43,30 @@ Flooder* Host::getFlooder()
    return &flooder;
 }
 
+PingResult Host::ping(uint8_t dstAddress)
+{
+   if (rf24interface != NULL)
+   {
+      PingResult pingResult = rf24interface->ping(dstAddress);
+      if (pingResult.success)
+      {
+         return pingResult;
+      }
+   }
+
+   if (hc12interface != NULL)
+   {
+      PingResult pingResult = hc12interface->ping(dstAddress);
+      if (pingResult.success)
+      {
+         return pingResult;
+      }
+   }
+
+   PingResult pingResult;
+   pingResult.success = false;
+
+   return pingResult;
+}
+
 Host Localhost;

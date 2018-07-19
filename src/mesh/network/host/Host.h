@@ -27,6 +27,7 @@ public:
    void setRF24Interface(Interface *interface);
    void setHC12Interface(Interface *interface);
    Flooder* getFlooder();
+   PingResult ping(uint8_t dst);
 };
 
 extern Host Localhost;
