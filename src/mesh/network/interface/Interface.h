@@ -14,7 +14,6 @@
 #include "../../../mesh/network/interface/Transmitter.h"
 #include "../../../mesh/network/packet/core/IotPacket.h"
 #include "../../../mesh/transport/packet/IncomingTransportPacket.h"
-#include "../flooder/Flooder.h"
 
 #define INCOMMING_TRANSPORT_PACKETS_SIZE 3
 
@@ -32,11 +31,12 @@ struct PingResult
 };
 
 class Flooder;
+class Host;
 
 class Interface
 {
 	friend class Flooder;
-
+	friend class Host;
 private:
 	Flooder *flooder;
 	Device* device;
@@ -56,11 +56,11 @@ private:
 	void processIncomingPackets();
 
 	bool floodToTransmitter(IotPacket* sentPacket);
+	void setFlooder(Flooder *flooder);
 public:
 	Interface(Device *device);
 	Device* getDevice();
 	String getName();
-	void setFlooder(Flooder *flooder);
 	bool up();
 	bool isUp();
 	bool powerDown();

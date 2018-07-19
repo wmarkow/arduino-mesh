@@ -11,8 +11,6 @@
 #include "../../../mesh/network/flooder/FlooderCounters.h"
 #include "../../../mesh/network/interface/Interface.h"
 
-class Interface;
-
 class Flooder
 {
 private:

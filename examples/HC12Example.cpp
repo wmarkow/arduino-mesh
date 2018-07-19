@@ -15,15 +15,13 @@
 #include <UptimeCommand.h>
 #include "../src/mesh/link/RF24Device.h"
 #include "../src/mesh/link/HC12Device.h"
-#include "../src/mesh/network/flooder/Flooder.h"
 #include "../src/mesh/network/interface/Interface.h"
 #include "../src/mesh/network/packet/AckPacket.h"
 #include "../src/terminal/commands/FlooderCmd.h"
 #include "../src/terminal/commands/Ifconfig.h"
 #include "../src/terminal/commands/IpConfig.h"
 #include "../src/terminal/commands/Ping.h"
-
-Flooder flooder;
+#include "../src/mesh/network/host/Host.h"
 
 RF24Device rf24Device;
 Interface radioRF24 = Interface(&rf24Device);
@@ -55,10 +53,8 @@ void setup()
    commandsArray->add(&flodderCommand);
    commandsArray->add(&ipConfigCommand);
 
-   radioRF24.setFlooder(&flooder);
-   radioHC12.setFlooder(&flooder);
-   flooder.setRF24Interface(&radioRF24);
-   flooder.setHC12Interface(&radioHC12);
+   Localhost.setRF24Interface(&radioRF24);
+   Localhost.setHC12Interface(&radioHC12);
 }
 
 void loop()

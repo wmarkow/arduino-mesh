@@ -8,8 +8,7 @@
 #include "FlooderCmd.h"
 
 #include "../../mesh/network/flooder/Flooder.h"
-
-extern Flooder flooder;
+#include "../../mesh/network/host/Host.h"
 
 const __FlashStringHelper* FlooderCmd::getName()
 {
@@ -34,8 +33,8 @@ void FlooderCmd::processBackground(HardwareSerial *serial)
 void FlooderCmd::processFlooder(HardwareSerial *serial)
 {
 	serial->print(F("Packets: dropped "));
-	serial->println(flooder.getCounters()->getDroppedCount());
+	serial->println(Localhost.getFlooder()->getCounters()->getDroppedCount());
 
 	serial->print(F("Packets: flooded "));
-	serial->println(flooder.getCounters()->getFloodedCount());
+	serial->println(Localhost.getFlooder()->getCounters()->getFloodedCount());
 }
