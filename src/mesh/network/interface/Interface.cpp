@@ -14,7 +14,7 @@
 #include "../host/Host.h"
 
 Interface::Interface(Device *device) :
-      transmitter(Transmitter(device)), receiver(Receiver(device))
+      transmitter(Transmitter(device))
 {
    this->device = device;
    flooder = NULL;
@@ -91,7 +91,7 @@ void Interface::loop()
 {
    transmitter.loop();
    processIncomingPackets();
-   receiver.loop();
+   readIncomingPacket();
 }
 
 PacketCounters* Interface::getCounters()
@@ -164,10 +164,9 @@ bool Interface::hasAckArrived(IotPacket* sentPacket)
 {
    loop();
 
-   for (uint8_t index = 0; index < receiver.getIncomingPackets()->getSize();
-         index++)
+   for (uint8_t index = 0; index < incomingPackets.getSize(); index++)
    {
-      IotPacket* itr = receiver.getIncomingPackets()->peek(index);
+      IotPacket* itr = incomingPackets.peek(index);
 
       if (itr->getType() != ACK)
       {
@@ -194,7 +193,7 @@ bool Interface::hasAckArrived(IotPacket* sentPacket)
          continue;
       }
 
-      receiver.getIncomingPackets()->remove(index);
+      incomingPackets.remove(index);
 
       return true;
    }
@@ -204,16 +203,15 @@ bool Interface::hasAckArrived(IotPacket* sentPacket)
 
 void Interface::processIncomingPackets()
 {
-   for (uint8_t index = 0; index < receiver.getIncomingPackets()->getSize();
-         index++)
+   for (uint8_t index = 0; index < incomingPackets.getSize(); index++)
    {
-      IotPacket* itr = receiver.getIncomingPackets()->peek(index);
+      IotPacket* itr = incomingPackets.peek(index);
 
       if (itr->getDstAddress() != Localhost.getIpAddress())
       {
          // this packet is not addressed for me; flood that packet
          flooder->flood(itr);
-         receiver.getIncomingPackets()->remove(index);
+         incomingPackets.remove(index);
          index--;
          continue;
       }
@@ -221,7 +219,7 @@ void Interface::processIncomingPackets()
       if (itr->getType() == ACK && tcpTransmitionState != WAITING_FOR_ACK)
       {
          // the transmitter is not waiting for ACK; purge that ACK
-         receiver.getIncomingPackets()->remove(index);
+         incomingPackets.remove(index);
          index--;
          continue;
       }
@@ -233,7 +231,7 @@ void Interface::processIncomingPackets()
          this->packetCounters.incTransmittedUdpAck();
 
          // ACK sent. Purge incoming ICMP packet
-         receiver.getIncomingPackets()->remove(index);
+         incomingPackets.remove(index);
          index--;
          continue;
       }
@@ -246,11 +244,9 @@ void Interface::processIncomingPackets()
          this->packetCounters.incTransmittedUdpAck();
 
          IncomingTransportPacket itp;
-         itp.srcAddress =
-               receiver.getIncomingPackets()->peek(index)->getSrcAddress();
-         memcpy(itp.payload,
-               receiver.getIncomingPackets()->peek(index)->payload,
-               DEFAULT_PACKET_PAYLOAD_SIZE);
+         itp.srcAddress = incomingPackets.peek(index)->getSrcAddress();
+         memcpy(itp.payload, incomingPackets.peek(index)->payload,
+         DEFAULT_PACKET_PAYLOAD_SIZE);
 
          if (this->incomingTransportPackets.isFull())
          {
@@ -258,14 +254,14 @@ void Interface::processIncomingPackets()
          }
          this->incomingTransportPackets.add(&itp);
 
-         receiver.getIncomingPackets()->remove(index);
+         incomingPackets.remove(index);
 
          index--;
          continue;
       }
 
       // some kind of unknown packet; purge it
-      receiver.getIncomingPackets()->remove(index);
+      incomingPackets.remove(index);
       index--;
    }
 }
@@ -273,4 +269,32 @@ void Interface::processIncomingPackets()
 bool Interface::floodToTransmitter(IotPacket* packet)
 {
    return transmitter.addPacketToTransmissionQueue(packet);
+}
+
+bool Interface::readIncomingPacket()
+{
+   IotPacket incomingPacket;
+   if (device->readPacket(&incomingPacket) == false)
+   {
+      return false;
+   }
+
+   if (!device->isChipConnected())
+   {
+      return false;
+   }
+
+   if (incomingPackets.getSize() >= INCOMMING_PACKETS_BUFFER_SIZE)
+   {
+      // incoming queue is full, discard new packet
+#if IOT_DEBUG_WRITE_RADIO == ON
+      Serial.println(F("Discarding packet because incoming buffer is full"));
+#endif
+
+      return false;
+   }
+
+   incomingPackets.add(&incomingPacket);
+
+   return true;
 }

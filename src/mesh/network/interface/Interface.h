@@ -10,12 +10,12 @@
 
 #include "../../../mesh/link/Device.h"
 #include "../../../mesh/network/interface/PacketCounters.h"
-#include "../../../mesh/network/interface/Receiver.h"
 #include "../../../mesh/network/interface/Transmitter.h"
 #include "../../../mesh/network/packet/core/IotPacket.h"
 #include "../../../mesh/transport/packet/IncomingTransportPacket.h"
 
 #define INCOMMING_TRANSPORT_PACKETS_SIZE 3
+#define INCOMMING_PACKETS_BUFFER_SIZE 3
 
 enum TcpTransmitionState
 {
@@ -40,11 +40,11 @@ class Interface
 private:
 	Flooder *flooder;
 	Device* device;
-	Receiver receiver;
 	Transmitter transmitter;
 	TcpTransmitionState tcpTransmitionState = IDLE;
 	PacketCounters packetCounters;
 
+	FixedSizeArray<IotPacket, INCOMMING_PACKETS_BUFFER_SIZE> incomingPackets;
 	FixedSizeArray<IncomingTransportPacket, INCOMMING_TRANSPORT_PACKETS_SIZE> incomingTransportPackets;
 
 	bool sendPacket(IotPacket* packet, uint8_t dstAddress);
@@ -53,6 +53,7 @@ private:
 	bool sendUdpPacket(IotPacket* packet);
 
 	bool hasAckArrived(IotPacket* sentPacket);
+	bool readIncomingPacket();
 	void processIncomingPackets();
 
 	bool floodToTransmitter(IotPacket* sentPacket);
