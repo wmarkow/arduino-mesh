@@ -203,67 +203,67 @@ bool Interface::hasAckArrived(IotPacket* sentPacket)
 
 void Interface::processIncomingPackets()
 {
-   for (uint8_t index = 0; index < incomingPackets.getSize(); index++)
-   {
-      IotPacket* itr = incomingPackets.peek(index);
-
-      if (itr->getDstAddress() != Localhost.getIpAddress())
-      {
-         // this packet is not addressed for me; flood that packet
-         flooder->flood(itr);
-         incomingPackets.remove(index);
-         index--;
-         continue;
-      }
-
-      if (itr->getType() == ACK && tcpTransmitionState != WAITING_FOR_ACK)
-      {
-         // the transmitter is not waiting for ACK; purge that ACK
-         incomingPackets.remove(index);
-         index--;
-         continue;
-      }
-
-      if (itr->getProtocol() == ICMP && itr->getType() == REGULAR)
-      {
-         AckPacket ackPacket(itr);
-         transmitter.addPacketToTransmissionQueue(&ackPacket);
-         this->packetCounters.incTransmittedUdpAck();
-
-         // ACK sent. Purge incoming ICMP packet
-         incomingPackets.remove(index);
-         index--;
-         continue;
-      }
-
-      // Some other packet addressed to me
-      if (itr->getProtocol() == TCP && itr->getType() == REGULAR)
-      {
-         AckPacket ackPacket(itr);
-         transmitter.addPacketToTransmissionQueue(&ackPacket);
-         this->packetCounters.incTransmittedUdpAck();
-
-         IncomingTransportPacket itp;
-         itp.srcAddress = incomingPackets.peek(index)->getSrcAddress();
-         memcpy(itp.payload, incomingPackets.peek(index)->payload,
-         DEFAULT_PACKET_PAYLOAD_SIZE);
-
-         if (this->incomingTransportPackets.isFull())
-         {
-            this->incomingTransportPackets.remove(0);
-         }
-         this->incomingTransportPackets.add(&itp);
-
-         incomingPackets.remove(index);
-
-         index--;
-         continue;
-      }
-
-      // some kind of unknown packet; purge it
-      incomingPackets.remove(index);
-      index--;
-   }
+//   for (uint8_t index = 0; index < incomingPackets.getSize(); index++)
+//   {
+//      IotPacket* itr = incomingPackets.peek(index);
+//
+//      if (itr->getDstAddress() != Localhost.getIpAddress())
+//      {
+//         // this packet is not addressed for me; flood that packet
+//         flooder->flood(itr);
+//         incomingPackets.remove(index);
+//         index--;
+//         continue;
+//      }
+//
+//      if (itr->getType() == ACK && tcpTransmitionState != WAITING_FOR_ACK)
+//      {
+//         // the transmitter is not waiting for ACK; purge that ACK
+//         incomingPackets.remove(index);
+//         index--;
+//         continue;
+//      }
+//
+//      if (itr->getProtocol() == ICMP && itr->getType() == REGULAR)
+//      {
+//         AckPacket ackPacket(itr);
+//         transmitter.addPacketToTransmissionQueue(&ackPacket);
+//         this->packetCounters.incTransmittedUdpAck();
+//
+//         // ACK sent. Purge incoming ICMP packet
+//         incomingPackets.remove(index);
+//         index--;
+//         continue;
+//      }
+//
+//      // Some other packet addressed to me
+//      if (itr->getProtocol() == TCP && itr->getType() == REGULAR)
+//      {
+//         AckPacket ackPacket(itr);
+//         transmitter.addPacketToTransmissionQueue(&ackPacket);
+//         this->packetCounters.incTransmittedUdpAck();
+//
+//         IncomingTransportPacket itp;
+//         itp.srcAddress = incomingPackets.peek(index)->getSrcAddress();
+//         memcpy(itp.payload, incomingPackets.peek(index)->payload,
+//         DEFAULT_PACKET_PAYLOAD_SIZE);
+//
+//         if (this->incomingTransportPackets.isFull())
+//         {
+//            this->incomingTransportPackets.remove(0);
+//         }
+//         this->incomingTransportPackets.add(&itp);
+//
+//         incomingPackets.remove(index);
+//
+//         index--;
+//         continue;
+//      }
+//
+//// some kind of unknown packet; purge it
+//      incomingPackets.remove(index);
+//      index--;
+//   }
 }
 
 bool Interface::floodToTransmitter(IotPacket* packet)
@@ -291,6 +291,33 @@ bool Interface::readIncomingPacket()
       Serial.println(F("Discarding packet because incoming buffer is full"));
 #endif
 
+      return false;
+   }
+
+   if (incomingPacket.getDstAddress() != Localhost.getIpAddress())
+   {
+      // this packet is not addressed for me; flood that packet
+      flooder->flood(&incomingPacket);
+      return false;
+   }
+
+   // from here received packet is addressed to me
+
+   if (incomingPacket.getType() == ACK
+         && tcpTransmitionState != WAITING_FOR_ACK)
+   {
+      // the transmitter is not waiting for ACK; purge that ACK
+      return false;
+   }
+
+   if (incomingPacket.getProtocol() == ICMP
+         && incomingPacket.getType() == REGULAR)
+   {
+      AckPacket ackPacket(&incomingPacket);
+      transmitter.addPacketToTransmissionQueue(&ackPacket);
+      this->packetCounters.incTransmittedUdpAck();
+
+      // ACK sent. Purge incoming ICMP packet
       return false;
    }
 
