@@ -13,16 +13,8 @@
 #include "../../../mesh/network/interface/Transmitter.h"
 #include "../../../mesh/network/packet/core/IotPacket.h"
 #include "../../../mesh/network/packet/AckPacket.h"
-#include "../../../mesh/transport/packet/IncomingTransportPacket.h"
 
-#define INCOMMING_TRANSPORT_PACKETS_SIZE 3
 #define INCOMMING_PACKETS_BUFFER_SIZE 3
-
-enum TcpTransmitionState
-{
-	IDLE = 0,
-	WAITING_FOR_ACK = 1
-};
 
 struct PingResult
 {
@@ -47,7 +39,6 @@ private:
 	PacketCounters packetCounters;
 
 	FixedSizeArray<IotPacket, INCOMMING_PACKETS_BUFFER_SIZE> incomingPackets;
-	FixedSizeArray<IncomingTransportPacket, INCOMMING_TRANSPORT_PACKETS_SIZE> incomingTransportPackets;
 
 	bool sendPacket(IotPacket* packet, uint8_t dstAddress);
 	bool sendPacket(IotPacket* packet);
@@ -70,7 +61,6 @@ public:
 	PingResult ping(uint8_t dstAddress);
 	bool sendTcp(uint8_t dstAddress, uint8_t* data, uint8_t length);
 	PacketCounters* getCounters();
-	FixedSizeArray<IncomingTransportPacket, INCOMMING_TRANSPORT_PACKETS_SIZE>* getIncomingTransportPackets();
 
     void loop();
 };

@@ -100,11 +100,6 @@ PacketCounters* Interface::getCounters()
    return &packetCounters;
 }
 
-FixedSizeArray<IncomingTransportPacket, INCOMMING_TRANSPORT_PACKETS_SIZE>* Interface::getIncomingTransportPackets()
-{
-   return &incomingTransportPackets;
-}
-
 bool Interface::sendPacket(IotPacket* packet, uint8_t dstAddress)
 {
    packet->setSrcAddress(Localhost.getIpAddress());
