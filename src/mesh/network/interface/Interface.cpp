@@ -18,6 +18,8 @@ Interface::Interface(Device *device) :
 {
    this->device = device;
    flooder = NULL;
+   tcpPacketWaitingForAck = NULL;
+   ackReceived = false;
 }
 
 Device* Interface::getDevice()
@@ -90,7 +92,6 @@ bool Interface::sendTcp(uint8_t dstAddress, uint8_t* data, uint8_t length)
 void Interface::loop()
 {
    transmitter.loop();
-   processIncomingPackets();
    readIncomingPacket();
 }
 
@@ -125,22 +126,24 @@ bool Interface::sendPacket(IotPacket* packet)
 bool Interface::sendTcpPacket(IotPacket* packet)
 {
    transmitter.addPacketToTransmissionQueue(packet);
-   tcpTransmitionState = WAITING_FOR_ACK;
+   tcpPacketWaitingForAck = packet;
+   ackReceived = false;
 
    unsigned long startedWaitingAtMicros = micros();
 
-   while (!hasAckArrived(packet))
+   while (ackReceived == false)
    {
+      loop();
       if (micros() - startedWaitingAtMicros > 400000)
       {
-         tcpTransmitionState = IDLE;
+         tcpPacketWaitingForAck = NULL;
          packetCounters.incTransmittedTcpFailed();
 
          return false;
       }
    }
 
-   tcpTransmitionState = IDLE;
+   tcpPacketWaitingForAck = NULL;
    packetCounters.incTransmittedTcpSuccess();
 
    return true;
@@ -160,110 +163,29 @@ bool Interface::sendUdpPacket(IotPacket* packet)
    return transmitter.addPacketToTransmissionQueue(packet);
 }
 
-bool Interface::hasAckArrived(IotPacket* sentPacket)
+bool Interface::doesAckMatchToPacket(AckPacket* ackPacket, IotPacket* tcpPacket)
 {
-   loop();
-
-   for (uint8_t index = 0; index < incomingPackets.getSize(); index++)
+   if (ackPacket->getDstAddress() != tcpPacket->getSrcAddress())
    {
-      IotPacket* itr = incomingPackets.peek(index);
-
-      if (itr->getType() != ACK)
-      {
-         continue;
-      }
-
-      if (itr->getDstAddress() != sentPacket->getSrcAddress())
-      {
-         continue;
-      }
-
-      if (itr->getSrcAddress() != sentPacket->getDstAddress())
-      {
-         continue;
-      }
-
-      if (itr->getId() != sentPacket->getId())
-      {
-         continue;
-      }
-
-      if (itr->getProtocol() != sentPacket->getProtocol())
-      {
-         continue;
-      }
-
-      incomingPackets.remove(index);
-
-      return true;
+      return false;
    }
 
-   return false;
-}
+   if (ackPacket->getSrcAddress() != tcpPacket->getDstAddress())
+   {
+      return false;
+   }
 
-void Interface::processIncomingPackets()
-{
-//   for (uint8_t index = 0; index < incomingPackets.getSize(); index++)
-//   {
-//      IotPacket* itr = incomingPackets.peek(index);
-//
-//      if (itr->getDstAddress() != Localhost.getIpAddress())
-//      {
-//         // this packet is not addressed for me; flood that packet
-//         flooder->flood(itr);
-//         incomingPackets.remove(index);
-//         index--;
-//         continue;
-//      }
-//
-//      if (itr->getType() == ACK && tcpTransmitionState != WAITING_FOR_ACK)
-//      {
-//         // the transmitter is not waiting for ACK; purge that ACK
-//         incomingPackets.remove(index);
-//         index--;
-//         continue;
-//      }
-//
-//      if (itr->getProtocol() == ICMP && itr->getType() == REGULAR)
-//      {
-//         AckPacket ackPacket(itr);
-//         transmitter.addPacketToTransmissionQueue(&ackPacket);
-//         this->packetCounters.incTransmittedUdpAck();
-//
-//         // ACK sent. Purge incoming ICMP packet
-//         incomingPackets.remove(index);
-//         index--;
-//         continue;
-//      }
-//
-//      // Some other packet addressed to me
-//      if (itr->getProtocol() == TCP && itr->getType() == REGULAR)
-//      {
-//         AckPacket ackPacket(itr);
-//         transmitter.addPacketToTransmissionQueue(&ackPacket);
-//         this->packetCounters.incTransmittedUdpAck();
-//
-//         IncomingTransportPacket itp;
-//         itp.srcAddress = incomingPackets.peek(index)->getSrcAddress();
-//         memcpy(itp.payload, incomingPackets.peek(index)->payload,
-//         DEFAULT_PACKET_PAYLOAD_SIZE);
-//
-//         if (this->incomingTransportPackets.isFull())
-//         {
-//            this->incomingTransportPackets.remove(0);
-//         }
-//         this->incomingTransportPackets.add(&itp);
-//
-//         incomingPackets.remove(index);
-//
-//         index--;
-//         continue;
-//      }
-//
-//// some kind of unknown packet; purge it
-//      incomingPackets.remove(index);
-//      index--;
-//   }
+   if (ackPacket->getId() != tcpPacket->getId())
+   {
+      return false;
+   }
+
+   if (ackPacket->getProtocol() != tcpPacket->getProtocol())
+   {
+      return false;
+   }
+
+   return true;
 }
 
 bool Interface::floodToTransmitter(IotPacket* packet)
@@ -301,15 +223,22 @@ bool Interface::readIncomingPacket()
       return false;
    }
 
-   // from here received packet is addressed to me
-
-   if (incomingPacket.getType() == ACK
-         && tcpTransmitionState != WAITING_FOR_ACK)
+   // Special packet: ACK addressed to me
+   if (incomingPacket.getType() == ACK)
    {
-      // the transmitter is not waiting for ACK; purge that ACK
+      if (tcpPacketWaitingForAck != NULL)
+      {
+         if (doesAckMatchToPacket((AckPacket*) &incomingPacket,
+               tcpPacketWaitingForAck))
+         {
+            ackReceived = true;
+         }
+      }
+
       return false;
    }
 
+   // Special packet: ping (ICMP)
    if (incomingPacket.getProtocol() == ICMP
          && incomingPacket.getType() == REGULAR)
    {
@@ -321,6 +250,7 @@ bool Interface::readIncomingPacket()
       return false;
    }
 
+   // other incoming packet
    incomingPackets.add(&incomingPacket);
 
    return true;

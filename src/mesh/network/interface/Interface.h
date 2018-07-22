@@ -12,6 +12,7 @@
 #include "../../../mesh/network/interface/PacketCounters.h"
 #include "../../../mesh/network/interface/Transmitter.h"
 #include "../../../mesh/network/packet/core/IotPacket.h"
+#include "../../../mesh/network/packet/AckPacket.h"
 #include "../../../mesh/transport/packet/IncomingTransportPacket.h"
 
 #define INCOMMING_TRANSPORT_PACKETS_SIZE 3
@@ -41,7 +42,8 @@ private:
 	Flooder *flooder;
 	Device* device;
 	Transmitter transmitter;
-	TcpTransmitionState tcpTransmitionState = IDLE;
+	IotPacket* tcpPacketWaitingForAck;
+	bool ackReceived;
 	PacketCounters packetCounters;
 
 	FixedSizeArray<IotPacket, INCOMMING_PACKETS_BUFFER_SIZE> incomingPackets;
@@ -52,9 +54,8 @@ private:
 	bool sendTcpPacket(IotPacket* packet);
 	bool sendUdpPacket(IotPacket* packet);
 
-	bool hasAckArrived(IotPacket* sentPacket);
+	bool doesAckMatchToPacket(AckPacket* ackPacket, IotPacket* tcpPacket);
 	bool readIncomingPacket();
-	void processIncomingPackets();
 
 	bool floodToTransmitter(IotPacket* sentPacket);
 	void setFlooder(Flooder *flooder);
