@@ -17,7 +17,6 @@ Interface::Interface(Device *device) :
       transmitter(Transmitter(device))
 {
    this->device = device;
-   flooder = NULL;
    tcpPacketWaitingForAck = NULL;
    ackReceived = false;
 }
@@ -30,11 +29,6 @@ Device* Interface::getDevice()
 String Interface::getName()
 {
    return device->getInterfaceName();
-}
-
-void Interface::setFlooder(Flooder *flooder)
-{
-   this->flooder = flooder;
 }
 
 bool Interface::up()
@@ -98,6 +92,11 @@ void Interface::loop()
 PacketCounters* Interface::getCounters()
 {
    return &packetCounters;
+}
+
+FixedSizeArray<IotPacket, INCOMMING_PACKETS_BUFFER_SIZE>* Interface::getIncomingPackets()
+{
+   return &incomingPackets;
 }
 
 bool Interface::sendPacket(IotPacket* packet, uint8_t dstAddress)
@@ -211,15 +210,9 @@ bool Interface::readIncomingPacket()
       return false;
    }
 
-   if (incomingPacket.getDstAddress() != Localhost.getIpAddress())
-   {
-      // this packet is not addressed for me; flood that packet
-      flooder->flood(&incomingPacket);
-      return false;
-   }
-
    // Special packet: ACK addressed to me
-   if (incomingPacket.getType() == ACK)
+   if (incomingPacket.getType() == ACK
+         && incomingPacket.getDstAddress() == Localhost.getIpAddress())
    {
       if (tcpPacketWaitingForAck != NULL)
       {
@@ -233,9 +226,10 @@ bool Interface::readIncomingPacket()
       return false;
    }
 
-   // Special packet: ping (ICMP)
+   // Special packet: ping (ICMP) addressed to me
    if (incomingPacket.getProtocol() == ICMP
-         && incomingPacket.getType() == REGULAR)
+         && incomingPacket.getType() == REGULAR
+         && incomingPacket.getDstAddress() == Localhost.getIpAddress())
    {
       AckPacket ackPacket(&incomingPacket);
       transmitter.addPacketToTransmissionQueue(&ackPacket);

@@ -31,7 +31,6 @@ class Interface
 	friend class Flooder;
 	friend class Host;
 private:
-	Flooder *flooder;
 	Device* device;
 	Transmitter transmitter;
 	IotPacket* tcpPacketWaitingForAck;
@@ -49,7 +48,6 @@ private:
 	bool readIncomingPacket();
 
 	bool floodToTransmitter(IotPacket* sentPacket);
-	void setFlooder(Flooder *flooder);
 public:
 	Interface(Device *device);
 	Device* getDevice();
@@ -61,7 +59,7 @@ public:
 	PingResult ping(uint8_t dstAddress);
 	bool sendTcp(uint8_t dstAddress, uint8_t* data, uint8_t length);
 	PacketCounters* getCounters();
-
+	FixedSizeArray<IotPacket, INCOMMING_PACKETS_BUFFER_SIZE>* getIncomingPackets();
     void loop();
 };
 

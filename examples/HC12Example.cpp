@@ -60,6 +60,5 @@ void setup()
 void loop()
 {
    terminal.loop();
-   radioRF24.loop();
-   radioHC12.loop();
+   Localhost.loop();
 }

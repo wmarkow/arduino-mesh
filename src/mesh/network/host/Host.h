@@ -20,6 +20,8 @@ private:
    Flooder flooder;
    Interface *rf24interface;
    Interface *hc12interface;
+
+   void processIncomingPackets(Interface* interface);
 public:
    Host();
    uint8_t getIpAddress();
@@ -28,6 +30,7 @@ public:
    void setHC12Interface(Interface *interface);
    Flooder* getFlooder();
    PingResult ping(uint8_t dst);
+   void loop();
 };
 
 extern Host Localhost;
