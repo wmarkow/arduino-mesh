@@ -11,14 +11,13 @@
 #include "../../../mesh/network/packet/PingPacket.h"
 #include "../../../mesh/network/packet/TcpPacket.h"
 
-#include "../host/Host.h"
-
 Interface::Interface(Device *device) :
       transmitter(Transmitter(device))
 {
    this->device = device;
    tcpPacketWaitingForAck = NULL;
    ackReceived = false;
+   ipAddress = 1;
 }
 
 Device* Interface::getDevice()
@@ -101,10 +100,15 @@ FixedSizeArray<IotPacket, INCOMMING_PACKETS_BUFFER_SIZE>* Interface::getIncoming
 
 bool Interface::sendPacket(IotPacket* packet, uint8_t dstAddress)
 {
-   packet->setSrcAddress(Localhost.getIpAddress());
+   packet->setSrcAddress(ipAddress);
    packet->setDstAddress(dstAddress);
 
    return sendPacket(packet);
+}
+
+void Interface::setIpAddress(uint8_t ipAddress)
+{
+   this->ipAddress = ipAddress;
 }
 
 bool Interface::sendPacket(IotPacket* packet)
@@ -187,7 +191,7 @@ bool Interface::readIncomingPacket()
 
    // Special packet: ACK addressed to me
    if (incomingPacket.getType() == ACK
-         && incomingPacket.getDstAddress() == Localhost.getIpAddress())
+         && incomingPacket.getDstAddress() == ipAddress)
    {
       if (tcpPacketWaitingForAck != NULL)
       {
@@ -204,7 +208,7 @@ bool Interface::readIncomingPacket()
    // Special packet: ping (ICMP) addressed to me
    if (incomingPacket.getProtocol() == ICMP
          && incomingPacket.getType() == REGULAR
-         && incomingPacket.getDstAddress() == Localhost.getIpAddress())
+         && incomingPacket.getDstAddress() == ipAddress)
    {
       AckPacket ackPacket(&incomingPacket);
       transmitter.addPacketToTransmissionQueue(&ackPacket);

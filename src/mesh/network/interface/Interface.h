@@ -24,12 +24,10 @@ struct PingResult
 };
 
 class Flooder;
-class Host;
 
 class Interface
 {
    friend class Flooder;
-   friend class Host;
 private:
    Device* device;
    Transmitter transmitter;
@@ -38,6 +36,7 @@ private:
    PacketCounters packetCounters;
 
    FixedSizeArray<IotPacket, INCOMMING_PACKETS_BUFFER_SIZE> incomingPackets;
+   uint8_t ipAddress;
 
    bool sendPacket(IotPacket* packet, uint8_t dstAddress);
    bool sendPacket(IotPacket* packet);
@@ -60,6 +59,7 @@ public:
    PacketCounters* getCounters();
    FixedSizeArray<IotPacket, INCOMMING_PACKETS_BUFFER_SIZE>* getIncomingPackets();
    void loop();
+   void setIpAddress(uint8_t ipAddress);
 };
 
 #endif /* INTERFACE_INTERFACE_H_ */

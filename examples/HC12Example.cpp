@@ -55,6 +55,7 @@ void setup()
 
    Localhost.setRF24Interface(&radioRF24);
    Localhost.setHC12Interface(&radioHC12);
+   Localhost.setIpAddress(1);
 }
 
 void loop()

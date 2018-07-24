@@ -22,6 +22,15 @@ uint8_t Host::getIpAddress()
 void Host::setIpAddress(uint8_t ipAddress)
 {
    this->ipAddress = ipAddress;
+
+   if (rf24interface != NULL)
+   {
+      rf24interface->setIpAddress(ipAddress);
+   }
+   if (hc12interface != NULL)
+   {
+      hc12interface->setIpAddress(ipAddress);
+   }
 }
 
 void Host::setRF24Interface(Interface *interface)
