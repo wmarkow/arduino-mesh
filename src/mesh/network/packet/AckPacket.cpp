@@ -19,3 +19,28 @@ AckPacket::AckPacket(IotPacket* packet) :
    setPayloadSize(0);
 }
 ;
+
+bool AckPacket::doesAckMatchToPacket(IotPacket* tcpPacket)
+{
+   if (getDstAddress() != tcpPacket->getSrcAddress())
+   {
+      return false;
+   }
+
+   if (getSrcAddress() != tcpPacket->getDstAddress())
+   {
+      return false;
+   }
+
+   if (getId() != tcpPacket->getId())
+   {
+      return false;
+   }
+
+   if (getProtocol() != tcpPacket->getProtocol())
+   {
+      return false;
+   }
+
+   return true;
+}

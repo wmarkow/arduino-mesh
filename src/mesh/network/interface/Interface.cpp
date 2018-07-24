@@ -157,31 +157,6 @@ bool Interface::sendUdpPacket(IotPacket* packet)
    return transmitter.addPacketToTransmissionQueue(packet);
 }
 
-bool Interface::doesAckMatchToPacket(AckPacket* ackPacket, IotPacket* tcpPacket)
-{
-   if (ackPacket->getDstAddress() != tcpPacket->getSrcAddress())
-   {
-      return false;
-   }
-
-   if (ackPacket->getSrcAddress() != tcpPacket->getDstAddress())
-   {
-      return false;
-   }
-
-   if (ackPacket->getId() != tcpPacket->getId())
-   {
-      return false;
-   }
-
-   if (ackPacket->getProtocol() != tcpPacket->getProtocol())
-   {
-      return false;
-   }
-
-   return true;
-}
-
 bool Interface::floodToTransmitter(IotPacket* packet)
 {
    return transmitter.addPacketToTransmissionQueue(packet);
@@ -216,7 +191,7 @@ bool Interface::readIncomingPacket()
    {
       if (tcpPacketWaitingForAck != NULL)
       {
-         if (doesAckMatchToPacket((AckPacket*) &incomingPacket,
+         if (((AckPacket*) &incomingPacket)->doesAckMatchToPacket(
                tcpPacketWaitingForAck))
          {
             ackReceived = true;

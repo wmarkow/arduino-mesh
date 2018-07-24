@@ -18,9 +18,9 @@
 
 struct PingResult
 {
-	bool success;
-	uint8_t packetSize;
-	unsigned long timeInUs;
+   bool success;
+   uint8_t packetSize;
+   unsigned long timeInUs;
 };
 
 class Flooder;
@@ -28,39 +28,38 @@ class Host;
 
 class Interface
 {
-	friend class Flooder;
-	friend class Host;
+   friend class Flooder;
+   friend class Host;
 private:
-	Device* device;
-	Transmitter transmitter;
-	IotPacket* tcpPacketWaitingForAck;
-	bool ackReceived;
-	PacketCounters packetCounters;
+   Device* device;
+   Transmitter transmitter;
+   IotPacket* tcpPacketWaitingForAck;
+   bool ackReceived;
+   PacketCounters packetCounters;
 
-	FixedSizeArray<IotPacket, INCOMMING_PACKETS_BUFFER_SIZE> incomingPackets;
+   FixedSizeArray<IotPacket, INCOMMING_PACKETS_BUFFER_SIZE> incomingPackets;
 
-	bool sendPacket(IotPacket* packet, uint8_t dstAddress);
-	bool sendPacket(IotPacket* packet);
-	bool sendTcpPacket(IotPacket* packet);
-	bool sendUdpPacket(IotPacket* packet);
+   bool sendPacket(IotPacket* packet, uint8_t dstAddress);
+   bool sendPacket(IotPacket* packet);
+   bool sendTcpPacket(IotPacket* packet);
+   bool sendUdpPacket(IotPacket* packet);
 
-	bool doesAckMatchToPacket(AckPacket* ackPacket, IotPacket* tcpPacket);
-	bool readIncomingPacket();
+   bool readIncomingPacket();
 
-	bool floodToTransmitter(IotPacket* sentPacket);
+   bool floodToTransmitter(IotPacket* sentPacket);
 public:
-	Interface(Device *device);
-	Device* getDevice();
-	String getName();
-	bool up();
-	bool isUp();
-	bool powerDown();
-	bool isChipConnected();
-	PingResult ping(uint8_t dstAddress);
-	bool sendTcp(uint8_t dstAddress, uint8_t* data, uint8_t length);
-	PacketCounters* getCounters();
-	FixedSizeArray<IotPacket, INCOMMING_PACKETS_BUFFER_SIZE>* getIncomingPackets();
-    void loop();
+   Interface(Device *device);
+   Device* getDevice();
+   String getName();
+   bool up();
+   bool isUp();
+   bool powerDown();
+   bool isChipConnected();
+   PingResult ping(uint8_t dstAddress);
+   bool sendTcp(uint8_t dstAddress, uint8_t* data, uint8_t length);
+   PacketCounters* getCounters();
+   FixedSizeArray<IotPacket, INCOMMING_PACKETS_BUFFER_SIZE>* getIncomingPackets();
+   void loop();
 };
 
 #endif /* INTERFACE_INTERFACE_H_ */

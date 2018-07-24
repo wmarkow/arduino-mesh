@@ -13,7 +13,8 @@
 class AckPacket : public IotPacket
 {
 public:
-	AckPacket(IotPacket* packet);
+   AckPacket(IotPacket* packet);
+   bool doesAckMatchToPacket(IotPacket* tcpPacket);
 };
 
 #endif /* PACKET_ACKPACKET_H_ */
