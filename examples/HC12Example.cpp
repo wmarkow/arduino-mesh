@@ -15,13 +15,11 @@
 #include <UptimeCommand.h>
 #include "../src/mesh/link/RF24Device.h"
 #include "../src/mesh/link/HC12Device.h"
-#include "../src/mesh/network/interface/Interface.h"
-#include "../src/mesh/network/packet/AckPacket.h"
+#include "../src/mesh/network/host/Host.h"
 #include "../src/terminal/commands/FlooderCmd.h"
 #include "../src/terminal/commands/Ifconfig.h"
 #include "../src/terminal/commands/IpConfig.h"
 #include "../src/terminal/commands/Ping.h"
-#include "../src/mesh/network/host/Host.h"
 
 RF24Device rf24Device;
 Interface radioRF24 = Interface(&rf24Device);
