@@ -1,14 +1,14 @@
 /*
- * PacketCounters.h
+ * InterfaceCounters.h
  *
  *  Created on: 23 lut 2016
  *      Author: witek
  */
 
-#ifndef INTERFACE_PACKETCOUNTERS_H_
-#define INTERFACE_PACKETCOUNTERS_H_
+#ifndef INTERFACE_INTERFACECOUNTERS_H_
+#define INTERFACE_INTERFACECOUNTERS_H_
 
-class PacketCounters
+class InterfaceCounters
 {
 private:
 	unsigned int transmittedTcpSuccess = 0;
@@ -31,4 +31,4 @@ public:
 
 
 
-#endif /* INTERFACE_PACKETCOUNTERS_H_ */
+#endif /* INTERFACE_INTERFACECOUNTERS_H_ */

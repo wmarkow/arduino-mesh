@@ -88,9 +88,9 @@ void Interface::loop()
    readIncomingPacket();
 }
 
-PacketCounters* Interface::getCounters()
+InterfaceCounters* Interface::getCounters()
 {
-   return &packetCounters;
+   return &counters;
 }
 
 FixedSizeArray<IotPacket, INCOMMING_PACKETS_BUFFER_SIZE>* Interface::getIncomingPackets()
@@ -135,14 +135,14 @@ bool Interface::sendTcpPacket(IotPacket* packet)
       if (micros() - startedWaitingAtMicros > 400000)
       {
          tcpPacketWaitingForAck = NULL;
-         packetCounters.incTransmittedTcpFailed();
+         counters.incTransmittedTcpFailed();
 
          return false;
       }
    }
 
    tcpPacketWaitingForAck = NULL;
-   packetCounters.incTransmittedTcpSuccess();
+   counters.incTransmittedTcpSuccess();
 
    return true;
 }
@@ -151,11 +151,11 @@ bool Interface::sendUdpPacket(IotPacket* packet)
 {
    if (packet->getType() == ACK)
    {
-      packetCounters.incTransmittedUdpAck();
+      counters.incTransmittedUdpAck();
    }
    else
    {
-      packetCounters.incTransmittedUdpOther();
+      counters.incTransmittedUdpOther();
    }
 
    return transmitter.addPacketToTransmissionQueue(packet);
@@ -212,7 +212,7 @@ bool Interface::readIncomingPacket()
    {
       AckPacket ackPacket(&incomingPacket);
       transmitter.addPacketToTransmissionQueue(&ackPacket);
-      this->packetCounters.incTransmittedUdpAck();
+      counters.incTransmittedUdpAck();
 
       // ACK sent. Purge incoming ICMP packet
       return false;

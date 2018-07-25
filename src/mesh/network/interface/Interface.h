@@ -9,10 +9,10 @@
 #define INTERFACE_INTERFACE_H_
 
 #include "../../../mesh/link/Device.h"
-#include "../../../mesh/network/interface/PacketCounters.h"
 #include "../../../mesh/network/interface/Transmitter.h"
 #include "../../../mesh/network/packet/core/IotPacket.h"
 #include "../../../mesh/network/packet/AckPacket.h"
+#include "InterfaceCounters.h"
 
 #define INCOMMING_PACKETS_BUFFER_SIZE 3
 
@@ -33,7 +33,7 @@ private:
    Transmitter transmitter;
    IotPacket* tcpPacketWaitingForAck;
    bool ackReceived;
-   PacketCounters packetCounters;
+   InterfaceCounters counters;
 
    FixedSizeArray<IotPacket, INCOMMING_PACKETS_BUFFER_SIZE> incomingPackets;
    uint8_t ipAddress;
@@ -56,7 +56,7 @@ public:
    bool isChipConnected();
    PingResult ping(uint8_t dstAddress);
    bool sendTcp(uint8_t dstAddress, uint8_t* data, uint8_t length);
-   PacketCounters* getCounters();
+   InterfaceCounters* getCounters();
    FixedSizeArray<IotPacket, INCOMMING_PACKETS_BUFFER_SIZE>* getIncomingPackets();
    void loop();
    void setIpAddress(uint8_t ipAddress);
