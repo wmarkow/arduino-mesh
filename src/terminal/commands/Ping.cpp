@@ -7,7 +7,7 @@
 
 #include "Ping.h"
 
-#include "../../mesh/network/host/Host.h"
+#include "../../mesh/network/host/MeshNode.h"
 
 extern Interface radioRF24;
 extern Interface radioHC12;
@@ -38,7 +38,7 @@ void Ping::processPing(uint8_t address, HardwareSerial* serial)
    lastCommandExecutionMillis = millis();
    pingAddress = address;
 
-   PingResult pingResult = Localhost.ping(address);
+   PingResult pingResult = LocalMeshNode.ping(address);
 
    if (pingResult.success)
    {

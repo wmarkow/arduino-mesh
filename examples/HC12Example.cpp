@@ -15,7 +15,7 @@
 #include <UptimeCommand.h>
 #include "../src/mesh/link/RF24Device.h"
 #include "../src/mesh/link/HC12Device.h"
-#include "../src/mesh/network/host/Host.h"
+#include "../src/mesh/network/host/MeshNode.h"
 #include "../src/terminal/commands/FlooderCmd.h"
 #include "../src/terminal/commands/Ifconfig.h"
 #include "../src/terminal/commands/IpConfig.h"
@@ -51,13 +51,13 @@ void setup()
    commandsArray->add(&flodderCommand);
    commandsArray->add(&ipConfigCommand);
 
-   Localhost.setRF24Interface(&radioRF24);
-   Localhost.setHC12Interface(&radioHC12);
-   Localhost.setIpAddress(1);
+   LocalMeshNode.setRF24Interface(&radioRF24);
+   LocalMeshNode.setHC12Interface(&radioHC12);
+   LocalMeshNode.setIpAddress(1);
 }
 
 void loop()
 {
    terminal.loop();
-   Localhost.loop();
+   LocalMeshNode.loop();
 }

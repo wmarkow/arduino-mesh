@@ -1,19 +1,19 @@
 /*
- * Host.h
+ * MeshNode.h
  *
  *  Created on: 15.07.2018
  *      Author: wmarkowski
  */
 
-#ifndef MESH_NETWORK_HOST_HOST_H_
-#define MESH_NETWORK_HOST_HOST_H_
+#ifndef MESH_NETWORK_HOST_MESHNODE_H_
+#define MESH_NETWORK_HOST_MESHNODE_H_
 
 #include <stdint.h>
 
 #include "../flooder/MeshNodeCounters.h"
 #include "../interface/Interface.h"
 
-class Host
+class MeshNode
 {
 private:
    uint8_t ipAddress;
@@ -24,7 +24,7 @@ private:
    void processIncomingPackets(Interface* interface);
    void flood(IotPacket* packet);
 public:
-   Host();
+   MeshNode();
    uint8_t getIpAddress();
    void setIpAddress(uint8_t ipAddress);
    void setRF24Interface(Interface *interface);
@@ -34,6 +34,6 @@ public:
    void loop();
 };
 
-extern Host Localhost;
+extern MeshNode LocalMeshNode;
 
-#endif /* MESH_NETWORK_HOST_HOST_H_ */
+#endif /* MESH_NETWORK_HOST_MESHNODE_H_ */

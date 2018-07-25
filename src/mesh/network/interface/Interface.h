@@ -23,11 +23,11 @@ struct PingResult
    unsigned long timeInUs;
 };
 
-class Host;
+class MeshNode;
 
 class Interface
 {
-   friend class Host;
+   friend class MeshNode;
 private:
    Device* device;
    Transmitter transmitter;

@@ -1,25 +1,25 @@
 /*
- * Host.cpp
+ * MeshNode.cpp
  *
  *  Created on: 15.07.2018
  *      Author: wmarkowski
  */
 
-#include "Host.h"
+#include "MeshNode.h"
 
-Host::Host()
+MeshNode::MeshNode()
 {
    ipAddress = 1;
    rf24interface = NULL;
    hc12interface = NULL;
 }
 
-uint8_t Host::getIpAddress()
+uint8_t MeshNode::getIpAddress()
 {
    return ipAddress;
 }
 
-void Host::setIpAddress(uint8_t ipAddress)
+void MeshNode::setIpAddress(uint8_t ipAddress)
 {
    this->ipAddress = ipAddress;
 
@@ -33,17 +33,17 @@ void Host::setIpAddress(uint8_t ipAddress)
    }
 }
 
-void Host::setRF24Interface(Interface *interface)
+void MeshNode::setRF24Interface(Interface *interface)
 {
    this->rf24interface = interface;
 }
 
-void Host::setHC12Interface(Interface *interface)
+void MeshNode::setHC12Interface(Interface *interface)
 {
    this->hc12interface = interface;
 }
 
-PingResult Host::ping(uint8_t dstAddress)
+PingResult MeshNode::ping(uint8_t dstAddress)
 {
    if (rf24interface != NULL)
    {
@@ -69,7 +69,7 @@ PingResult Host::ping(uint8_t dstAddress)
    return pingResult;
 }
 
-void Host::loop()
+void MeshNode::loop()
 {
    if (rf24interface != NULL)
    {
@@ -84,12 +84,12 @@ void Host::loop()
    }
 }
 
-MeshNodeCounters* Host::getCounters()
+MeshNodeCounters* MeshNode::getCounters()
 {
    return &counters;
 }
 
-void Host::processIncomingPackets(Interface* interface)
+void MeshNode::processIncomingPackets(Interface* interface)
 {
    if (interface == NULL)
    {
@@ -117,7 +117,7 @@ void Host::processIncomingPackets(Interface* interface)
    }
 }
 
-void Host::flood(IotPacket* packet)
+void MeshNode::flood(IotPacket* packet)
 {
    if (packet->getSrcAddress() == getIpAddress())
    {
@@ -148,4 +148,4 @@ void Host::flood(IotPacket* packet)
    counters.incFloodedCount();
 }
 
-Host Localhost;
+MeshNode LocalMeshNode;

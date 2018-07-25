@@ -7,8 +7,8 @@
 
 #include "IpConfig.h"
 
+#include "../../mesh/network/host/MeshNode.h"
 #include "../../mesh/network/interface/Interface.h"
-#include "../../mesh/network/host/Host.h"
 
 const __FlashStringHelper* IpConfig::getName()
 {
@@ -38,7 +38,7 @@ void IpConfig::process(CommandParams *params, HardwareSerial *serial)
 
 void IpConfig::processIpConfigSetIp(uint8_t address, HardwareSerial *serial)
 {
-   Localhost.setIpAddress(address);
+   LocalMeshNode.setIpAddress(address);
    processIpConfig(serial);
 }
 
@@ -50,5 +50,5 @@ void IpConfig::processBackground(HardwareSerial *serial)
 void IpConfig::processIpConfig(HardwareSerial *serial)
 {
    Serial.print(F("IP Address : "));
-   Serial.println(Localhost.getIpAddress());
+   Serial.println(LocalMeshNode.getIpAddress());
 }
