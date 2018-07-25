@@ -1,14 +1,14 @@
 /*
- * PacketCounters.h
+ * MeshNodeCounters.h
  *
  *  Created on: 23 lut 2016
  *      Author: witek
  */
 
-#ifndef INTERFACE_FLOODERCOUNTERS_H_
-#define INTERFACE_FLOODERCOUNTERS_H_
+#ifndef INTERFACE_MESHNODECOUNTERS_H_
+#define INTERFACE_MESHNODECOUNTERS_H_
 
-class FlooderCounters
+class MeshNodeCounters
 {
 private:
 	unsigned int droppedCount = 0;
@@ -24,4 +24,4 @@ public:
 
 
 
-#endif /* INTERFACE_FLOODERCOUNTERS_H_ */
+#endif /* INTERFACE_MESHNODECOUNTERS_H_ */

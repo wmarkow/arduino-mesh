@@ -8,13 +8,13 @@
 #ifndef FLOODER_FLOODER_H_
 #define FLOODER_FLOODER_H_
 
-#include "../../../mesh/network/flooder/FlooderCounters.h"
 #include "../../../mesh/network/interface/Interface.h"
+#include "MeshNodeCounters.h"
 
 class Flooder
 {
 private:
-	FlooderCounters counters;
+   MeshNodeCounters counters;
 	Interface *rf24interface;
 	Interface *hc12interface;
 
@@ -23,7 +23,7 @@ public:
 	void setRF24Interface(Interface *interface);
 	void setHC12Interface(Interface *interface);
 	void flood(IotPacket* packet);
-	FlooderCounters* getCounters();
+	MeshNodeCounters* getCounters();
 };
 
 

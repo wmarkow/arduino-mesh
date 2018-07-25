@@ -54,7 +54,7 @@ void Flooder::flood(IotPacket* packet)
    counters.incFloodedCount();
 }
 
-FlooderCounters* Flooder::getCounters()
+MeshNodeCounters* Flooder::getCounters()
 {
    return &counters;
 }
