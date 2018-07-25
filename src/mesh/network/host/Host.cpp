@@ -36,18 +36,11 @@ void Host::setIpAddress(uint8_t ipAddress)
 void Host::setRF24Interface(Interface *interface)
 {
    this->rf24interface = interface;
-   this->flooder.setRF24Interface(interface);
 }
 
 void Host::setHC12Interface(Interface *interface)
 {
    this->hc12interface = interface;
-   this->flooder.setHC12Interface(interface);
-}
-
-Flooder* Host::getFlooder()
-{
-   return &flooder;
 }
 
 PingResult Host::ping(uint8_t dstAddress)
@@ -91,6 +84,11 @@ void Host::loop()
    }
 }
 
+MeshNodeCounters* Host::getCounters()
+{
+   return &counters;
+}
+
 void Host::processIncomingPackets(Interface* interface)
 {
    if (interface == NULL)
@@ -106,7 +104,7 @@ void Host::processIncomingPackets(Interface* interface)
       if (packet->getDstAddress() != getIpAddress())
       {
          // this packet is not addressed for me; flood that packet
-         flooder.flood(packet);
+         flood(packet);
          interface->getIncomingPackets()->remove(index);
          index--;
          continue;
@@ -117,6 +115,37 @@ void Host::processIncomingPackets(Interface* interface)
       interface->getIncomingPackets()->remove(index);
       index--;
    }
+}
+
+void Host::flood(IotPacket* packet)
+{
+   if (packet->getSrcAddress() == getIpAddress())
+   {
+      // I'm originator of this packet; drop it
+      counters.incDroppedCount();
+
+      return;
+   }
+
+   if (packet->decrementTTL() == 0)
+   {
+      // TTL reached 0; drop packet
+      counters.incDroppedCount();
+
+      return;
+   }
+
+   // flood packet
+   if (rf24interface != NULL)
+   {
+      rf24interface->floodToTransmitter(packet);
+   }
+   if (hc12interface != NULL)
+   {
+      hc12interface->floodToTransmitter(packet);
+   }
+
+   counters.incFloodedCount();
 }
 
 Host Localhost;

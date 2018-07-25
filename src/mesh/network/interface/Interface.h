@@ -23,11 +23,11 @@ struct PingResult
    unsigned long timeInUs;
 };
 
-class Flooder;
+class Host;
 
 class Interface
 {
-   friend class Flooder;
+   friend class Host;
 private:
    Device* device;
    Transmitter transmitter;

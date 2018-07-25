@@ -10,25 +10,26 @@
 
 #include <stdint.h>
 
-#include "../flooder/Flooder.h"
+#include "../flooder/MeshNodeCounters.h"
 #include "../interface/Interface.h"
 
 class Host
 {
 private:
    uint8_t ipAddress;
-   Flooder flooder;
+   MeshNodeCounters counters;
    Interface *rf24interface;
    Interface *hc12interface;
 
    void processIncomingPackets(Interface* interface);
+   void flood(IotPacket* packet);
 public:
    Host();
    uint8_t getIpAddress();
    void setIpAddress(uint8_t ipAddress);
    void setRF24Interface(Interface *interface);
    void setHC12Interface(Interface *interface);
-   Flooder* getFlooder();
+   MeshNodeCounters* getCounters();
    PingResult ping(uint8_t dst);
    void loop();
 };
