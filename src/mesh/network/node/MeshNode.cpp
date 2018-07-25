@@ -5,7 +5,7 @@
  *      Author: wmarkowski
  */
 
-#include "MeshNode.h"
+#include "../node/MeshNode.h"
 
 MeshNode::MeshNode()
 {

@@ -5,8 +5,8 @@
  *      Author: wmarkowski
  */
 
-#ifndef MESH_NETWORK_HOST_MESHNODE_H_
-#define MESH_NETWORK_HOST_MESHNODE_H_
+#ifndef MESH_NETWORK_NODE_MESHNODE_H_
+#define MESH_NETWORK_NODE_MESHNODE_H_
 
 #include <stdint.h>
 
@@ -36,4 +36,4 @@ public:
 
 extern MeshNode LocalMeshNode;
 
-#endif /* MESH_NETWORK_HOST_MESHNODE_H_ */
+#endif /* MESH_NETWORK_NODE_MESHNODE_H_ */

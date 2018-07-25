@@ -15,7 +15,7 @@
 #include <UptimeCommand.h>
 #include "../src/mesh/link/RF24Device.h"
 #include "../src/mesh/link/HC12Device.h"
-#include "../src/mesh/network/host/MeshNode.h"
+#include "../src/mesh/network/node/MeshNode.h"
 #include "../src/terminal/commands/FlooderCmd.h"
 #include "../src/terminal/commands/Ifconfig.h"
 #include "../src/terminal/commands/IpConfig.h"

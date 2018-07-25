@@ -7,8 +7,8 @@
 
 #include "IpConfig.h"
 
-#include "../../mesh/network/host/MeshNode.h"
 #include "../../mesh/network/interface/Interface.h"
+#include "../../mesh/network/node/MeshNode.h"
 
 const __FlashStringHelper* IpConfig::getName()
 {

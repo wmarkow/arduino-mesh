@@ -7,7 +7,7 @@
 
 #include "FlooderCmd.h"
 
-#include "../../mesh/network/host/MeshNode.h"
+#include "../../mesh/network/node/MeshNode.h"
 
 const __FlashStringHelper* FlooderCmd::getName()
 {

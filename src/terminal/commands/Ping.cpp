@@ -7,7 +7,7 @@
 
 #include "Ping.h"
 
-#include "../../mesh/network/host/MeshNode.h"
+#include "../../mesh/network/node/MeshNode.h"
 
 extern Interface radioRF24;
 extern Interface radioHC12;
