@@ -5,14 +5,9 @@
  *      Author: witek
  */
 
-#include "../../../mesh/network/interface/Transmitter.h"
+#include "../../../mesh/network/interface/Interface.h"
 
-Transmitter::Transmitter(Device* device) : outgoingPackets(FixedSizeArray<IotPacket, OUTGOING_PACKETS_BUFFER_SIZE>())
-{
-	this->device = device;
-}
-
-void Transmitter::loop()
+void Interface::writeOutgoingPacket()
 {
 	if(this->state == TRANSMITTER_STATE_IDLE) {
 		if(outgoingPackets.getSize() > 0){
@@ -36,7 +31,7 @@ void Transmitter::loop()
 
 	if(this->state == TRANSMITTER_STATE_SENDING) {
 		if(outgoingPackets.getSize() > 0) {
-			write(outgoingPackets.peek(0));
+		   device->writePacket(outgoingPackets.peek(0));
 			outgoingPackets.remove(0);
 		}
 
@@ -46,12 +41,7 @@ void Transmitter::loop()
 	}
 }
 
-bool Transmitter::addPacketToTransmissionQueue(IotPacket* packet)
+bool Interface::addPacketToTransmissionQueue(IotPacket* packet)
 {
 	return outgoingPackets.add(packet);
-}
-
-bool Transmitter::write(IotPacket* packet)
-{
-	return device->writePacket(packet);
 }

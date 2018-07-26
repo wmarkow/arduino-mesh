@@ -11,8 +11,7 @@
 #include "../../../mesh/network/packet/PingPacket.h"
 #include "../../../mesh/network/packet/TcpPacket.h"
 
-Interface::Interface(Device *device) :
-      transmitter(Transmitter(device))
+Interface::Interface(Device *device)
 {
    this->device = device;
    tcpPacketWaitingForAck = NULL;
@@ -84,7 +83,7 @@ bool Interface::sendTcp(uint8_t dstAddress, uint8_t* data, uint8_t length)
 
 void Interface::loop()
 {
-   transmitter.loop();
+   writeOutgoingPacket();
    readIncomingPacket();
 }
 
@@ -123,7 +122,7 @@ bool Interface::sendPacket(IotPacket* packet)
 
 bool Interface::sendTcpPacket(IotPacket* packet)
 {
-   transmitter.addPacketToTransmissionQueue(packet);
+   addPacketToTransmissionQueue(packet);
    tcpPacketWaitingForAck = packet;
    ackReceived = false;
 
@@ -158,68 +157,5 @@ bool Interface::sendUdpPacket(IotPacket* packet)
       counters.incTransmittedUdpOther();
    }
 
-   return transmitter.addPacketToTransmissionQueue(packet);
-}
-
-bool Interface::floodToTransmitter(IotPacket* packet)
-{
-   return transmitter.addPacketToTransmissionQueue(packet);
-}
-
-bool Interface::readIncomingPacket()
-{
-   IotPacket incomingPacket;
-   if (device->readPacket(&incomingPacket) == false)
-   {
-      return false;
-   }
-
-   if (!device->isChipConnected())
-   {
-      return false;
-   }
-
-   if (incomingPackets.getSize() >= INCOMMING_PACKETS_BUFFER_SIZE)
-   {
-      // incoming queue is full, discard new packet
-#if IOT_DEBUG_WRITE_RADIO == ON
-      Serial.println(F("Discarding packet because incoming buffer is full"));
-#endif
-
-      return false;
-   }
-
-   // Special packet: ACK addressed to me
-   if (incomingPacket.getType() == ACK
-         && incomingPacket.getDstAddress() == ipAddress)
-   {
-      if (tcpPacketWaitingForAck != NULL)
-      {
-         if (((AckPacket*) &incomingPacket)->doesAckMatchToPacket(
-               tcpPacketWaitingForAck))
-         {
-            ackReceived = true;
-         }
-      }
-
-      return false;
-   }
-
-   // Special packet: ping (ICMP) addressed to me
-   if (incomingPacket.getProtocol() == ICMP
-         && incomingPacket.getType() == REGULAR
-         && incomingPacket.getDstAddress() == ipAddress)
-   {
-      AckPacket ackPacket(&incomingPacket);
-      transmitter.addPacketToTransmissionQueue(&ackPacket);
-      counters.incTransmittedUdpAck();
-
-      // ACK sent. Purge incoming ICMP packet
-      return false;
-   }
-
-   // other incoming packet
-   incomingPackets.add(&incomingPacket);
-
-   return true;
+   return addPacketToTransmissionQueue(packet);
 }

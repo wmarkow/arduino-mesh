@@ -138,11 +138,11 @@ void MeshNode::flood(IotPacket* packet)
    // flood packet
    if (rf24interface != NULL)
    {
-      rf24interface->floodToTransmitter(packet);
+      rf24interface->addPacketToTransmissionQueue(packet);
    }
    if (hc12interface != NULL)
    {
-      hc12interface->floodToTransmitter(packet);
+      hc12interface->addPacketToTransmissionQueue(packet);
    }
 
    counters.incFloodedCount();
