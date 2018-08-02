@@ -9,11 +9,19 @@
 #define LIBRARIES_IOTRADIO_SRC_MESH_TRANSPORT_PACKET_INCOMINGTRANSPORTPACKET_H_
 
 #include "../../network/packet/core/IotPacketHeader.h"
+#include "TransportPdu.h"
 
-struct IncomingTransportPacket
+struct TransportIncomingPdu
 {
+private:
 	uint8_t srcAddress;
-	uint8_t payload[DEFAULT_PACKET_PAYLOAD_SIZE];
+	TransportPdu transportPdu;
+
+public:
+	uint8_t getSrcAddress();
+	void setSrcAddress(uint8_t);
+	TransportPdu* getTransportPdu();
+	void setTransportPdu(TransportPdu* pdu);
 };
 
 #endif /* LIBRARIES_IOTRADIO_SRC_MESH_TRANSPORT_PACKET_INCOMINGTRANSPORTPACKET_H_ */
