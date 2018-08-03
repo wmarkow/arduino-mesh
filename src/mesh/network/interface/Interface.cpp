@@ -67,6 +67,11 @@ PingResult Interface::ping(uint8_t dstAddress)
    pingResult.success = false;
    pingResult.timeInUs = 0;
 
+   if(!isUp())
+   {
+      return pingResult;
+   }
+
    unsigned long sentTime = micros();
    if (sendPacket(&pingPacket, dstAddress))
    {
