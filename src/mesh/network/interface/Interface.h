@@ -38,6 +38,7 @@ private:
    uint8_t ipAddress;
    InterfaceCounters counters;
    Device* device;
+   bool isUpFlag = false;
 
    /** Receiver related variables **/
    FixedSizeArray<IotPacket, INCOMMING_PACKETS_BUFFER_SIZE> incomingPackets;

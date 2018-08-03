@@ -43,6 +43,11 @@ void Ifconfig::process(CommandParams *params, HardwareSerial *serial)
          processIfconfigUp(serial, interface);
          return;
       }
+      if (subcommand.equals(F("down")))
+      {
+         processIfconfigDown(serial, interface);
+         return;
+      }
    }
 
    serial->println(F("Unknown parameters"));
@@ -63,7 +68,7 @@ void Ifconfig::processIfconfig(HardwareSerial *serial, Interface *interface)
 {
    serial->println(interface->getName());
 
-   if (!interface->isChipConnected())
+   if (!interface->isUp())
    {
       Serial.println(F("    down, chip not connected "));
 
@@ -103,6 +108,12 @@ void Ifconfig::processIfconfig(HardwareSerial *serial, Interface *interface)
 void Ifconfig::processIfconfigUp(HardwareSerial *serial, Interface *interface)
 {
    interface->up();
+   processIfconfig(serial, interface);
+}
+
+void Ifconfig::processIfconfigDown(HardwareSerial *serial, Interface *interface)
+{
+   interface->powerDown();
    processIfconfig(serial, interface);
 }
 

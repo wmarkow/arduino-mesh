@@ -31,17 +31,26 @@ String Interface::getName()
 
 bool Interface::up()
 {
-   return device->up();
+   isUpFlag = device->up();
+
+   return isUpFlag;
 }
 
 bool Interface::isUp()
 {
+   if(!isUpFlag)
+   {
+      return false;
+   }
+
    return isChipConnected();
 }
 
 bool Interface::powerDown()
 {
-   return device->powerDown();
+   isUpFlag = !device->powerDown();
+
+   return !isUpFlag;
 }
 
 bool Interface::isChipConnected()

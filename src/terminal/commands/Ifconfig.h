@@ -17,6 +17,7 @@ private:
 	void processIfconfig(HardwareSerial *serial);
 	void processIfconfig(HardwareSerial *serial, Interface *interface);
 	void processIfconfigUp(HardwareSerial *serial, Interface *interface);
+	void processIfconfigDown(HardwareSerial *serial, Interface *interface);
 	Interface* getInterfaceByName(String name);
 public:
 	const __FlashStringHelper* getName();
