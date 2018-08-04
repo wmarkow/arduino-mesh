@@ -32,6 +32,7 @@ void Interface::writeOutgoingPacket()
 	if(this->state == TRANSMITTER_STATE_SENDING) {
 		if(outgoingPackets.getSize() > 0) {
 		   device->writePacket(outgoingPackets.peek(0));
+		   wiresharkPacket(outgoingPackets.peek(0), false);
 			outgoingPackets.remove(0);
 		}
 

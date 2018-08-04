@@ -59,6 +59,7 @@ private:
    void writeOutgoingPacket();
 
    bool addPacketToTransmissionQueue(IotPacket* packet);
+   void wiresharkPacket(IotPacket* packet, bool isIncomingPacket);
 public:
    Interface(Device *device);
 

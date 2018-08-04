@@ -30,6 +30,8 @@ bool Interface::readIncomingPacket()
       return false;
    }
 
+   wiresharkPacket(&incomingPacket, true);
+
    // Special packet: ACK addressed to me
    if (incomingPacket.getType() == ACK
          && incomingPacket.getDstAddress() == ipAddress)
