@@ -7,19 +7,15 @@
 
 #include "../../../../mesh/network/packet/core/IotPacketHeader.h"
 
-uint8_t IdSequence = 0;
-
 IotPacketHeader::IotPacketHeader()
 {
-   setId(IdSequence);
+   setId(0);
    setProtocol(TCP);
    setType(REGULAR);
    setTTL(DEFAULT_TTL);
    setSrcAddress(0);
    setDstAddress(0);
    setPayloadSize(DEFAULT_PACKET_PAYLOAD_SIZE);
-
-   IdSequence++;
 }
 
 uint8_t IotPacketHeader::getId()

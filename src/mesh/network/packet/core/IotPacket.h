@@ -14,11 +14,14 @@
 
 class IotPacket : public IotPacketHeader
 {
+private:
+   static uint8_t idSequence;
 public:
 	IotPacket();
 	uint8_t payload[DEFAULT_PACKET_PAYLOAD_SIZE];
 
 	uint8_t getPacketSize();
+	static uint8_t generateNextId();
 };
 
 #endif /* IOTPACKET_H_ */
