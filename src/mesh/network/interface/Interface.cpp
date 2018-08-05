@@ -125,6 +125,11 @@ void Interface::setIpAddress(uint8_t ipAddress)
    this->ipAddress = ipAddress;
 }
 
+void Interface::setWiresharkEnabled(bool enabled)
+{
+   this->wiresharkEnabled = enabled;
+}
+
 bool Interface::sendPacket(IotPacket* packet)
 {
    if (packet->getProtocol() == ICMP || packet->getProtocol() == TCP)
@@ -177,6 +182,11 @@ bool Interface::sendUdpPacket(IotPacket* packet)
 
 void Interface::wiresharkPacket(IotPacket* packet, bool isIncomingPacket)
 {
+   if (wiresharkEnabled == false)
+   {
+      return;
+   }
+
    Serial.print(F("><(((*>   "));
    Serial.print(getName());
    Serial.print(F(" "));

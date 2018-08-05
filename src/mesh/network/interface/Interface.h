@@ -39,6 +39,7 @@ private:
    InterfaceCounters counters;
    Device* device;
    bool isUpFlag = false;
+   bool wiresharkEnabled = false;
 
    /** Receiver related variables **/
    FixedSizeArray<IotPacket, INCOMMING_PACKETS_BUFFER_SIZE> incomingPackets;
@@ -78,6 +79,7 @@ public:
    bool sendTcp(uint8_t dstAddress, uint8_t* data, uint8_t length);
 
    void loop();
+   void setWiresharkEnabled(bool enabled);
 };
 
 #endif /* INTERFACE_INTERFACE_H_ */

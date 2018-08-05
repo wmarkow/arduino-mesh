@@ -89,6 +89,19 @@ MeshNodeCounters* MeshNode::getCounters()
    return &counters;
 }
 
+void MeshNode::setWiresharkEnabled(bool enabled)
+{
+   if (rf24interface != NULL)
+   {
+      rf24interface->setWiresharkEnabled(enabled);
+   }
+
+   if (hc12interface != NULL)
+   {
+      hc12interface->setWiresharkEnabled(enabled);
+   }
+}
+
 void MeshNode::processIncomingPackets(Interface* interface)
 {
    if (interface == NULL)

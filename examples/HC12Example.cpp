@@ -20,6 +20,7 @@
 #include "../src/terminal/commands/Ifconfig.h"
 #include "../src/terminal/commands/IpConfig.h"
 #include "../src/terminal/commands/Ping.h"
+#include "../src/terminal/commands/Wireshark.h"
 
 RF24Device rf24Device;
 Interface radioRF24 = Interface(&rf24Device);
@@ -27,13 +28,14 @@ Interface radioRF24 = Interface(&rf24Device);
 HC12Device hc12Device;
 Interface radioHC12 = Interface(&hc12Device);
 
-FixedSizeArray<AbstractCommand*, 5> commands;
+FixedSizeArray<AbstractCommand*, 6> commands;
 Array<AbstractCommand*> *commandsArray = &commands;
 UptimeCommand uptimeCommand;
 Ping pingCommand;
 Ifconfig ifconfigCommand;
 IpConfig ipConfigCommand;
 FlooderCmd flodderCommand;
+Wireshark wiresharkCommand;
 Terminal terminal(&Serial, commandsArray);
 
 void setup()
@@ -50,6 +52,7 @@ void setup()
    commandsArray->add(&ifconfigCommand);
    commandsArray->add(&flodderCommand);
    commandsArray->add(&ipConfigCommand);
+   commandsArray->add(&wiresharkCommand);
 
    LocalMeshNode.setRF24Interface(&radioRF24);
    LocalMeshNode.setHC12Interface(&radioHC12);

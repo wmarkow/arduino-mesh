@@ -32,6 +32,7 @@ public:
    MeshNodeCounters* getCounters();
    PingResult ping(uint8_t dst);
    void loop();
+   void setWiresharkEnabled(bool enabled);
 };
 
 extern MeshNode LocalMeshNode;
