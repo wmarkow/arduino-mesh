@@ -40,7 +40,7 @@ Terminal terminal(&Serial, commandsArray);
 
 void setup()
 {
-   Serial.begin(9600);
+   Serial.begin(57600);
    _SPI.begin();
 
    randomSeed(analogRead(0));
