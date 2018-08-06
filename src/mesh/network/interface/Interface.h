@@ -59,7 +59,7 @@ private:
    bool readIncomingPacket();
    void writeOutgoingPacket();
 
-   bool addPacketToTransmissionQueue(IotPacket* packet);
+   bool floodPacket(IotPacket* packet);
    void wiresharkPacket(IotPacket* packet, bool isIncomingPacket);
    String millisToHMS(unsigned long millis);
 public:

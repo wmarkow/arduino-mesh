@@ -9,40 +9,51 @@
 
 void Interface::writeOutgoingPacket()
 {
-	if(this->state == TRANSMITTER_STATE_IDLE) {
-		if(outgoingPackets.getSize() > 0){
+   if (this->state == TRANSMITTER_STATE_IDLE)
+   {
+      if (outgoingPackets.getSize() > 0)
+      {
 
-			unsigned long randomMillis = random(0, 20);
-			unsigned long currentMillis = millis();
+         unsigned long randomMillis = random(0, 20);
+         unsigned long currentMillis = millis();
 
-			this->waitFinishTimeInMillis = currentMillis + randomMillis;
-			this->state = TRANSMITTER_STATE_WAITING;
-		}
-		return;
-	}
+         this->waitFinishTimeInMillis = currentMillis + randomMillis;
+         this->state = TRANSMITTER_STATE_WAITING;
+      }
+      return;
+   }
 
-	if(this->state == TRANSMITTER_STATE_WAITING) {
-		if(millis() > this->waitFinishTimeInMillis) {
-			this->state = TRANSMITTER_STATE_SENDING;
-		}
+   if (this->state == TRANSMITTER_STATE_WAITING)
+   {
+      if (millis() > this->waitFinishTimeInMillis)
+      {
+         this->state = TRANSMITTER_STATE_SENDING;
+      }
 
-		return;
-	}
+      return;
+   }
 
-	if(this->state == TRANSMITTER_STATE_SENDING) {
-		if(outgoingPackets.getSize() > 0) {
-		   device->writePacket(outgoingPackets.peek(0));
-		   wiresharkPacket(outgoingPackets.peek(0), false);
-			outgoingPackets.remove(0);
-		}
+   if (this->state == TRANSMITTER_STATE_SENDING)
+   {
+      if (outgoingPackets.getSize() > 0)
+      {
+         device->writePacket(outgoingPackets.peek(0));
+         wiresharkPacket(outgoingPackets.peek(0), false);
+         outgoingPackets.remove(0);
+      }
 
-		this->state = TRANSMITTER_STATE_IDLE;
+      this->state = TRANSMITTER_STATE_IDLE;
 
-		return;
-	}
+      return;
+   }
 }
 
-bool Interface::addPacketToTransmissionQueue(IotPacket* packet)
+bool Interface::floodPacket(IotPacket* packet)
 {
-	return outgoingPackets.add(packet);
+   if (!isUp())
+   {
+      return false;
+   }
+
+   return outgoingPackets.add(packet);
 }

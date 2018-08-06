@@ -54,7 +54,7 @@ bool Interface::readIncomingPacket()
          && incomingPacket.getDstAddress() == ipAddress)
    {
       AckPacket ackPacket(&incomingPacket);
-      addPacketToTransmissionQueue(&ackPacket);
+      outgoingPackets.add(&ackPacket);
       counters.incTransmittedUdpAck();
 
       // ACK sent. Purge incoming ICMP packet

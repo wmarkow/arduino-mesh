@@ -67,11 +67,6 @@ PingResult Interface::ping(uint8_t dstAddress)
    pingResult.success = false;
    pingResult.timeInUs = 0;
 
-   if (!isUp())
-   {
-      return pingResult;
-   }
-
    unsigned long sentTime = micros();
    if (sendPacket(&pingPacket, dstAddress))
    {
@@ -113,6 +108,11 @@ FixedSizeArray<IotPacket, INCOMMING_PACKETS_BUFFER_SIZE>* Interface::getIncoming
 
 bool Interface::sendPacket(IotPacket* packet, uint8_t dstAddress)
 {
+   if (!isUp())
+   {
+      return false;
+   }
+
    packet->setSrcAddress(ipAddress);
    packet->setDstAddress(dstAddress);
    packet->setId(IotPacket::generateNextId());
@@ -142,7 +142,10 @@ bool Interface::sendPacket(IotPacket* packet)
 
 bool Interface::sendTcpPacket(IotPacket* packet)
 {
-   addPacketToTransmissionQueue(packet);
+   if (outgoingPackets.add(packet) == false)
+   {
+      return false;
+   }
    tcpPacketWaitingForAck = packet;
    ackReceived = false;
 
@@ -177,7 +180,7 @@ bool Interface::sendUdpPacket(IotPacket* packet)
       counters.incTransmittedUdpOther();
    }
 
-   return addPacketToTransmissionQueue(packet);
+   return outgoingPackets.add(packet);
 }
 
 void Interface::wiresharkPacket(IotPacket* packet, bool isIncomingPacket)
