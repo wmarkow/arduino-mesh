@@ -61,6 +61,7 @@ private:
 
    bool addPacketToTransmissionQueue(IotPacket* packet);
    void wiresharkPacket(IotPacket* packet, bool isIncomingPacket);
+   String millisToHMS(unsigned long millis);
 public:
    Interface(Device *device);
 

@@ -188,6 +188,8 @@ void Interface::wiresharkPacket(IotPacket* packet, bool isIncomingPacket)
    }
 
    Serial.print(F("><(((*>   "));
+   Serial.print(millisToHMS(millis()));
+   Serial.print(F(" "));
    Serial.print(getName());
    Serial.print(F(" "));
    if (isIncomingPacket)
@@ -231,4 +233,56 @@ void Interface::wiresharkPacket(IotPacket* packet, bool isIncomingPacket)
    Serial.print(F(" "));
    Serial.print(packet->getTTL(), HEX);
    Serial.println();
+}
+
+// macros from DateTime.h
+/* Useful Constants */
+#define SECS_PER_MIN  (60UL)
+#define SECS_PER_HOUR (3600UL)
+#define SECS_PER_DAY  (SECS_PER_HOUR * 24L)
+
+/* Useful Macros for getting elapsed time */
+#define numberOfSeconds(_time_) (_time_ % SECS_PER_MIN)
+#define numberOfMinutes(_time_) ((_time_ / SECS_PER_MIN) % SECS_PER_MIN)
+#define numberOfHours(_time_) (( _time_% SECS_PER_DAY) / SECS_PER_HOUR)
+#define elapsedDays(_time_) ( _time_ / SECS_PER_DAY)
+
+String Interface::millisToHMS(unsigned long millis)
+{
+   unsigned long time = millis / 1000;
+   uint8_t hours = numberOfHours(time);
+   uint8_t minutes = numberOfMinutes(time);
+   uint8_t seconds = numberOfSeconds(time);
+   uint16_t secondFraction = millis % 1000;
+
+   String result;
+   if (hours < 10)
+   {
+      result += "0";
+   }
+   result += hours;
+   result += ":";
+   if (minutes < 10)
+   {
+      result += "0";
+   }
+   result += minutes;
+   result += ":";
+   if (seconds < 10)
+   {
+      result += "0";
+   }
+   result += seconds;
+   result += ".";
+   if (secondFraction < 10)
+   {
+      result += "00";
+   }
+   else if (secondFraction < 100)
+   {
+      result += "0";
+   }
+   result += secondFraction;
+
+   return result;
 }
