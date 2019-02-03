@@ -6,3 +6,6 @@ core/**
 libraries/**
 .ino.cpp
 spec.d
+target
+.cproject
+.project
