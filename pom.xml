@@ -28,12 +28,9 @@
                 <artifactId>maven-install-plugin</artifactId>
                 <version>2.5.2</version>
                 <configuration>
-                    <groupId>${project.groupId}</groupId>
-                    <artifactId>${project.artifactId}</artifactId>
-                    <version>${project.version}</version>
-                    <packaging>arduinolib</packaging>
                     <file>${project.build.directory}/${project.artifactId}-${project.version}.zip</file>
                     <generatePom>false</generatePom>
+                    <pomFile>pom.xml</pomFile>
                 </configuration>
             </plugin>
 
@@ -90,12 +87,6 @@
             <type>arduinolib</type>
         </dependency>
         
-        <dependency>
-            <groupId>com.github.wmarkow</groupId>
-            <artifactId>arduino-array</artifactId>
-            <version>1.0.0</version>
-            <type>arduinolib</type>
-        </dependency>
     </dependencies>
 
 </project>
