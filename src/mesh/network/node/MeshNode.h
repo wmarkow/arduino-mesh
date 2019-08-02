@@ -29,6 +29,8 @@ public:
    void setIpAddress(uint8_t ipAddress);
    void setRF24Interface(Interface *interface);
    void setHC12Interface(Interface *interface);
+   Interface* getRF24Interface();
+   Interface* getHC12Interface();
    MeshNodeCounters* getCounters();
    PingResult ping(uint8_t dst);
    void loop();
