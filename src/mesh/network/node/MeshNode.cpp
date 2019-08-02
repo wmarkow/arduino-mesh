@@ -80,6 +80,27 @@ PingResult MeshNode::ping(uint8_t dstAddress)
     return pingResult;
 }
 
+bool MeshNode::sendTcp(uint8_t dstAddress, uint8_t* data, uint8_t length)
+{
+    if (rf24interface != NULL)
+    {
+        if (rf24interface->sendTcp(dstAddress, data, length))
+        {
+            return true;
+        }
+    }
+
+    if (hc12interface != NULL)
+    {
+        if (hc12interface->sendTcp(dstAddress, data, length))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 void MeshNode::loop()
 {
     if (rf24interface != NULL)
