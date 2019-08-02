@@ -24,63 +24,64 @@
 
 struct PingResult
 {
-   bool success;
-   uint8_t packetSize;
-   unsigned long timeInUs;
+    bool success;
+    uint8_t packetSize;
+    unsigned long timeInUs;
 };
 
 class MeshNode;
 
 class Interface
 {
-   friend class MeshNode;
+    friend class MeshNode;
 private:
-   uint8_t ipAddress;
-   InterfaceCounters counters;
-   Device* device;
-   bool isUpFlag = false;
-   bool wiresharkEnabled = false;
+    uint8_t ipAddress;
+    InterfaceCounters counters;
+    Device* device;
+    bool isUpFlag = false;
+    bool wiresharkEnabled = false;
 
-   /** Receiver related variables **/
-   FixedSizeArray<IotPacket, INCOMMING_PACKETS_BUFFER_SIZE> incomingPackets;
+    /** Receiver related variables **/
+    FixedSizeArray<IotPacket, INCOMMING_PACKETS_BUFFER_SIZE> incomingPackets;
 
-   /** Transmitter related variables **/
-   FixedSizeArray<IotPacket, OUTGOING_PACKETS_BUFFER_SIZE> outgoingPackets;
-   uint8_t state = TRANSMITTER_STATE_IDLE;
-   unsigned long waitFinishTimeInMillis = 0;
-   IotPacket* tcpPacketWaitingForAck;
-   bool ackReceived;
+    /** Transmitter related variables **/
+    FixedSizeArray<IotPacket, OUTGOING_PACKETS_BUFFER_SIZE> outgoingPackets;
+    uint8_t state = TRANSMITTER_STATE_IDLE;
+    unsigned long waitFinishTimeInMillis = 0;
+    IotPacket* tcpPacketWaitingForAck;
+    bool ackReceived;
 
-   bool sendPacket(IotPacket* packet, uint8_t dstAddress);
-   bool sendPacket(IotPacket* packet);
-   bool sendTcpPacket(IotPacket* packet);
-   bool sendUdpPacket(IotPacket* packet);
+    bool sendPacket(IotPacket* packet, uint8_t dstAddress);
+    bool sendPacket(IotPacket* packet);
+    bool sendTcpPacket(IotPacket* packet);
+    bool sendUdpPacket(IotPacket* packet);
 
-   bool readIncomingPacket();
-   void writeOutgoingPacket();
+    bool readIncomingPacket();
+    void writeOutgoingPacket();
 
-   bool floodPacket(IotPacket* packet);
-   void wiresharkPacket(IotPacket* packet, bool isIncomingPacket);
-   String millisToHMS(unsigned long millis);
+    bool floodPacket(IotPacket* packet);
+    void wiresharkPacket(IotPacket* packet, bool isIncomingPacket);
+    String millisToHMS(unsigned long millis);
 public:
-   Interface(Device *device);
+    Interface(Device *device);
 
-   void setIpAddress(uint8_t ipAddress);
-   InterfaceCounters* getCounters();
-   FixedSizeArray<IotPacket, INCOMMING_PACKETS_BUFFER_SIZE>* getIncomingPackets();
-   Device* getDevice();
+    void setIpAddress(uint8_t ipAddress);
+    InterfaceCounters* getCounters();
+    FixedSizeArray<IotPacket, INCOMMING_PACKETS_BUFFER_SIZE>* getIncomingPackets();
+    Device* getDevice();
 
-   String getName();
-   bool up();
-   bool isUp();
-   bool powerDown();
-   bool isChipConnected();
+    String getName();
+    bool up();
+    bool isUp();
+    bool powerDown();
+    bool isChipConnected();
 
-   PingResult ping(uint8_t dstAddress);
-   bool sendTcp(uint8_t dstAddress, uint8_t* data, uint8_t length);
+    PingResult ping(uint8_t dstAddress);
+    bool sendTcp(uint8_t dstAddress, uint8_t* data, uint8_t length);
+    void sendUdp(uint8_t dstAddress, uint8_t* data, uint8_t length);
 
-   void loop();
-   void setWiresharkEnabled(bool enabled);
+    void loop();
+    void setWiresharkEnabled(bool enabled);
 };
 
 #endif /* INTERFACE_INTERFACE_H_ */

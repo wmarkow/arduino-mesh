@@ -36,6 +36,7 @@ public:
     MeshNodeCounters* getCounters();
     PingResult ping(uint8_t dst);
     bool sendTcp(uint8_t dstAddress, uint8_t* data, uint8_t length);
+    void sendUdp(uint8_t dstAddress, uint8_t* data, uint8_t length);
     void loop();
     IotPacket* getIncomingPacket();
     void markIncomingPacketConsumed();

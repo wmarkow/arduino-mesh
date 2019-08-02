@@ -101,6 +101,19 @@ bool MeshNode::sendTcp(uint8_t dstAddress, uint8_t* data, uint8_t length)
     return false;
 }
 
+void MeshNode::sendUdp(uint8_t dstAddress, uint8_t* data, uint8_t length)
+{
+    if (rf24interface != NULL)
+    {
+        rf24interface->sendUdp(dstAddress, data, length);
+    }
+
+    if (hc12interface != NULL)
+    {
+        hc12interface->sendUdp(dstAddress, data, length);
+    }
+}
+
 void MeshNode::loop()
 {
     if (rf24interface != NULL)

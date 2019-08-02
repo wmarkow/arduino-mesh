@@ -10,232 +10,245 @@
 #include "../../../mesh/network/packet/AckPacket.h"
 #include "../../../mesh/network/packet/PingPacket.h"
 #include "../../../mesh/network/packet/TcpPacket.h"
+#include "../../../mesh/network/packet/UdpPacket.h"
 
 Interface::Interface(Device *device)
 {
-   this->device = device;
-   tcpPacketWaitingForAck = NULL;
-   ackReceived = false;
-   ipAddress = 1;
+    this->device = device;
+    tcpPacketWaitingForAck = NULL;
+    ackReceived = false;
+    ipAddress = 1;
 }
 
 Device* Interface::getDevice()
 {
-   return device;
+    return device;
 }
 
 String Interface::getName()
 {
-   return device->getInterfaceName();
+    return device->getInterfaceName();
 }
 
 bool Interface::up()
 {
-   isUpFlag = device->up();
+    isUpFlag = device->up();
 
-   return isUpFlag;
+    return isUpFlag;
 }
 
 bool Interface::isUp()
 {
-   if (!isUpFlag)
-   {
-      return false;
-   }
+    if (!isUpFlag)
+    {
+        return false;
+    }
 
-   return isChipConnected();
+    return isChipConnected();
 }
 
 bool Interface::powerDown()
 {
-   isUpFlag = !device->powerDown();
+    isUpFlag = !device->powerDown();
 
-   return !isUpFlag;
+    return !isUpFlag;
 }
 
 bool Interface::isChipConnected()
 {
-   return device->isChipConnected();
+    return device->isChipConnected();
 }
 
 PingResult Interface::ping(uint8_t dstAddress)
 {
-   PingPacket pingPacket;
+    PingPacket pingPacket;
 
-   PingResult pingResult;
-   pingResult.packetSize = pingPacket.getPacketSize();
-   pingResult.success = false;
-   pingResult.timeInUs = 0;
+    PingResult pingResult;
+    pingResult.packetSize = pingPacket.getPacketSize();
+    pingResult.success = false;
+    pingResult.timeInUs = 0;
 
-   unsigned long sentTime = micros();
-   if (sendPacket(&pingPacket, dstAddress))
-   {
-      unsigned long gotTime = micros();
-      pingResult.timeInUs = gotTime - sentTime;
-      pingResult.success = true;
-   }
+    unsigned long sentTime = micros();
+    if (sendPacket(&pingPacket, dstAddress))
+    {
+        unsigned long gotTime = micros();
+        pingResult.timeInUs = gotTime - sentTime;
+        pingResult.success = true;
+    }
 
-   return pingResult;
+    return pingResult;
 }
 
 bool Interface::sendTcp(uint8_t dstAddress, uint8_t* data, uint8_t length)
 {
-   if (length > DEFAULT_PACKET_PAYLOAD_SIZE)
-   {
-      return false;
-   }
+    if (length > DEFAULT_PACKET_PAYLOAD_SIZE)
+    {
+        return false;
+    }
 
-   TcpPacket packet = TcpPacket(data, length);
+    TcpPacket packet = TcpPacket(data, length);
 
-   return sendPacket(&packet, dstAddress);
+    return sendPacket(&packet, dstAddress);
+}
+
+void Interface::sendUdp(uint8_t dstAddress, uint8_t* data, uint8_t length)
+{
+    if (length > DEFAULT_PACKET_PAYLOAD_SIZE)
+    {
+        return;
+    }
+
+    UdpPacket packet = UdpPacket(data, length);
+
+    sendPacket(&packet, dstAddress);
 }
 
 void Interface::loop()
 {
-   writeOutgoingPacket();
-   readIncomingPacket();
+    writeOutgoingPacket();
+    readIncomingPacket();
 }
 
 InterfaceCounters* Interface::getCounters()
 {
-   return &counters;
+    return &counters;
 }
 
 FixedSizeArray<IotPacket, INCOMMING_PACKETS_BUFFER_SIZE>* Interface::getIncomingPackets()
 {
-   return &incomingPackets;
+    return &incomingPackets;
 }
 
 bool Interface::sendPacket(IotPacket* packet, uint8_t dstAddress)
 {
-   if (!isUp())
-   {
-      return false;
-   }
+    if (!isUp())
+    {
+        return false;
+    }
 
-   packet->setSrcAddress(ipAddress);
-   packet->setDstAddress(dstAddress);
-   packet->setId(IotPacket::generateNextId());
+    packet->setSrcAddress(ipAddress);
+    packet->setDstAddress(dstAddress);
+    packet->setId(IotPacket::generateNextId());
 
-   return sendPacket(packet);
+    return sendPacket(packet);
 }
 
 void Interface::setIpAddress(uint8_t ipAddress)
 {
-   this->ipAddress = ipAddress;
+    this->ipAddress = ipAddress;
 }
 
 void Interface::setWiresharkEnabled(bool enabled)
 {
-   this->wiresharkEnabled = enabled;
+    this->wiresharkEnabled = enabled;
 }
 
 bool Interface::sendPacket(IotPacket* packet)
 {
-   if (packet->getProtocol() == ICMP || packet->getProtocol() == TCP)
-   {
-      return sendTcpPacket(packet);
-   }
+    if (packet->getProtocol() == ICMP || packet->getProtocol() == TCP)
+    {
+        return sendTcpPacket(packet);
+    }
 
-   return sendUdpPacket(packet);
+    return sendUdpPacket(packet);
 }
 
 bool Interface::sendTcpPacket(IotPacket* packet)
 {
-   if (outgoingPackets.add(packet) == false)
-   {
-      return false;
-   }
-   tcpPacketWaitingForAck = packet;
-   ackReceived = false;
+    if (outgoingPackets.add(packet) == false)
+    {
+        return false;
+    }
+    tcpPacketWaitingForAck = packet;
+    ackReceived = false;
 
-   unsigned long startedWaitingAtMicros = micros();
+    unsigned long startedWaitingAtMicros = micros();
 
-   while (ackReceived == false)
-   {
-      loop();
-      if (micros() - startedWaitingAtMicros > 400000)
-      {
-         tcpPacketWaitingForAck = NULL;
-         counters.incTransmittedTcpFailed();
+    while (ackReceived == false)
+    {
+        loop();
+        if (micros() - startedWaitingAtMicros > 400000)
+        {
+            tcpPacketWaitingForAck = NULL;
+            counters.incTransmittedTcpFailed();
 
-         return false;
-      }
-   }
+            return false;
+        }
+    }
 
-   tcpPacketWaitingForAck = NULL;
-   counters.incTransmittedTcpSuccess();
+    tcpPacketWaitingForAck = NULL;
+    counters.incTransmittedTcpSuccess();
 
-   return true;
+    return true;
 }
 
 bool Interface::sendUdpPacket(IotPacket* packet)
 {
-   if (packet->getType() == ACK)
-   {
-      counters.incTransmittedUdpAck();
-   }
-   else
-   {
-      counters.incTransmittedUdpOther();
-   }
+    if (packet->getType() == ACK)
+    {
+        counters.incTransmittedUdpAck();
+    }
+    else
+    {
+        counters.incTransmittedUdpOther();
+    }
 
-   return outgoingPackets.add(packet);
+    return outgoingPackets.add(packet);
 }
 
 void Interface::wiresharkPacket(IotPacket* packet, bool isIncomingPacket)
 {
-   if (wiresharkEnabled == false)
-   {
-      return;
-   }
+    if (wiresharkEnabled == false)
+    {
+        return;
+    }
 
-   Serial.print(F("><(((*>   "));
-   Serial.print(millisToHMS(millis()));
-   Serial.print(F(" "));
-   Serial.print(getName());
-   Serial.print(F(" "));
-   if (isIncomingPacket)
-   {
-      Serial.print(F("   In"));
-   }
-   else
-   {
-      Serial.print(F("Out"));
-   }
-   Serial.print(F(" "));
-   Serial.print(packet->getId(), HEX);
-   Serial.print(F(" "));
-   Serial.print(packet->getSrcAddress(), HEX);
-   Serial.print(F(" -> "));
-   Serial.print(packet->getDstAddress(), HEX);
-   Serial.print(F(" "));
-   switch (packet->getProtocol())
-   {
-      case ICMP:
-         Serial.print(F("ICMP"));
-         break;
-      case TCP:
-         Serial.print(F(" TCP"));
-         break;
-      case UDP:
-         Serial.print(F(" UDP"));
-         break;
-      default:
-         Serial.print(packet->getProtocol());
-   }
-   Serial.print(F(" "));
-   if (packet->getType() == REGULAR)
-   {
-      Serial.print(F("REG"));
-   }
-   else
-   {
-      Serial.print(F("ACK"));
-   }
-   Serial.print(F(" "));
-   Serial.print(packet->getTTL(), HEX);
-   Serial.println();
+    Serial.print(F("><(((*>   "));
+    Serial.print(millisToHMS(millis()));
+    Serial.print(F(" "));
+    Serial.print(getName());
+    Serial.print(F(" "));
+    if (isIncomingPacket)
+    {
+        Serial.print(F("   In"));
+    }
+    else
+    {
+        Serial.print(F("Out"));
+    }
+    Serial.print(F(" "));
+    Serial.print(packet->getId(), HEX);
+    Serial.print(F(" "));
+    Serial.print(packet->getSrcAddress(), HEX);
+    Serial.print(F(" -> "));
+    Serial.print(packet->getDstAddress(), HEX);
+    Serial.print(F(" "));
+    switch (packet->getProtocol())
+    {
+    case ICMP:
+        Serial.print(F("ICMP"));
+        break;
+    case TCP:
+        Serial.print(F(" TCP"));
+        break;
+    case UDP:
+        Serial.print(F(" UDP"));
+        break;
+    default:
+        Serial.print(packet->getProtocol());
+    }
+    Serial.print(F(" "));
+    if (packet->getType() == REGULAR)
+    {
+        Serial.print(F("REG"));
+    }
+    else
+    {
+        Serial.print(F("ACK"));
+    }
+    Serial.print(F(" "));
+    Serial.print(packet->getTTL(), HEX);
+    Serial.println();
 }
 
 // macros from DateTime.h
@@ -252,40 +265,40 @@ void Interface::wiresharkPacket(IotPacket* packet, bool isIncomingPacket)
 
 String Interface::millisToHMS(unsigned long millis)
 {
-   unsigned long time = millis / 1000;
-   uint8_t hours = numberOfHours(time);
-   uint8_t minutes = numberOfMinutes(time);
-   uint8_t seconds = numberOfSeconds(time);
-   uint16_t secondFraction = millis % 1000;
+    unsigned long time = millis / 1000;
+    uint8_t hours = numberOfHours(time);
+    uint8_t minutes = numberOfMinutes(time);
+    uint8_t seconds = numberOfSeconds(time);
+    uint16_t secondFraction = millis % 1000;
 
-   String result;
-   if (hours < 10)
-   {
-      result += "0";
-   }
-   result += hours;
-   result += ":";
-   if (minutes < 10)
-   {
-      result += "0";
-   }
-   result += minutes;
-   result += ":";
-   if (seconds < 10)
-   {
-      result += "0";
-   }
-   result += seconds;
-   result += ".";
-   if (secondFraction < 10)
-   {
-      result += "00";
-   }
-   else if (secondFraction < 100)
-   {
-      result += "0";
-   }
-   result += secondFraction;
+    String result;
+    if (hours < 10)
+    {
+        result += "0";
+    }
+    result += hours;
+    result += ":";
+    if (minutes < 10)
+    {
+        result += "0";
+    }
+    result += minutes;
+    result += ":";
+    if (seconds < 10)
+    {
+        result += "0";
+    }
+    result += seconds;
+    result += ".";
+    if (secondFraction < 10)
+    {
+        result += "00";
+    }
+    else if (secondFraction < 100)
+    {
+        result += "0";
+    }
+    result += secondFraction;
 
-   return result;
+    return result;
 }
