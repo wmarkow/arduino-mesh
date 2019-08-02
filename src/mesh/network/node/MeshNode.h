@@ -20,6 +20,8 @@ private:
    MeshNodeCounters counters;
    Interface *rf24interface;
    Interface *hc12interface;
+   IotPacket incomingPacketBuffer;
+   IotPacket* incomingPacket;
 
    void processIncomingPackets(Interface* interface);
    void flood(IotPacket* packet);
@@ -34,6 +36,8 @@ public:
    MeshNodeCounters* getCounters();
    PingResult ping(uint8_t dst);
    void loop();
+   IotPacket* getIncomingPacket();
+   void markIncomingPacketConsumed();
    void setWiresharkEnabled(bool enabled);
 };
 

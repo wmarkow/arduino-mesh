@@ -9,61 +9,71 @@
 
 bool Interface::readIncomingPacket()
 {
-   IotPacket incomingPacket;
-   if (device->readPacket(&incomingPacket) == false)
-   {
-      return false;
-   }
+    IotPacket incomingPacket;
+    if (device->readPacket(&incomingPacket) == false)
+    {
+        return false;
+    }
 
-   if (!device->isChipConnected())
-   {
-      return false;
-   }
+    if (!device->isChipConnected())
+    {
+        return false;
+    }
 
-   if (incomingPackets.getSize() >= INCOMMING_PACKETS_BUFFER_SIZE)
-   {
-      // incoming queue is full, discard new packet
+    if (incomingPackets.getSize() >= INCOMMING_PACKETS_BUFFER_SIZE)
+    {
+        // incoming queue is full, discard new packet
 #if IOT_DEBUG_WRITE_RADIO == ON
-      Serial.println(F("Discarding packet because incoming buffer is full"));
+        Serial.println(F("Discarding packet because incoming buffer is full"));
 #endif
 
-      return false;
-   }
+        return false;
+    }
 
-   wiresharkPacket(&incomingPacket, true);
+    wiresharkPacket(&incomingPacket, true);
 
-   // Special packet: ACK addressed to me
-   if (incomingPacket.getType() == ACK
-         && incomingPacket.getDstAddress() == ipAddress)
-   {
-      if (tcpPacketWaitingForAck != NULL)
-      {
-         if (((AckPacket*) &incomingPacket)->doesAckMatchToPacket(
-               tcpPacketWaitingForAck))
-         {
-            ackReceived = true;
-         }
-      }
+    // Special packet: ACK addressed to me
+    if (incomingPacket.getType() == ACK
+            && incomingPacket.getDstAddress() == ipAddress)
+    {
+        if (tcpPacketWaitingForAck != NULL)
+        {
+            if (((AckPacket*) &incomingPacket)->doesAckMatchToPacket(
+                    tcpPacketWaitingForAck))
+            {
+                ackReceived = true;
+            }
+        }
 
-      return false;
-   }
+        return false;
+    }
 
-   // Special packet: ping (ICMP) addressed to me
-   if (incomingPacket.getProtocol() == ICMP
-         && incomingPacket.getType() == REGULAR
-         && incomingPacket.getDstAddress() == ipAddress)
-   {
-      AckPacket ackPacket(&incomingPacket);
-      outgoingPackets.add(&ackPacket);
-      counters.incTransmittedUdpAck();
+    // Special packet: ping (ICMP) addressed to me
+    if (incomingPacket.getProtocol() == ICMP
+            && incomingPacket.getType() == REGULAR
+            && incomingPacket.getDstAddress() == ipAddress)
+    {
+        AckPacket ackPacket(&incomingPacket);
+        outgoingPackets.add(&ackPacket);
+        counters.incTransmittedUdpAck();
 
-      // ACK sent. Purge incoming ICMP packet
-      return false;
-   }
+        // ACK sent. Purge incoming ICMP packet
+        return false;
+    }
 
-   // other incoming packet
-   incomingPackets.add(&incomingPacket);
+    // TCP packet addressed to me
+    if (incomingPacket.getProtocol() == TCP
+            && incomingPacket.getType() == REGULAR
+            && incomingPacket.getDstAddress() == ipAddress)
+    {
+        // sent ACK back
+        AckPacket ackPacket(&incomingPacket);
+        outgoingPackets.add(&ackPacket);
+        counters.incTransmittedUdpAck();
+    }
 
-   return true;
+    incomingPackets.add(&incomingPacket);
+
+    return true;
 }
 

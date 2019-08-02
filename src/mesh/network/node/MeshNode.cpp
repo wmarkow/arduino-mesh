@@ -12,6 +12,7 @@ MeshNode::MeshNode()
     ipAddress = 1;
     rf24interface = NULL;
     hc12interface = NULL;
+    incomingPacket = NULL;
 }
 
 uint8_t MeshNode::getIpAddress()
@@ -112,6 +113,16 @@ void MeshNode::setWiresharkEnabled(bool enabled)
     }
 }
 
+IotPacket* MeshNode::getIncomingPacket()
+{
+    return this->incomingPacket;
+}
+
+void MeshNode::markIncomingPacketConsumed()
+{
+    this->incomingPacket = NULL;
+}
+
 void MeshNode::processIncomingPackets(Interface* interface)
 {
     if (interface == NULL)
@@ -133,10 +144,17 @@ void MeshNode::processIncomingPackets(Interface* interface)
             continue;
         }
 
-        // here we have some other packet addressed to me, purge it for now
-        // TODO: implement transport layer incoming packet queue
-        interface->getIncomingPackets()->remove(index);
-        index--;
+        // here we have some other packet addressed to me. Copy it - if possible - to incoming buffer.
+        if (this->incomingPacket == NULL)
+        {
+            memcpy(&this->incomingPacketBuffer,
+                    interface->getIncomingPackets()->peek(index),
+                    sizeof(IotPacket));
+            this->incomingPacket = &incomingPacketBuffer;
+
+            interface->getIncomingPackets()->remove(index);
+            index--;
+        }
     }
 }
 
