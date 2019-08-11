@@ -248,6 +248,13 @@ void Interface::wiresharkPacket(IotPacket* packet, bool isIncomingPacket)
     }
     Serial.print(F(" "));
     Serial.print(packet->getTTL(), HEX);
+
+    Serial.print(F(" : "));
+    for (int q = 0; q < DEFAULT_PACKET_PAYLOAD_SIZE; q++)
+    {
+        Serial.print(packet->payload[q], HEX);
+        Serial.print(F(" "));
+    }
     Serial.println();
 }
 
