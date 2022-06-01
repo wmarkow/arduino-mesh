@@ -1,11 +1,4 @@
-arduino/**
-.settings/**
-Release/**
-Debug/**
-core/**
-libraries/**
 .ino.cpp
-spec.d
-target
-.cproject
-.project
+.pio
+.vscode
+src/main.cpp

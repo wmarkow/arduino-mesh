@@ -13,6 +13,8 @@
 #include <FixedSizeArray.h>
 #include <Terminal.h>
 #include <UptimeCommand.h>
+#include <RF24Logging.h>
+#include <RF24Loggers/ArduinoPrintLogger.h>
 #include "../src/mesh/link/RF24Device.h"
 #include "../src/mesh/link/HC12Device.h"
 #include "../src/mesh/network/node/MeshNode.h"
@@ -38,10 +40,15 @@ FlooderCmd flodderCommand;
 Wireshark wiresharkCommand;
 Terminal terminal(&Serial, commandsArray);
 
+ArduinoPrintLogger serialLogAppender(&Serial);
+
 void setup()
 {
    Serial.begin(57600);
-   _SPI.begin();
+   rf24Logging.setHandler(&serialLogAppender);
+   RF24Log_info("RF24LogExample", "setup called");
+
+   SPI.begin();
 
    randomSeed(analogRead(0));
 
