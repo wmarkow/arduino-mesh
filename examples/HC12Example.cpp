@@ -44,7 +44,7 @@ ArduinoPrintLogger serialLogAppender(&Serial);
 
 void setup()
 {
-   Serial.begin(57600);
+   Serial.begin(115200);
    rf24Logging.setHandler(&serialLogAppender);
    RF24Log_info("RF24LogExample", "setup called");
 
