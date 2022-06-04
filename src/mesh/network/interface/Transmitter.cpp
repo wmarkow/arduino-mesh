@@ -37,8 +37,22 @@ void Interface::writeOutgoingPacket()
    {
       if (outgoingPackets.getSize() > 0)
       {
-         device->writePacket(outgoingPackets.peek(0));
          wiresharkPacket(outgoingPackets.peek(0), false);
+
+         if(outgoingPackets.peek(0)->getDstAddress() == this->ipAddress 
+            && outgoingPackets.peek(0)->getSrcAddress() == this->ipAddress)
+         {
+            // Packet sent from localhost to localhost:
+            // use virtual loopback interface to process it.
+            this->processIncomingPacket(outgoingPackets.peek(0));
+         }
+         else
+         {
+            // Packet designated to other node:
+            // use a real device to sent it.
+            device->writePacket(outgoingPackets.peek(0));
+         }
+
          outgoingPackets.remove(0);
       }
 
