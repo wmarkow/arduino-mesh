@@ -30,15 +30,20 @@ bool Interface::readIncomingPacket()
         return false;
     }
 
-    wiresharkPacket(&incomingPacket, true);
+    return processIncomingPacket(&incomingPacket);
+}
+
+bool Interface::processIncomingPacket(IotPacket* packetPtr)
+{
+    wiresharkPacket(packetPtr, true);
 
     // Special packet: ACK addressed to me
-    if (incomingPacket.getType() == ACK
-            && incomingPacket.getDstAddress() == ipAddress)
+    if (packetPtr->getType() == ACK
+            && packetPtr->getDstAddress() == ipAddress)
     {
         if (tcpPacketWaitingForAck != NULL)
         {
-            if (((AckPacket*) &incomingPacket)->doesAckMatchToPacket(
+            if (((AckPacket*) packetPtr)->doesAckMatchToPacket(
                     tcpPacketWaitingForAck))
             {
                 ackReceived = true;
@@ -49,11 +54,11 @@ bool Interface::readIncomingPacket()
     }
 
     // Special packet: ping (ICMP) addressed to me
-    if (incomingPacket.getProtocol() == ICMP
-            && incomingPacket.getType() == REGULAR
-            && incomingPacket.getDstAddress() == ipAddress)
+    if (packetPtr->getProtocol() == ICMP
+            && packetPtr->getType() == REGULAR
+            && packetPtr->getDstAddress() == ipAddress)
     {
-        AckPacket ackPacket(&incomingPacket);
+        AckPacket ackPacket(packetPtr);
         outgoingPackets.add(&ackPacket);
         counters.incTransmittedUdpAck();
 
@@ -62,18 +67,17 @@ bool Interface::readIncomingPacket()
     }
 
     // TCP packet addressed to me
-    if (incomingPacket.getProtocol() == TCP
-            && incomingPacket.getType() == REGULAR
-            && incomingPacket.getDstAddress() == ipAddress)
+    if (packetPtr->getProtocol() == TCP
+            && packetPtr->getType() == REGULAR
+            && packetPtr->getDstAddress() == ipAddress)
     {
         // sent ACK back
-        AckPacket ackPacket(&incomingPacket);
+        AckPacket ackPacket(packetPtr);
         outgoingPackets.add(&ackPacket);
         counters.incTransmittedUdpAck();
     }
 
-    incomingPackets.add(&incomingPacket);
+    incomingPackets.add(packetPtr);
 
     return true;
 }
-

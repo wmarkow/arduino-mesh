@@ -57,6 +57,7 @@ private:
     bool sendUdpPacket(IotPacket* packet);
 
     bool readIncomingPacket();
+    bool processIncomingPacket(IotPacket* packet);
     void writeOutgoingPacket();
 
     bool floodPacket(IotPacket* packet);
