@@ -9,6 +9,11 @@
 
 #include "../../mesh/network/node/MeshNode.h"
 
+Wireshark::Wireshark(MeshNode* meshNodePtr)
+{
+   this->meshNodePtr = meshNodePtr;
+}
+
 const __FlashStringHelper* Wireshark::getName()
 {
    return F("wireshark");
@@ -21,11 +26,11 @@ void Wireshark::process(CommandParams *params, HardwareSerial *serial)
       String command = params->getParam(1);
       if (command.equals("on"))
       {
-         LocalMeshNode.setWiresharkEnabled(true);
+         meshNodePtr->setWiresharkEnabled(true);
       }
       else
       {
-         LocalMeshNode.setWiresharkEnabled(false);
+         meshNodePtr->setWiresharkEnabled(false);
       }
 
       return;

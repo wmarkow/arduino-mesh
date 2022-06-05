@@ -9,6 +9,11 @@
 
 #include "../../mesh/network/node/MeshNode.h"
 
+Ifconfig::Ifconfig(MeshNode* meshNodePtr)
+{
+    this->meshNodePtr = meshNodePtr;
+}
+
 const __FlashStringHelper* Ifconfig::getName()
 {
     return F("ifconfig");
@@ -57,8 +62,11 @@ void Ifconfig::processBackground(HardwareSerial *serial)
 
 void Ifconfig::processIfconfig(HardwareSerial *serial)
 {
-    processIfconfig(serial, LocalMeshNode.getRF24Interface());
-    processIfconfig(serial, LocalMeshNode.getHC12Interface());
+    uint8_t count = this->meshNodePtr->getInterfaceCount();
+    for(uint8_t index = 0 ; index < count ; index ++)
+    {
+        processIfconfig(serial, meshNodePtr->getInterface(index));
+    }
 }
 
 void Ifconfig::processIfconfig(HardwareSerial *serial, Interface *interface)
@@ -120,23 +128,16 @@ void Ifconfig::processIfconfigDown(HardwareSerial *serial, Interface *interface)
 
 Interface* Ifconfig::getInterfaceByName(String name)
 {
-    Interface* rf24Interface = LocalMeshNode.getRF24Interface();
-    if (rf24Interface != NULL)
+    uint8_t count = this->meshNodePtr->getInterfaceCount();
+    for(uint8_t index = 0 ; index < count ; index ++)
     {
-        if (name.equals(rf24Interface->getName()))
+        Interface* interface = meshNodePtr->getInterface(index);
+        
+        if(interface->getName().equals(name))
         {
-            return rf24Interface;
+            return interface;
         }
-    }
-
-    Interface* hc12Interface = LocalMeshNode.getHC12Interface();
-    if (hc12Interface != NULL)
-    {
-        if (name.equals(hc12Interface->getName()))
-        {
-            return hc12Interface;
-        }
-    }
+    }    
 
     return NULL;
 }

@@ -9,14 +9,17 @@
 #define TERMINAL_COMMANDS_PING_H_
 
 #include "AbstractCommand.h"
+#include "../../mesh/network/node/MeshNode.h"
 
 class Ping : public AbstractCommand
 {
 private:
 	uint8_t pingAddress = 0;
 	unsigned long lastCommandExecutionMillis = 0;
+	MeshNode* meshNodePtr;
 	void processPing(uint8_t address, HardwareSerial* serial);
 public:
+    Ping(MeshNode* meshNodePtr);
 	const __FlashStringHelper* getName();
 	void process(CommandParams *params, HardwareSerial *serial);
 	void processBackground(HardwareSerial *serial);

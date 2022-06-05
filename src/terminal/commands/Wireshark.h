@@ -10,10 +10,15 @@
 
 #include "AbstractCommand.h"
 #include "../../mesh/network/interface/Interface.h"
+#include "../../mesh/network/node/MeshNode.h"
 
 class Wireshark : public AbstractCommand
 {
+private:
+   MeshNode* meshNodePtr;
+
 public:
+   Wireshark(MeshNode* meshNodePtr);
    const __FlashStringHelper* getName();
    void process(CommandParams *params, HardwareSerial *serial);
    void processBackground(HardwareSerial *serial);

@@ -16,7 +16,8 @@
 #include <RF24Logging.h>
 #include <RF24Loggers/ArduinoPrintLogger.h>
 #include "../src/mesh/link/HC12Device.h"
-#include "../src/mesh/network/node/MeshNode.h"
+#include "../src/mesh/link/RF24Device.h"
+#include "../src/mesh/network/node/ComplexMeshNode.h"
 #include "../src/terminal/commands/FlooderCmd.h"
 #include "../src/terminal/commands/Ifconfig.h"
 #include "../src/terminal/commands/IpConfig.h"
@@ -26,7 +27,10 @@
 HC12Device hc12Device;
 Interface radioHC12 = Interface(&hc12Device);
 
-MeshNode localMeshNode;
+RF24Device rf24Device;
+Interface radioRF24 = Interface(&rf24Device);
+
+ComplexMeshNode localMeshNode;
 
 FixedSizeArray<AbstractCommand*, 6> commands;
 Array<AbstractCommand*> *commandsArray = &commands;
@@ -48,7 +52,9 @@ void setup()
 
    randomSeed(analogRead(0));
 
+   SPI.begin();
    radioHC12.up();
+   radioRF24.up();
 
    commandsArray->add(&uptimeCommand);
    commandsArray->add(&pingCommand);
@@ -58,6 +64,7 @@ void setup()
    commandsArray->add(&wiresharkCommand);
 
    localMeshNode.setInterface(0, &radioHC12);
+   localMeshNode.setInterface(1, &radioRF24);
    localMeshNode.setIpAddress(1);
 }
 

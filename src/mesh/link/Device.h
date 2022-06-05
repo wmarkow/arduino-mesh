@@ -29,6 +29,4 @@ public:
 	virtual String getInterfaceName() = 0;
 };
 
-
-
 #endif /* DEVICE_H_ */

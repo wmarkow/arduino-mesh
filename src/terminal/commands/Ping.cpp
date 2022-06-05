@@ -9,6 +9,11 @@
 
 #include "../../mesh/network/node/MeshNode.h"
 
+Ping::Ping(MeshNode* meshNodePtr)
+{
+    this->meshNodePtr = meshNodePtr;
+}
+
 const __FlashStringHelper* Ping::getName()
 {
     return F("ping");
@@ -35,7 +40,7 @@ void Ping::processPing(uint8_t address, HardwareSerial* serial)
     lastCommandExecutionMillis = millis();
     pingAddress = address;
 
-    PingResult pingResult = LocalMeshNode.ping(address);
+    PingResult pingResult = meshNodePtr->ping(address);
 
     if (pingResult.success)
     {

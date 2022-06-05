@@ -18,31 +18,36 @@ class MeshNode
 private:
     uint8_t ipAddress;
     MeshNodeCounters counters;
-    Interface *rf24interface;
-    Interface *hc12interface;
+    Interface *interface;
     IotPacket incomingPacketBuffer;
     IotPacket* incomingPacket;
 
+protected:
+    /** Network support */
     void processIncomingPackets(Interface* interface);
-    void flood(IotPacket* packet);
+    virtual bool flood(IotPacket* packet);
+
 public:
     MeshNode();
+
+    /** Network support */
     uint8_t getIpAddress();
-    void setIpAddress(uint8_t ipAddress);
-    void setRF24Interface(Interface *interface);
-    void setHC12Interface(Interface *interface);
-    Interface* getRF24Interface();
-    Interface* getHC12Interface();
-    MeshNodeCounters* getCounters();
-    PingResult ping(uint8_t dst);
-    bool sendTcp(uint8_t dstAddress, uint8_t* data, uint8_t length);
-    void sendUdp(uint8_t dstAddress, uint8_t* data, uint8_t length);
-    void loop();
+    virtual void setIpAddress(uint8_t ipAddress);
+    virtual PingResult ping(uint8_t dst);
+    virtual bool sendTcp(uint8_t dstAddress, uint8_t* data, uint8_t length);
+    virtual void sendUdp(uint8_t dstAddress, uint8_t* data, uint8_t length);
     IotPacket* getIncomingPacket();
     void markIncomingPacketConsumed();
-    void setWiresharkEnabled(bool enabled);
-};
 
-extern MeshNode LocalMeshNode;
+    /** Interfaces support */
+    virtual uint8_t getInterfaceCount();
+    virtual Interface* getInterface(uint8_t index);
+    virtual void setInterface(uint8_t index, Interface* interfacePtr);
+
+    /** Various features */
+    MeshNodeCounters* getCounters();
+    virtual void setWiresharkEnabled(bool enabled);
+    virtual void loop();
+};
 
 #endif /* MESH_NETWORK_NODE_MESHNODE_H_ */

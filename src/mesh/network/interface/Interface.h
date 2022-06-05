@@ -33,7 +33,6 @@ class MeshNode;
 
 class Interface
 {
-    friend class MeshNode;
 private:
     uint8_t ipAddress;
     InterfaceCounters counters;
@@ -60,7 +59,6 @@ private:
     bool processIncomingPacket(IotPacket* packet);
     void writeOutgoingPacket();
 
-    bool floodPacket(IotPacket* packet);
     void wiresharkPacket(IotPacket* packet, bool isIncomingPacket);
     String millisToHMS(unsigned long millis);
 public:
@@ -80,6 +78,7 @@ public:
     PingResult ping(uint8_t dstAddress);
     bool sendTcp(uint8_t dstAddress, uint8_t* data, uint8_t length);
     void sendUdp(uint8_t dstAddress, uint8_t* data, uint8_t length);
+    bool floodPacket(IotPacket* packet);
 
     void loop();
     void setWiresharkEnabled(bool enabled);

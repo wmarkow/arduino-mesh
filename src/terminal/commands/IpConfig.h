@@ -14,9 +14,11 @@
 class IpConfig : public AbstractCommand
 {
 private:
+    MeshNode* meshNodePtr;
 	void processIpConfig(HardwareSerial *serial);
 	void processIpConfigSetIp(uint8_t address, HardwareSerial *serial);
 public:
+    IpConfig(MeshNode* meshNodePtr);
 	const __FlashStringHelper* getName();
 	void process(CommandParams *params, HardwareSerial *serial);
 	void processBackground(HardwareSerial *serial);

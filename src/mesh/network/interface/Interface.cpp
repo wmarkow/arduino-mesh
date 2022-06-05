@@ -210,7 +210,7 @@ void Interface::wiresharkPacket(IotPacket* packet, bool isIncomingPacket)
     Serial.print(F(" "));
     if (isIncomingPacket)
     {
-        Serial.print(F("   In"));
+        Serial.print(F(" In"));
     }
     else
     {
