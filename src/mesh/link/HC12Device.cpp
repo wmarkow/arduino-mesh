@@ -5,6 +5,7 @@
  *      Author: witek
  */
 
+#include <Arduino.h>
 #include <SoftwareSerial.h>
 
 #include "HC12Device.h"

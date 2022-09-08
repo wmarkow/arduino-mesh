@@ -8,7 +8,7 @@
 #ifndef LIBRARIES_ARDUINO_MESH_SRC_MESH_NETWORK_PACKET_UDPPACKET_H_
 #define LIBRARIES_ARDUINO_MESH_SRC_MESH_NETWORK_PACKET_UDPPACKET_H_
 
-#include "../../../mesh/network/packet/core/IotPacket.h"
+#include "core/IotPacket.h"
 
 class UdpPacket: public IotPacket
 {

@@ -5,7 +5,7 @@
  *      Author: witek
  */
 
-#include "../../../mesh/network/packet/TcpPacket.h"
+#include "TcpPacket.h"
 
 #include <string.h>
 

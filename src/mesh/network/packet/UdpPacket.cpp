@@ -5,7 +5,7 @@
  *      Author: wmarkowski
  */
 
-#include "../../../mesh/network/packet/UdpPacket.h"
+#include "UdpPacket.h"
 
 #include <string.h>
 

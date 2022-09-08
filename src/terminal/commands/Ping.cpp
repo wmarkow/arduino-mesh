@@ -5,8 +5,8 @@
  *      Author: witek
  */
 
+#include <Arduino.h>
 #include "Ping.h"
-
 #include "../../mesh/network/node/MeshNode.h"
 
 Ping::Ping(MeshNode* meshNodePtr)

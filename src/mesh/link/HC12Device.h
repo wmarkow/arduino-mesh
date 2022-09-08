@@ -10,8 +10,8 @@
 
 #include "HC12.h"
 
-#include "../../mesh/link/Device.h"
-#include "../../mesh/network/packet/core/IotPacket.h"
+#include "Device.h"
+#include "../network/packet/core/IotPacket.h"
 
 #define HC12_PREAMBLE 0b01010101
 /***

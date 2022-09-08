@@ -6,7 +6,6 @@
  */
 
 #include "Ifconfig.h"
-
 #include "../../mesh/network/node/MeshNode.h"
 
 Ifconfig::Ifconfig(MeshNode* meshNodePtr)

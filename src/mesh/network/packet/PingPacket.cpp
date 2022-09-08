@@ -5,7 +5,7 @@
  *      Author: witek
  */
 
-#include "../../../mesh/network/packet/PingPacket.h"
+#include "PingPacket.h"
 
 #include <string.h>
 

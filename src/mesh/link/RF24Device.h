@@ -10,8 +10,8 @@
 
 #include <RF24.h>
 
-#include "../../mesh/link/Device.h"
-#include "../../mesh/network/packet/core/IotPacket.h"
+#include "Device.h"
+#include "../network/packet/core/IotPacket.h"
 
 #if defined(ESP8266)
 	#define IOT_HARDWARE_CE_PIN D4

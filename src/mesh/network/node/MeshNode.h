@@ -10,7 +10,7 @@
 
 #include <stdint.h>
 
-#include "../node/MeshNodeCounters.h"
+#include "MeshNodeCounters.h"
 #include "../interface/Interface.h"
 
 class MeshNode

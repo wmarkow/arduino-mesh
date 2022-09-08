@@ -8,7 +8,7 @@
 #ifndef DEVICE_H_
 #define DEVICE_H_
 
-#include <Arduino.h>
+#include <WString.h>
 #include "../network/packet/core/IotPacket.h"
 
 class Device

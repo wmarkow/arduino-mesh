@@ -5,8 +5,8 @@
  *      Author: wmarkowski
  */
 
-#include "TransportIncomingPdu.h"
 #include <string.h>
+#include "TransportIncomingPdu.h"
 
 uint8_t TransportIncomingPdu::getSrcAddress()
 {

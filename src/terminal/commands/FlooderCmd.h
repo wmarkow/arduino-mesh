@@ -8,7 +8,7 @@
 #ifndef TERMINAL_COMMANDS_FLOODERCMD_H_
 #define TERMINAL_COMMANDS_FLOODERCMD_H_
 
-#include "AbstractCommand.h"
+#include <AbstractCommand.h>
 #include "../../mesh/network/node/MeshNode.h"
 
 class FlooderCmd : public AbstractCommand

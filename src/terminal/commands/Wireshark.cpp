@@ -6,7 +6,6 @@
  */
 
 #include "Wireshark.h"
-
 #include "../../mesh/network/node/MeshNode.h"
 
 Wireshark::Wireshark(MeshNode* meshNodePtr)

@@ -5,12 +5,13 @@
  *      Author: witek
  */
 
-#include "../../../mesh/network/interface/Interface.h"
+#include <Arduino.h>
+#include "Interface.h"
 
-#include "../../../mesh/network/packet/AckPacket.h"
-#include "../../../mesh/network/packet/PingPacket.h"
-#include "../../../mesh/network/packet/TcpPacket.h"
-#include "../../../mesh/network/packet/UdpPacket.h"
+#include "../packet/AckPacket.h"
+#include "../packet/PingPacket.h"
+#include "../packet/TcpPacket.h"
+#include "../packet/UdpPacket.h"
 
 Interface::Interface(Device *device)
 {

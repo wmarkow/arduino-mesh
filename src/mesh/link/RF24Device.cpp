@@ -4,11 +4,10 @@
  *  Created on: 9 maj 2016
  *      Author: witek
  */
-
-#include "../../mesh/link/RF24Device.h"
-
 #include <RF24.h>
 #include <nRF24L01.h>
+
+#include "RF24Device.h"
 
 RF24Device::RF24Device() :
         rf24(RF24(IOT_HARDWARE_CE_PIN, IOT_HARDWARE_CS_PIN))

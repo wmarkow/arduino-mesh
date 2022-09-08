@@ -5,7 +5,8 @@
  *      Author: witek
  */
 
-#include "../../../mesh/network/interface/Interface.h"
+#include <Arduino.h>
+#include "Interface.h"
 
 void Interface::writeOutgoingPacket()
 {

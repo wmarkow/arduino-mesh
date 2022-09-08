@@ -8,7 +8,7 @@
 #ifndef TERMINAL_COMMANDS_IPCONFIG_H_
 #define TERMINAL_COMMANDS_IPCONFIG_H_
 
-#include "AbstractCommand.h"
+#include <AbstractCommand.h>
 #include "../../mesh/network/interface/Interface.h"
 
 class IpConfig : public AbstractCommand

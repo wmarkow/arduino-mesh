@@ -5,7 +5,8 @@
  *      Author: wmarkowski
  */
 
-#include "../../../mesh/network/interface/Interface.h"
+#include <Arduino.h>
+#include "Interface.h"
 
 bool Interface::readIncomingPacket()
 {

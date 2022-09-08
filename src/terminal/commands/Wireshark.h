@@ -8,7 +8,7 @@
 #ifndef TERMINAL_COMMANDS_WIRESHARK_H_
 #define TERMINAL_COMMANDS_WIRESHARK_H_
 
-#include "AbstractCommand.h"
+#include <AbstractCommand.h>
 #include "../../mesh/network/interface/Interface.h"
 #include "../../mesh/network/node/MeshNode.h"
 

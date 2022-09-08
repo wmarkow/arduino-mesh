@@ -10,9 +10,9 @@
 
 #include <FixedSizeArray.h>
 
-#include "../../../mesh/link/Device.h"
-#include "../../../mesh/network/packet/core/IotPacket.h"
-#include "../../../mesh/network/packet/AckPacket.h"
+#include "../../link/Device.h"
+#include "../../network/packet/core/IotPacket.h"
+#include "../../network/packet/AckPacket.h"
 #include "InterfaceCounters.h"
 
 #define INCOMMING_PACKETS_BUFFER_SIZE 3
