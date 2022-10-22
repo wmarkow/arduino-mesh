@@ -15,6 +15,10 @@ class AckPacket : public IotPacket
 public:
    AckPacket(IotPacket* packet);
    bool doesAckMatchToPacket(IotPacket* tcpPacket);
+
+protected:
+   inline void setAckedPacketId(uint8_t id);
+   inline uint8_t getAckedPacketId();
 };
 
 #endif /* PACKET_ACKPACKET_H_ */

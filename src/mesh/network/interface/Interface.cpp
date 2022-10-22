@@ -129,7 +129,6 @@ bool Interface::sendPacket(IotPacket* packet, uint8_t dstAddress)
 
     packet->setSrcAddress(ipAddress);
     packet->setDstAddress(dstAddress);
-    packet->setId(IotPacket::generateNextId());
 
     return sendPacket(packet);
 }

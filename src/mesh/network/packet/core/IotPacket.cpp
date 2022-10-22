@@ -18,10 +18,15 @@ uint8_t IotPacket::getPacketSize()
    return DEFAULT_PACKET_HEADER_SIZE + getPayloadSize();
 }
 
-uint8_t IotPacket::generateNextId()
+uint8_t IotPacket::getId()
 {
-   idSequence++;
-   return idSequence;
-}
+   uint8_t id = 0;
+   for(uint8_t index = 0 ; index < this->getPacketSize(); index ++)
+   {
+      // iterate over the header and payload (payload is located directly after header)
+      // and calculate the sum
+      id += this->header[index];
+   }
 
-uint8_t IotPacket::idSequence = 0;
+   return id;
+}

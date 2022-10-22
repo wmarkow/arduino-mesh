@@ -10,13 +10,13 @@
 AckPacket::AckPacket(IotPacket* packet) :
       IotPacket()
 {
-   setId(packet->getId());
+   setAckedPacketId(packet->getId());
    setProtocol(packet->getProtocol());
    setTTL(DEFAULT_TTL);
    setType(ACK);
    setSrcAddress(packet->getDstAddress());
    setDstAddress(packet->getSrcAddress());
-   setPayloadSize(0);
+   setPayloadSize(1);
 }
 ;
 
@@ -32,7 +32,7 @@ bool AckPacket::doesAckMatchToPacket(IotPacket* tcpPacket)
       return false;
    }
 
-   if (getId() != tcpPacket->getId())
+   if (getAckedPacketId() != tcpPacket->getId())
    {
       return false;
    }
@@ -43,4 +43,14 @@ bool AckPacket::doesAckMatchToPacket(IotPacket* tcpPacket)
    }
 
    return true;
+}
+
+void AckPacket::setAckedPacketId(uint8_t id)
+{
+   this->payload[0] = id;
+}
+
+uint8_t AckPacket::getAckedPacketId()
+{
+   return this->payload[0];
 }
