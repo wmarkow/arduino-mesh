@@ -208,7 +208,7 @@ void Interface::wiresharkPacket(IotPacket* packet, bool isIncomingPacket)
     Serial.print(F(" "));
     Serial.print(getName());
     Serial.print(F(" "));
-    if (isIncomingPacket)
+    if(isIncomingPacket)
     {
         Serial.print(F(" In"));
     }
@@ -216,29 +216,23 @@ void Interface::wiresharkPacket(IotPacket* packet, bool isIncomingPacket)
     {
         Serial.print(F("Out"));
     }
-    Serial.print(F(" "));
+    Serial.print(F(" ID=0x"));
     Serial.print(packet->getId(), HEX);
-    Serial.print(F(" "));
+    Serial.print(F(" 0x"));
     Serial.print(packet->getSrcAddress(), HEX);
-    Serial.print(F(" -> "));
+    Serial.print(F(" -> 0x"));
     Serial.print(packet->getDstAddress(), HEX);
     Serial.print(F(" "));
-    switch (packet->getProtocol())
+    if(packet->getProtocol() == IotProtocol::TCP)
     {
-    case ICMP:
-        Serial.print(F("ICMP"));
-        break;
-    case TCP:
-        Serial.print(F(" TCP"));
-        break;
-    case UDP:
-        Serial.print(F(" UDP"));
-        break;
-    default:
-        Serial.print(packet->getProtocol());
+        Serial.print(F("TCP"));
+    }
+    else
+    {
+        Serial.print(F("UDP"));
     }
     Serial.print(F(" "));
-    if (packet->getType() == REGULAR)
+    if (packet->getType() == IotPacketType::REGULAR)
     {
         Serial.print(F("REG"));
     }
@@ -246,11 +240,11 @@ void Interface::wiresharkPacket(IotPacket* packet, bool isIncomingPacket)
     {
         Serial.print(F("ACK"));
     }
-    Serial.print(F(" "));
+    Serial.print(F(" TTL=0x"));
     Serial.print(packet->getTTL(), HEX);
 
     Serial.print(F(" : "));
-    for (int q = 0; q < DEFAULT_PACKET_PAYLOAD_SIZE; q++)
+    for (int q = 0; q < packet->getPayloadSize(); q++)
     {
         Serial.print(packet->payload[q], HEX);
         Serial.print(F(" "));
