@@ -12,9 +12,8 @@
 
 enum IotProtocol
 {
-	ICMP = (uint8_t)0x01,
-	TCP = (uint8_t)0x06,
-	UDP = (uint8_t)0x11
+	UDP = (uint8_t)0x00,
+	TCP = (uint8_t)0x01,
 };
 
 #endif /* PACKET_IOTPROTOCOL_H_ */

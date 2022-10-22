@@ -145,7 +145,7 @@ void Interface::setWiresharkEnabled(bool enabled)
 
 bool Interface::sendPacket(IotPacket* packet)
 {
-    if (packet->getProtocol() == ICMP || packet->getProtocol() == TCP)
+    if (packet->getProtocol() == IotProtocol::TCP)
     {
         return sendTcpPacket(packet);
     }

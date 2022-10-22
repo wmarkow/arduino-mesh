@@ -13,8 +13,8 @@
 
 #define DEFAULT_TTL 3
 #define DEFAULT_PACKET_SIZE 32
-#define DEFAULT_PACKET_HEADER_SIZE 6
-#define DEFAULT_PACKET_PAYLOAD_SIZE DEFAULT_PACKET_SIZE - DEFAULT_PACKET_HEADER_SIZE
+#define DEFAULT_PACKET_HEADER_SIZE 4
+#define DEFAULT_PACKET_PAYLOAD_SIZE (DEFAULT_PACKET_SIZE - DEFAULT_PACKET_HEADER_SIZE)
 
 
 class IotPacketHeader
@@ -29,6 +29,7 @@ public:
 	uint8_t getSrcAddress();
 	uint8_t getDstAddress();
 	uint8_t getPayloadSize();
+	uint8_t getPort();
 
 	void setProtocol(IotProtocol protocol);
 	void setType(IotPacketType type);
@@ -37,6 +38,7 @@ public:
 	void setSrcAddress(uint8_t address);
 	void setDstAddress(uint8_t address);
 	void setPayloadSize(uint8_t size);
+	void setPort(uint8_t port);
 };
 
 #endif /* PACKET_IOTPACKETHEADER_H_ */

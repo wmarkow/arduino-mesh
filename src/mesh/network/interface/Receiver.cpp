@@ -7,6 +7,7 @@
 
 #include <Arduino.h>
 #include "Interface.h"
+#include "../packet/core/IotPort.h"
 
 bool Interface::readIncomingPacket()
 {
@@ -55,7 +56,7 @@ bool Interface::processIncomingPacket(IotPacket* packetPtr)
     }
 
     // Special packet: ping (ICMP) addressed to me
-    if (packetPtr->getProtocol() == ICMP
+    if (packetPtr->getPort() == IotPort::ICMP
             && packetPtr->getType() == REGULAR
             && packetPtr->getDstAddress() == ipAddress)
     {

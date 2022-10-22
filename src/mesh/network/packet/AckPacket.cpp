@@ -10,13 +10,15 @@
 AckPacket::AckPacket(IotPacket* packet) :
       IotPacket()
 {
-   setAckedPacketId(packet->getId());
-   setProtocol(packet->getProtocol());
-   setTTL(DEFAULT_TTL);
-   setType(ACK);
    setSrcAddress(packet->getDstAddress());
    setDstAddress(packet->getSrcAddress());
+   setProtocol(packet->getProtocol());
+   setType(ACK);
+   setPort(packet->getPort());
+   setTTL(DEFAULT_TTL);
    setPayloadSize(1);
+   
+   setAckedPacketId(packet->getId());
 }
 ;
 
