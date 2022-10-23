@@ -16,11 +16,23 @@
 #define DEFAULT_PACKET_HEADER_SIZE 4
 #define DEFAULT_PACKET_PAYLOAD_SIZE (DEFAULT_PACKET_SIZE - DEFAULT_PACKET_HEADER_SIZE)
 
-
 class IotPacketHeader
 {
 protected:
-	uint8_t header[DEFAULT_PACKET_HEADER_SIZE];
+
+	typedef struct __attribute__((packed))
+	{
+		uint8_t srcAddress;
+		uint8_t dstAddress;
+		uint16_t protocol : 1; 
+		uint16_t type :1;
+		uint16_t port : 5;
+		uint16_t ttl : 4;
+		uint16_t payloadLength : 5;
+	} Header;
+
+	Header header;
+
 public:
 	IotPacketHeader();
 	IotProtocol getProtocol();

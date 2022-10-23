@@ -21,11 +21,13 @@ uint8_t IotPacket::getPacketSize()
 uint8_t IotPacket::getId()
 {
    uint8_t id = 0;
+   uint8_t* ptr = (uint8_t*)(&header);
    for(uint8_t index = 0 ; index < this->getPacketSize(); index ++)
    {
       // iterate over the header and payload (payload is located directly after header)
       // and calculate the sum
-      id += this->header[index];
+      id += *ptr;
+      ptr++;
    }
 
    return id;
