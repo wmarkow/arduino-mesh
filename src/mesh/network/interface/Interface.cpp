@@ -243,7 +243,18 @@ void Interface::wiresharkPacket(IotPacket* packet, bool isIncomingPacket)
     Serial.print(F(" TTL=0x"));
     Serial.print(packet->getTTL(), HEX);
 
-    Serial.print(F(" : "));
+    // Dump the header as HEX
+    Serial.print(F(" (0x "));
+    uint8_t* ptr = (uint8_t*)(packet);
+    for(uint8_t w = 0; w < DEFAULT_PACKET_HEADER_SIZE ; w++)
+    {
+        Serial.print(ptr[w], HEX);
+        Serial.print(" ");
+    }
+    Serial.print(F(")"));
+
+    // Dump the payload as HEX
+    Serial.print(F(" : 0x "));
     for (int q = 0; q < packet->getPayloadSize(); q++)
     {
         Serial.print(packet->payload[q], HEX);
