@@ -26,8 +26,7 @@ uint8_t IotPacket::getId()
    {
       // iterate over the header and payload (payload is located directly after header)
       // and calculate the sum
-      id += *ptr;
-      ptr++;
+      id += ptr[index];
    }
 
    return id;
